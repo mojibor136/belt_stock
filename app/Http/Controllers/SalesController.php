@@ -50,8 +50,26 @@ public function memoStore(Request $request)
         $data = $request->all();
         $grandTotal = 0;
 
+        if (isset($data['customer'])) {
+            $customer = Customer::find($data['customer']);
+            $data['customer_name'] = $customer ? $customer->name : null;
+            $data['customer_address'] = $customer ? $customer->address : null;
+            $data['customer_status'] = $customer ? $customer->status : null;
+        }
+
         if (isset($data['items']) && is_array($data['items'])) {
             foreach ($data['items'] as $itemIndex => &$item) {
+
+                if (isset($item['brand_id'])) {
+                    $brand = Brand::find($item['brand_id']);
+                    $item['brand_name'] = $brand ? $brand->brand : null;
+                }
+
+                if (isset($item['group_id'])) {
+                    $group = Group::find($item['group_id']);
+                    $item['group_name'] = $group ? $group->group : null;
+                }
+
                 $itemTotal = 0;
                 $rate = isset($item['rate']) ? (float)$item['rate'] : 0;
                 $pieceRate = isset($item['piece_rate']) ? (float)$item['piece_rate'] : 0;
@@ -61,7 +79,6 @@ public function memoStore(Request $request)
                         $sizeVal = isset($size['size']) ? (float)$size['size'] : 0;
                         $sizeQty = isset($size['quantity']) ? (float)$size['quantity'] : 0;
 
-                        // Inch rate 0 hole piece rate diye hisab
                         if ($rate > 0) {
                             $sizeSubtotal = $sizeVal * $rate * $sizeQty;
                         } else {
@@ -88,7 +105,6 @@ public function memoStore(Request $request)
         ], 500);
     }
 }
-
 
 
 }

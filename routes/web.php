@@ -117,6 +117,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get-groups/{brand_id}', [SizeController::class, 'getGroups']);
     Route::get('/get-group-rate/{group_id}', [GroupController::class, 'getGroupRate'])->name('getGroupRate');
     Route::get('/get-group-data/{group}', [SalesController::class, 'getGroupData']);
+    Route::get('/get-customer-data/{id}', [CustomerController::class, 'getCustomerData']);
 });
 
 require __DIR__.'/auth.php';

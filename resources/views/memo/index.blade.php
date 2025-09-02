@@ -103,13 +103,15 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Select Customer</label>
-                    <select name="customer"
+                    <select id="customer-select" name="customer"
                         class="customer-select w-full border border-gray-300 rounded px-3 h-10 text-sm focus:ring-1 focus:ring-blue-600 focus:outline-none text-gray-700">
                         <option value="">Select a customer</option>
                         @foreach ($customers as $customer)
                             <option value="{{ $customer->id }}">{{ $customer->name }}</option>
                         @endforeach
                     </select>
+                </div>
+                <div id="customer-info">
                 </div>
             </div>
             <h2 class="text-xl font-semibold text-gray-800 mt-4 mb-2">📦 Memo Items</h2>
@@ -187,13 +189,20 @@
                 </table>
             </div>
             <div class="flex justify-between items-center">
-                <button type="button" id="add-row" class="bg-gray-800 text-white px-5 py-2 rounded h-10 shadow">+ Add
+                <button type="button" id="add-row" class="bg-gray-800 text-white px-5 py-2 w-40 rounded h-10 shadow">+
+                    Add
                     Row</button>
-                <div class="flex items-center gap-4 h-10">
-                    <span class="text-sm font-semibold text-gray-600">TOTAL AMOUNT:</span>
-                    <input type="number"
-                        class="px-4 py-2 h-full w-40 bg-gray-100 text-gray-800 rounded border border-gray-200" disabled
-                        name="total" id="total" placeholder="0.00">
+
+                <div class="flex flex-col w-40 relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700">৳</span>
+                    <input type="number" name="debit" id="debit" placeholder="0.00"
+                        class="pl-7 pr-3 py-2 border rounded text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                </div>
+
+                <div class="flex flex-col w-40 relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700">৳</span>
+                    <input type="number" name="total" id="total" placeholder="0.00" disabled
+                        class="pl-7 pr-3 py-2 border rounded text-gray-800 bg-gray-100 cursor-not-allowed">
                 </div>
             </div>
             <div class="text-right mt-6">
@@ -230,6 +239,7 @@
                 width: '100%'
             });
         }
+
         $(document).ready(function() {
             initSelect2();
             flatpickr("#created_at", {
@@ -238,6 +248,43 @@
             });
             $('.sizes-container .size-row:first .remove-size').hide();
         });
+
+        $('#customer-select').on('change', function() {
+            let customerID = $(this).val();
+            if (customerID) {
+                $.ajax({
+                    url: '/get-customer-data/' + customerID,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        let html = `
+                <div class="p-4 bg-white border border-gray-100 rounded space-y-2">
+                    <p><strong class="text-gray-700">Name:</strong> 
+                       <span class="text-green-600 font-semibold">${data.name}</span></p>
+                    <p><strong class="text-gray-700">Phone:</strong> 
+                       <span class="text-blue-600 font-medium">${data.phone}</span></p>
+                    <p><strong class="text-gray-700">Address:</strong> 
+                       <span class="text-gray-800">${data.address}</span></p>
+                </div>
+                `;
+                        $('#customer-info').html(html);
+
+                        if (data.amount) {
+                            $('#debit').val(data.amount);
+                            recalcGrandTotal();
+                        }
+                    },
+                    error: function() {
+                        alert('Failed to fetch customer data!');
+                    }
+                });
+            } else {
+                $('#customer-info').html('');
+                $('#debit').val('');
+                recalcGrandTotal();
+            }
+        });
+
         $(document).on('change', '.brand-select', function() {
             let tr = $(this).closest('tr');
             let brandID = $(this).val();
@@ -388,9 +435,14 @@
 
         function recalcGrandTotal() {
             let total = 0;
+
             $('#items-container .item-row').each(function() {
                 total += parseFloat($(this).find('.subtotal-cell').text()) || 0;
             });
+
+            let debit = parseFloat($('#debit').val()) || 0;
+            total += debit;
+
             $('#total').val(total.toFixed(2));
         }
     </script>

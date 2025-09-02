@@ -85,14 +85,14 @@
                         class="w-20 h-full bg-orange-200 text-gray-800 flex justify-start px-2 items-center border-r border-gray-500 border-dotted">
                         Name:
                     </div>
-                    <span class="ml-2">Md Mojibor Rahman</span>
+                    <span class="ml-2">{{ $data['customer_name'] ?? '' }}</span>
                 </div>
                 <div class="flex h-8 items-center border border-gray-500 border-dotted bg-yellow-100 text-gray-700">
                     <div
                         class="w-20 h-full bg-orange-200 text-gray-800 flex justify-start px-2 items-center border-r border-gray-500 border-dotted">
                         Address:
                     </div>
-                    <span class="ml-2">Dhaka,Nawabpur</span>
+                    <span class="ml-2">{{ $data['customer_address'] ?? '' }}</span>
                 </div>
             </div>
 
@@ -127,7 +127,7 @@
                                     <tr>
                                         @if ($chunkIndex == 0)
                                             <td class="border border-gray-500 border-dotted px-2 py-1 w-6 text-center">
-                                                <strong class="text-lg">B-</strong>
+                                                <strong class="text-lg">{{ $item['group_name'] ?? 'Unknown' }}-</strong>
                                             </td>
                                         @else
                                             <td class="border border-gray-500 border-dotted px-2 py-1 w-6 text-center">
@@ -144,7 +144,7 @@
 
                                         @if ($chunkIndex == 0)
                                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center w-14">
-                                                {{ $item['brand'] ?? 'HC' }}
+                                                {{ $item['brand_name'] ?? 'HC' }}
                                             </td>
                                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center w-10">
                                                 {{ $rateToShow }}
@@ -172,17 +172,17 @@
                                 </tr>
                             @endif
                         @endfor
-                        
+
                         <tr class="text-gray-800">
                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center" colspan="1">
                             </td>
                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center" colspan="1">
                             </td>
-                            <td class="border border-gray-500 border-dotted px-2 py-1 text-left"
-                                colspan="2">Previous  +
+                            <td class="border border-gray-500 border-dotted px-2 py-1 text-center" colspan="2">
+                                {{ $data['customer_status'] ?? '' }}
                             </td>
                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center" colspan="2">
-                                &#2547;{{ number_format($data['grand_total'], 2) }}
+                                &#2547;{{ number_format($data['debit'], 2) }}
                             </td>
                         </tr>
 
@@ -192,7 +192,7 @@
                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center" colspan="1">
                             </td>
                             <td class="border border-gray-500 bg-orange-200 border-dotted px-2 py-1 text-center"
-                                colspan="2">Grand Total 
+                                colspan="2">Total
                             </td>
                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center font-bold" colspan="2">
                                 &#2547;{{ number_format($data['grand_total'], 2) }}

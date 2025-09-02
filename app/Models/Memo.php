@@ -13,6 +13,8 @@ class Memo extends Model
         'memo_no',
         'created_at',
         'customer_id',
+        'debit_credit',
+        'memo_status',
         'grand_total',
     ];
 

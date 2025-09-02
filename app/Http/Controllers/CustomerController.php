@@ -31,6 +31,17 @@ class CustomerController extends Controller
         return view('customer.index', compact('customers'));
     }
 
+    public function getCustomerData($id)
+    {
+        $customer = Customer::find($id);
+
+        if($customer) {
+            return response()->json($customer);
+        }
+
+        return response()->json(['error' => 'Customer not found'], 404);
+    }
+
     public function create()
     {
         return view('customer.create');
