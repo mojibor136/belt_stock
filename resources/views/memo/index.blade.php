@@ -338,15 +338,33 @@
                 });
             }
         });
+
         document.getElementById('add-row').addEventListener('click', function() {
+            let totalSizes = document.querySelectorAll('.sizes-container .size-row').length;
+            if (totalSizes >= 84) {
+                alert('Maximum 84 sizes allowed across all rows!');
+                return;
+            }
+
             let container = document.getElementById('items-container');
             let templateRow = container.querySelector('.item-row');
             let newRow = templateRow.cloneNode(true);
-            $(newRow).find('.select2-container').remove();
-            newRow.querySelectorAll('input').forEach(el => {
-                if (!el.classList.contains('size-id')) el.value = '';
-                else el.remove();
+
+            let sizesContainer = newRow.querySelector('.sizes-container');
+            let sizeRows = sizesContainer.querySelectorAll('.size-row');
+            sizeRows.forEach((row, idx) => {
+                if (idx > 0) row.remove();
+                else {
+                    let select = row.querySelector('.size-select');
+                    let qty = row.querySelector('.qty-input');
+                    if (select) select.selectedIndex = 0;
+                    if (qty) qty.value = '';
+                }
             });
+
+            $(newRow).find('.select2-container').remove();
+
+            newRow.querySelectorAll('input').forEach(el => el.value = '');
             let brandSelect = newRow.querySelector('.brand-select');
             let groupSelect = newRow.querySelector('.group-select');
             let sizeSelect = newRow.querySelector('.size-select');
@@ -354,58 +372,54 @@
             groupSelect.innerHTML = '<option value="">Select Group</option>';
             sizeSelect.innerHTML = '<option value="">Select Size</option>';
             newRow.querySelector('.subtotal-cell').innerText = '0';
-            newRow.querySelector('.rate-input').value = '';
-            newRow.querySelector('.piece-rate-input').value = '';
+
             newRow.querySelectorAll('input, select').forEach(el => {
                 el.name = el.name.replace(/\d+/, rowIndex);
             });
+
             container.appendChild(newRow);
             initSelect2();
             rowIndex++;
         });
+
         document.addEventListener('click', function(e) {
             let tr, container;
+
             if (e.target.classList.contains('add-size')) {
+                let totalSizes = document.querySelectorAll('.sizes-container .size-row').length;
+                if (totalSizes >= 84) {
+                    alert('Maximum 84 sizes allowed across all rows!');
+                    return;
+                }
+
                 tr = e.target.closest('tr');
                 container = tr.querySelector('.sizes-container');
+
                 let firstSizeRow = container.querySelector('.size-row');
                 let newSize = firstSizeRow.cloneNode(true);
                 $(newSize).find('.select2-container').remove();
+
                 let select = newSize.querySelector('.size-select');
                 let qty = newSize.querySelector('.qty-input');
                 if (select) select.selectedIndex = 0;
                 if (qty) qty.value = '';
+
                 let sizeCount = container.querySelectorAll('.size-row').length;
                 newSize.querySelectorAll('input, select').forEach(el => {
                     el.name = el.name.replace(/\[sizes\]\[\d+\]/, `[sizes][${sizeCount}]`);
                 });
+
                 let addBtn = newSize.querySelector('.add-size');
                 if (addBtn) addBtn.remove();
+
                 let removeBtn = newSize.querySelector('.remove-size');
                 if (removeBtn) removeBtn.style.display = "flex";
+
                 container.appendChild(newSize);
                 initSelect2();
                 recalcSubtotal(tr);
-                container.querySelectorAll('.size-row').forEach((row, idx) => {
-                    let rmBtn = row.querySelector('.remove-size');
-                    let addBtn = row.querySelector('.add-size');
-                    if (idx === 0) {
-                        if (rmBtn) rmBtn.style.display = "none";
-                        if (!addBtn) {
-                            let btnDiv = row.querySelector('.size');
-                            let newAdd = document.createElement('button');
-                            newAdd.type = "button";
-                            newAdd.className =
-                                "add-size text-2xl w-10 bg-blue-200 px-3 h-full flex items-center justify-center";
-                            newAdd.innerText = "+";
-                            btnDiv.appendChild(newAdd);
-                        }
-                    } else {
-                        if (rmBtn) rmBtn.style.display = "flex";
-                        if (addBtn) addBtn.remove();
-                    }
-                });
             }
+
             if (e.target.classList.contains('remove-size')) {
                 tr = e.target.closest('tr');
                 container = tr.querySelector('.sizes-container');
@@ -414,6 +428,7 @@
                     recalcSubtotal(tr);
                 }
             }
+
             if (e.target.classList.contains('remove-row')) {
                 tr = e.target.closest('tr');
                 tr.remove();
