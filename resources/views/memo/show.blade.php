@@ -113,6 +113,22 @@
                             $items = $data['items'];
                         @endphp
 
+                        @php
+                            $grandTotal = 0;
+                            $debitAmount = $data['debit'] ?? 0;
+                            $customerStatus = strtolower($data['customer_status'] ?? '');
+
+                            foreach ($data['items'] as $item) {
+                                $grandTotal += $item['item_total'] ?? 0;
+                            }
+
+                            if ($customerStatus === 'debit') {
+                                $grandTotal += $debitAmount;
+                            } elseif ($customerStatus === 'credit') {
+                                $grandTotal -= $debitAmount;
+                            }
+                        @endphp
+
                         @for ($i = 0; $i < $totalRows; $i++)
                             @if (isset($items[$i]))
                                 @php
@@ -178,7 +194,8 @@
                             </td>
                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center" colspan="1">
                             </td>
-                            <td class="border border-gray-500 border-dotted px-2 py-1 text-center" colspan="2">
+                            <td class="border border-gray-500 capitalize border-dotted px-2 py-1 text-center"
+                                colspan="2">
                                 {{ $data['customer_status'] ?? '' }}
                             </td>
                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center" colspan="2">
@@ -195,7 +212,7 @@
                                 colspan="2">Total
                             </td>
                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center font-bold" colspan="2">
-                                &#2547;{{ number_format($data['grand_total'], 2) }}
+                                &#2547;{{ number_format($grandTotal, 2) }}
                             </td>
                         </tr>
                     </tbody>

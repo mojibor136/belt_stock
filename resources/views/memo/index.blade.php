@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Create Memo')
 @section('content')
+    @include('components.toast')
     <style>
         .select2-container .select2-selection--single {
             height: 38px !important;
@@ -195,7 +196,7 @@
 
                 <div class="flex flex-col w-40 relative">
                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700">৳</span>
-                    <input type="number" name="debit" id="debit" placeholder="0.00"
+                    <input type="number" name="debit" id="debit" placeholder="0.00" readonly
                         class="pl-7 pr-3 py-2 border rounded text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500">
                 </div>
 
@@ -249,6 +250,8 @@
             $('.sizes-container .size-row:first .remove-size').hide();
         });
 
+        let customerStatus = '';
+
         $('#customer-select').on('change', function() {
             let customerID = $(this).val();
             if (customerID) {
@@ -268,6 +271,8 @@
                 </div>
                 `;
                         $('#customer-info').html(html);
+
+                        customerStatus = data.status ? data.status.toLowerCase() : '';
 
                         if (data.amount) {
                             $('#debit').val(data.amount);
@@ -441,7 +446,12 @@
             });
 
             let debit = parseFloat($('#debit').val()) || 0;
-            total += debit;
+
+            if (customerStatus === 'debit') {
+                total += debit;
+            } else if (customerStatus === 'credit') {
+                total -= debit;
+            }
 
             $('#total').val(total.toFixed(2));
         }
