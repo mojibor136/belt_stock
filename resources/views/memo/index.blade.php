@@ -341,13 +341,30 @@
 
         document.getElementById('add-row').addEventListener('click', function() {
             let totalSizes = document.querySelectorAll('.sizes-container .size-row').length;
-            if (totalSizes >= 84) {
-                alert('Maximum 84 sizes allowed across all rows!');
+            if (totalSizes >= 70) {
+                alert('Maximum 70 sizes allowed across all rows!');
                 return;
             }
 
-            let container = document.getElementById('items-container');
-            let templateRow = container.querySelector('.item-row');
+            const container = document.getElementById('items-container');
+            const templateRow = container.querySelector('.item-row');
+
+            if (totalSizes >= 70) {
+                alert('Maximum 70 sizes allowed across all rows!');
+                return;
+            }
+
+            let currentRowCount = 0;
+            $('#items-container .item-row').each(function() {
+                let sizeCount = $(this).find('.size-row').length;
+                currentRowCount += Math.ceil(sizeCount / 5);
+            });
+
+            if (currentRowCount >= 14) {
+                alert('Maximum 14 rows reached!');
+                return;
+            }
+
             let newRow = templateRow.cloneNode(true);
 
             let sizesContainer = newRow.querySelector('.sizes-container');
@@ -382,13 +399,14 @@
             rowIndex++;
         });
 
+
         document.addEventListener('click', function(e) {
             let tr, container;
 
             if (e.target.classList.contains('add-size')) {
                 let totalSizes = document.querySelectorAll('.sizes-container .size-row').length;
-                if (totalSizes >= 84) {
-                    alert('Maximum 84 sizes allowed across all rows!');
+                if (totalSizes >= 70) {
+                    alert('Maximum 70 sizes allowed across all rows!');
                     return;
                 }
 
