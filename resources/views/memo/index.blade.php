@@ -26,6 +26,15 @@
             line-height: 32px;
         }
 
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            display: block;
+            padding-left: 8px;
+            padding-right: 20px;
+            overflow: visible !important;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
         .select2-container--default .select2-search--dropdown .select2-search__field {
             color: #374151 !important;
         }
@@ -36,6 +45,10 @@
 
         .select2-container--default .select2-selection--single .select2-selection__arrow {
             height: 36px;
+        }
+
+        .select2-container--default .select2-results__option {
+            white-space: normal;
         }
 
         .select2-container--default.select2-container--focus .select2-selection--single {
@@ -202,22 +215,18 @@
         function initSelect2() {
             $('.customer-select').select2({
                 placeholder: "-- Select Customer --",
-                allowClear: true,
                 width: '100%'
             });
             $('.group-select').select2({
                 placeholder: "Select Group",
-                allowClear: true,
                 width: '100%'
             });
             $('.brand-select').select2({
                 placeholder: "Select Brand",
-                allowClear: true,
                 width: '100%'
             });
             $('.size-select').select2({
                 placeholder: "Select Size",
-                allowClear: true,
                 width: '100%'
             });
         }
