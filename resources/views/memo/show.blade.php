@@ -50,11 +50,13 @@
         <div class="py-2 px-8">
             <div class="flex flex-col">
                 <div class="flex items-center justify-center gap-2">
-                    <div class="w-16 h-12 border border-red-700 flex justify-center items-center bg-white font-bold text-4xl rounded">
+                    <div
+                        class="w-16 h-12 border border-red-700 flex justify-center items-center bg-white font-bold text-4xl rounded">
                         <span class="text-blue-800">B</span> <span class="text-orange-600">S</span>
                     </div>
                     <div class="flex flex-col items-start justify-center">
-                        <span class="text-blue-900 text-xl font-semibold tracking-widest">বেঙ্গল বেয়ারিং ও বেল্ট স্টোর</span>
+                        <span class="text-blue-900 text-xl font-semibold tracking-widest">বেঙ্গল বেয়ারিং ও বেল্ট
+                            স্টোর</span>
                         <span class="text-red-600 text-xl font-semibold tracking-widest">BENGAL BEARING & BELT STORE</span>
                     </div>
                 </div>
@@ -79,13 +81,15 @@
 
             <div class="flex flex-col gap-1 mt-2">
                 <div class="flex h-8 items-center border border-gray-500 border-dotted bg-yellow-100 text-gray-700">
-                    <div class="w-20 h-full bg-orange-200 text-gray-800 flex justify-start px-2 items-center border-r border-gray-500 border-dotted">
+                    <div
+                        class="w-20 h-full bg-orange-200 text-gray-800 flex justify-start px-2 items-center border-r border-gray-500 border-dotted">
                         Name:
                     </div>
                     <span class="ml-2">{{ $data['customer_name'] ?? '' }}</span>
                 </div>
                 <div class="flex h-8 items-center border border-gray-500 border-dotted bg-yellow-100 text-gray-700">
-                    <div class="w-20 h-full bg-orange-200 text-gray-800 flex justify-start px-2 items-center border-r border-gray-500 border-dotted">
+                    <div
+                        class="w-20 h-full bg-orange-200 text-gray-800 flex justify-start px-2 items-center border-r border-gray-500 border-dotted">
                         Address:
                     </div>
                     <span class="ml-2">{{ $data['customer_address'] ?? '' }}</span>
@@ -122,7 +126,9 @@
 
                             @foreach ($sizeChunks as $chunkIndex => $chunk)
                                 @if ($rowsUsed >= $maxDataRows)
-                                    @break 2
+                                    @break
+
+                                    2
                                 @endif
                                 <tr>
                                     <td class="border border-gray-500 border-dotted px-2 py-1 w-6 text-center">
@@ -152,9 +158,12 @@
                                             &#2547;{{ number_format($item['item_total'], 2) }}
                                         </td>
                                     @else
-                                        <td class="border border-gray-500 border-dotted px-2 py-1 text-center w-14">&nbsp;</td>
-                                        <td class="border border-gray-500 border-dotted px-2 py-1 text-center w-10">&nbsp;</td>
-                                        <td class="border border-gray-500 border-dotted px-2 py-1 text-center w-20">&nbsp;</td>
+                                        <td class="border border-gray-500 border-dotted px-2 py-1 text-center w-14">&nbsp;
+                                        </td>
+                                        <td class="border border-gray-500 border-dotted px-2 py-1 text-center w-10">&nbsp;
+                                        </td>
+                                        <td class="border border-gray-500 border-dotted px-2 py-1 text-center w-20">&nbsp;
+                                        </td>
                                     @endif
                                 </tr>
                                 @php $rowsUsed++; @endphp
@@ -174,7 +183,8 @@
                         <tr class="text-gray-800">
                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center" colspan="1"></td>
                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center" colspan="1"></td>
-                            <td class="border border-gray-500 capitalize border-dotted px-2 py-1 text-center" colspan="2">
+                            <td class="border border-gray-500 capitalize border-dotted px-2 py-1 text-center"
+                                colspan="2">
                                 {{ $data['customer_status'] ?? '' }}
                             </td>
                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center" colspan="2">
@@ -182,10 +192,19 @@
                             </td>
                         </tr>
 
+                        @php
+                            if ($customerStatus === 'debit') {
+                                $grandTotal += $debitAmount;
+                            } elseif ($customerStatus === 'credit') {
+                                $grandTotal -= $debitAmount;
+                            }
+                        @endphp
+
                         <tr class="text-gray-800">
                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center" colspan="1">BL</td>
                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center" colspan="1"></td>
-                            <td class="border border-gray-500 bg-orange-200 border-dotted px-2 py-1 text-center" colspan="2">Total</td>
+                            <td class="border border-gray-500 bg-orange-200 border-dotted px-2 py-1 text-center"
+                                colspan="2">Total</td>
                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center font-bold" colspan="2">
                                 &#2547;{{ number_format($grandTotal, 2) }}
                             </td>
