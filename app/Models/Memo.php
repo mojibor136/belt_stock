@@ -14,6 +14,7 @@ class Memo extends Model
         'created_at',
         'customer_id',
         'debit_credit',
+        'debit_credit_status',
         'memo_status',
         'grand_total',
     ];

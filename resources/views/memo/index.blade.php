@@ -114,6 +114,7 @@
                 </div>
                 <div id="customer-info">
                 </div>
+                <input type="hidden" id="debit_credit_status" name="debit_credit_status">
             </div>
             <h2 class="text-xl font-semibold text-gray-800 mt-4 mb-2">📦 Memo Items</h2>
             <div class="overflow-x-auto">
@@ -276,6 +277,7 @@
 
                         if (data.amount) {
                             $('#debit').val(data.amount);
+                            $('#debit_credit_status').val(data.status);
                             recalcGrandTotal();
                         }
                     },
@@ -286,6 +288,7 @@
             } else {
                 $('#customer-info').html('');
                 $('#debit').val('');
+                $('#debit_credit_status').val('');
                 recalcGrandTotal();
             }
         });
@@ -342,7 +345,7 @@
         document.getElementById('add-row').addEventListener('click', function() {
             let totalSizes = document.querySelectorAll('.sizes-container .size-row').length;
             if (totalSizes >= 70) {
-                alert('Maximum 70 sizes allowed across all rows!');
+                alert('আপনি সর্বোচ্চ ১৪টি সারি (row) যোগ করতে পারবেন!');
                 return;
             }
 
@@ -350,7 +353,7 @@
             const templateRow = container.querySelector('.item-row');
 
             if (totalSizes >= 70) {
-                alert('Maximum 70 sizes allowed across all rows!');
+                alert('আপনি সর্বোচ্চ ১৪টি সারি (row) যোগ করতে পারবেন!');
                 return;
             }
 
@@ -361,7 +364,7 @@
             });
 
             if (currentRowCount >= 14) {
-                alert('Maximum 14 rows reached!');
+                alert('সব মিলিয়ে সর্বোচ্চ ৭০টি সাইজ যোগ করা যাবে!');
                 return;
             }
 
@@ -406,7 +409,7 @@
             if (e.target.classList.contains('add-size')) {
                 let totalSizes = document.querySelectorAll('.sizes-container .size-row').length;
                 if (totalSizes >= 70) {
-                    alert('Maximum 70 sizes allowed across all rows!');
+                    alert('সব মিলিয়ে সর্বোচ্চ ৭০টি সাইজ যোগ করা যাবে!');
                     return;
                 }
 

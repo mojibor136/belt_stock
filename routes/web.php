@@ -58,6 +58,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/sales/store' , 'store')->name('sales.store');
         Route::get('/sales/memo/create', 'memo')->name('sales.memo.create');
         Route::post('/memo/store', 'memoStore')->name('memo.store');
+        Route::get('/memo/show/{id}' , 'memoShow')->name('memo.show');
     });
 
     Route::controller(VendorController::class)->group(function () {

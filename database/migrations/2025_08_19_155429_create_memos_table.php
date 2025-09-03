@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('memo_no')->nullable();
             $table->unsignedBigInteger('customer_id')->index();
             $table->string('grand_total')->default(0);
-            $table->string('debit_credit')->default('debit');
+            $table->string('debit_credit')->default(0);
+            $table->string('debit_credit_status')->default('debit');
             $table->string('memo_status')->default('pending');
             $table->timestamps();
         });

@@ -185,18 +185,25 @@
                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center" colspan="1"></td>
                             <td class="border border-gray-500 capitalize border-dotted px-2 py-1 text-center"
                                 colspan="2">
-                                {{ $data['customer_status'] ?? '' }}
+                                {{ $data['debit_credit_status'] ?? '' }}
                             </td>
                             <td class="border border-gray-500 border-dotted px-2 py-1 text-center" colspan="2">
-                                &#2547;{{ number_format($data['debit'], 2) }}
+                                &#2547;{{ number_format($data['debit_credit'], 2) }}
                             </td>
                         </tr>
 
                         @php
-                            if ($customerStatus === 'debit') {
-                                $grandTotal += $debitAmount;
-                            } elseif ($customerStatus === 'credit') {
-                                $grandTotal -= $debitAmount;
+                            $grandTotal = 0;
+                            foreach ($data['items'] as $item) {
+                                $grandTotal += $item['item_total'] ?? 0;
+                            }
+
+                            if (isset($data['debit_credit_status']) && isset($data['debit_credit'])) {
+                                if ($data['debit_credit_status'] === 'Debit') {
+                                    $grandTotal += $data['debit_credit'];
+                                } elseif ($data['debit_credit_status'] === 'credit') {
+                                    $grandTotal -= $data['debit_credit'];
+                                }
                             }
                         @endphp
 

@@ -9,6 +9,9 @@ use App\Models\Brand;
 use App\Models\Customer;
 use App\Models\Group;
 use App\Models\Size;
+use App\Models\MemoItem;
+use App\Models\MemoItemSize;
+use App\Models\Memo;
 
 class SalesController extends Controller
 {
@@ -29,6 +32,36 @@ class SalesController extends Controller
         return view('memo.index', compact('brands', 'customers'));
     }
 
+    public function memoShow($id)
+    {
+        $memo = Memo::with(['customer', 'items.sizes'])->findOrFail($id);
+
+        $data = [
+            'customer_name' => $memo->customer->name,
+            'customer_address' => $memo->customer->address,
+            'debit_credit_status' => $memo->debit_credit_status,
+            'debit_credit' => $memo->debit_credit ?? 0,
+            'items' => $memo->items->map(function ($item) {
+                return [
+                    'brand_name' => $item->brand->brand,
+                    'group_name' => $item->group->group,
+                    'rate' => $item->inch_rate,
+                    'piece_rate' => $item->piece_rate,
+                    'item_total' => $item->item_total,
+                    'sizes' => $item->sizes->map(function ($size) {
+                        return [
+                            'size' => $size->size,
+                            'quantity' => $size->quantity,
+                            'subtotal' => $size->subtotal,
+                        ];
+                    })->toArray(),
+                ];
+            })->toArray(),
+        ];
+
+        return view('memo.show', compact('data'));
+    }
+
     public function getGroupData($groupId)
     {
         $group = Group::with('sizes')->find($groupId);
@@ -36,14 +69,14 @@ class SalesController extends Controller
         $sizes = $group && $group->sizes
             ? $group->sizes->map(function ($size) {
                 return [
-                    'id'   => $size->id,
+                    'id' => $size->id,
                     'size' => $size->size,
                 ];
             })
             : collect([]);
 
         return response()->json([
-            'rate'  => $group ? $group->sales_rate : 0,
+            'rate' => $group ? $group->sales_rate : 0,
             'sizes' => $sizes,
         ]);
     }
@@ -51,6 +84,7 @@ class SalesController extends Controller
     public function memoStore(Request $request)
     {
         try {
+
             $validator = Validator::make(
                 $request->all(),
                 [
@@ -58,7 +92,7 @@ class SalesController extends Controller
                     'items' => 'required|array|min:1',
                     'items.*.brand_id' => 'nullable|exists:brands,id',
                     'items.*.group_id' => 'nullable|exists:groups,id',
-                    'items.*.rate' => 'nullable|numeric|min:0',
+                    'items.*.inch_rate' => 'nullable|numeric|min:0',
                     'items.*.piece_rate' => 'nullable|numeric|min:0',
                     'items.*.sizes' => 'required|array|min:1',
                     'items.*.sizes.*.size' => 'required|numeric|min:0',
@@ -68,8 +102,6 @@ class SalesController extends Controller
                     'customer.required' => 'কাস্টমার নির্বাচন করতে হবে।',
                     'customer.exists' => 'কাস্টমার পাওয়া যায়নি।',
                     'items.required' => 'কমপক্ষে একটি আইটেম যোগ করুন।',
-                    'items.array' => 'আইটেমের ফরম্যাট সঠিক নয়।',
-                    'items.min' => 'কমপক্ষে একটি আইটেম প্রয়োজন।',
                     'items.*.sizes.required' => 'প্রতিটি আইটেমের সাইজ দিতে হবে।',
                     'items.*.sizes.*.size.required' => 'সাইজ দিতে হবে।',
                     'items.*.sizes.*.quantity.required' => 'সাইজের পরিমাণ দিতে হবে।',
@@ -83,51 +115,75 @@ class SalesController extends Controller
                     ->withInput();
             }
 
+            \DB::beginTransaction();
+
             $data = $request->all();
             $grandTotal = 0;
 
-            $customer = Customer::find($data['customer']);
-            $data['customer_name'] = $customer->name;
-            $data['customer_address'] = $customer->address;
-            $data['customer_status'] = $customer->status;
+            $memo = Memo::create([
+                'memo_no' => 'M-' . time(),
+                'customer_id' => $data['customer'],
+                'debit_credit' => $data['debit'] ?? 0,
+                'memo_status' => 'pending',
+                'debit_credit_status' => $data['debit_credit_status'] ?? null,
+                'grand_total' => 0,
+            ]);
 
-            foreach ($data['items'] as $itemIndex => &$item) {
-                if (isset($item['brand_id'])) {
-                    $brand = Brand::find($item['brand_id']);
-                    $item['brand_name'] = $brand ? $brand->brand : null;
-                }
+            if (!empty($data['created_at'])) {
+                $memo->update([
+                    'created_at' => \Carbon\Carbon::createFromFormat('d/m/Y', $data['created_at']),
+                    'updated_at' => now(),
+                ]);
+            }
 
-                if (isset($item['group_id'])) {
-                    $group = Group::find($item['group_id']);
-                    $item['group_name'] = $group ? $group->group : null;
-                }
+            foreach ($data['items'] as $itemIndex => $item) {
 
                 $itemTotal = 0;
-                $rate = isset($item['rate']) ? (float) $item['rate'] : 0;
+
+                $inchRate = isset($item['inch_rate'])
+                    ? (float) $item['inch_rate']
+                    : (isset($item['rate']) ? (float) $item['rate'] : 0);
                 $pieceRate = isset($item['piece_rate']) ? (float) $item['piece_rate'] : 0;
 
-                foreach ($item['sizes'] as $sizeIndex => &$size) {
+                $memoItem = $memo->items()->create([
+                    'brand_id' => $item['brand_id'] ?? null,
+                    'group_id' => $item['group_id'] ?? null,
+                    'inch_rate' => $inchRate,
+                    'piece_rate' => $pieceRate,
+                    'item_total' => 0,
+                ]);
+
+                foreach ($item['sizes'] as $sizeIndex => $size) {
                     $sizeVal = isset($size['size']) ? (float) $size['size'] : 0;
                     $sizeQty = isset($size['quantity']) ? (float) $size['quantity'] : 0;
 
-                    if ($rate > 0) {
-                        $sizeSubtotal = $sizeVal * $rate * $sizeQty;
-                    } else {
-                        $sizeSubtotal = $sizeQty * $pieceRate;
-                    }
+                    $subtotal = $inchRate > 0
+                        ? $sizeVal * $inchRate * $sizeQty
+                        : $pieceRate * $sizeQty;
 
-                    $size['subtotal'] = $sizeSubtotal;
-                    $itemTotal += $sizeSubtotal;
+                    $memoItemSize = $memoItem->sizes()->create([
+                        'size' => $sizeVal,
+                        'quantity' => $sizeQty,
+                        'subtotal' => $subtotal,
+                    ]);
+
+                    $itemTotal += $subtotal;
                 }
 
-                $item['item_total'] = $itemTotal;
+                $memoItem->update(['item_total' => $itemTotal]);
+
                 $grandTotal += $itemTotal;
             }
 
-            $data['grand_total'] = $grandTotal;
+            $memo->update(['grand_total' => $grandTotal]);
 
-            return view('memo.show', compact('data'));
+            \DB::commit();
+
+            return redirect()->route('memo.show', $memo->id)
+                ->with('success', 'মেমো সফলভাবে তৈরি হয়েছে।');
+
         } catch (\Exception $e) {
+            \DB::rollBack();
             return redirect()->back()
                 ->with('error', 'সার্ভার এরর হয়েছে: ' . $e->getMessage())
                 ->withInput();
