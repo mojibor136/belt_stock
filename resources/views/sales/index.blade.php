@@ -2,15 +2,14 @@
 @section('title', 'Sales Reports')
 @section('content')
     <div class="w-full mb-4">
-        <div
-            class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b rounded-md mb-4">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b rounded-md mb-4">
             <div class="flex flex-col gap-1 w-full md:w-2/3">
                 <h1 class="text-2xl font-bold text-gray-800">Sales Reports</h1>
                 <p class="text-sm text-gray-500">Manage your sales and their transactions efficiently</p>
             </div>
 
             <div class="flex flex-row gap-2 mt-3 md:mt-0 w-full md:w-auto items-start sm:items-center">
-                <a href="{{ route('sales.create') }}"
+                <a href=""
                     class="flex items-center gap-2 h-10 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md shadow font-medium transition-all duration-200">
                     <i class="ri-add-line text-lg"></i> Add Sales
                 </a>

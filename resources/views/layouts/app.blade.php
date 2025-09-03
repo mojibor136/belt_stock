@@ -203,14 +203,40 @@
                                         <i class="ri-file-list-2-line mr-2"></i>All Sales
                                     </a>
                                 </li>
+                            </ul>
+                        </li>
+
+                        <!-- Memo Management -->
+                        <li class="group">
+                            <a href="#"
+                                class="mb-1 flex items-center pl-4 py-2.5 text-gray-300 hover:text-white hover:bg-[#3b3f5c] rounded submenu-toggle"
+                                data-menu-key="memo">
+                                <i class="ri-file-copy-line mr-1"></i>
+                                <span class="text-[15px]">Memo Management</span>
+                                <i class="ri-arrow-down-s-line ml-auto mr-4"></i>
+                            </a>
+                            <ul class="submenu pl-2 bg-[#2a2f45]">
                                 <li>
-                                    <a href="{{ route('sales.memo.create') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
-                                        <i class="ri-add-box-line mr-2"></i>New Sale
+                                    <a href="{{ route('memo.create') }}"
+                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c']">
+                                        <i class="ri-add-box-line mr-2"></i>Create Memo
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('memo.pending') }}"
+                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c']">
+                                        <i class="ri-time-line mr-2"></i>Pending Memo
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('memo.complete') }}"
+                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c']">
+                                        <i class="ri-file-list-2-line mr-2"></i>Completed Memo
                                     </a>
                                 </li>
                             </ul>
                         </li>
+
 
                         <!-- Customers -->
                         <li class="group">

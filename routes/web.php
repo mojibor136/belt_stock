@@ -10,6 +10,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VendorTrxController;
 use App\Http\Controllers\CustomerTrxController;
+use App\Http\Controllers\MemoController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(HomeController::class)->middleware(['auth'])->group(function(){
@@ -54,11 +55,14 @@ Route::middleware(['auth'])->group(function () {
 
     Route::controller(SalesController::class)->group(function () {
         Route::get('/sales', 'index')->name('sales.index');
-        Route::get('/sales/create' , 'create')->name('sales.create');
-        Route::get('/sales/store' , 'store')->name('sales.store');
-        Route::get('/sales/memo/create', 'memo')->name('sales.memo.create');
-        Route::post('/memo/store', 'memoStore')->name('memo.store');
-        Route::get('/memo/show/{id}' , 'memoShow')->name('memo.show');
+    });
+
+    Route::controller(MemoController::class)->group(function () {
+        Route::get('/memo/create', 'index')->name('memo.create');
+        Route::post('/memo/store', 'store')->name('memo.store');
+        Route::get('/memo/show/{id}' , 'show')->name('memo.show');
+        Route::get('/memo/pending' , 'pending')->name('memo.pending');
+        Route::get('/memo/complete' , 'complete')->name('memo.complete');
     });
 
     Route::controller(VendorController::class)->group(function () {
