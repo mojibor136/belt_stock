@@ -51,8 +51,8 @@
 
             <a href="{{ route('customer.all.transaction', [\Illuminate\Support\Str::slug($customer->name), $customer->id]) }}"
                 class="w-20 h-10 flex items-center justify-center bg-red-600 rounded text-sm text-white hover:bg-red-700 transition"
-                title="Clear Search">
-                Clear
+                title="Reset Search">
+                Reset
             </a>
         </form>
 

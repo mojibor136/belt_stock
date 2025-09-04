@@ -61,6 +61,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/memo/create', 'index')->name('memo.create');
         Route::post('/memo/store', 'store')->name('memo.store');
         Route::get('/memo/show/{id}' , 'show')->name('memo.show');
+        Route::get('/memo/edit/{id}' , 'edit')->name('memo.edit');
+        Route::post('/memo/update' , 'update')->name('memo.update');
         Route::get('/memo/pending' , 'pending')->name('memo.pending');
         Route::get('/memo/complete' , 'complete')->name('memo.complete');
     });

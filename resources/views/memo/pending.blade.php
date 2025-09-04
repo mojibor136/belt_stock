@@ -41,10 +41,12 @@
         </div>
 
         <!-- Filter -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2 sm:gap-4">
+        <form method="GET" action="{{ route('memo.pending') }}"
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2 sm:gap-4 w-full">
+
             <div class="flex flex-col sm:flex-row w-full sm:w-2/3 gap-2">
                 <div class="relative w-full sm:w-1/2">
-                    <input type="text" name="search" placeholder="Search memo..."
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search memo..."
                         class="w-full pl-10 pr-4 h-10 text-gray-700 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-600 focus:outline-none text-sm transition-all duration-150" />
                     <i
                         class="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-base"></i>
@@ -52,11 +54,7 @@
 
                 <div class="relative w-full sm:w-1/2">
                     <input type="text" name="created_at" id="created_at" placeholder="dd/mm/yyyy"
-                        class="w-full p-2 border rounded border-gray-300 text-gray-700"
-                        value="{{ old('created_at', date('d/m/Y')) }}">
-                    @error('created_at')
-                        <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
-                    @enderror
+                        class="w-full p-2 border rounded border-gray-300 text-gray-700" value="{{ request('created_at') }}">
                 </div>
 
                 <button type="submit"
@@ -65,11 +63,12 @@
                 </button>
             </div>
 
-            <a href="{{ route('memo.create') }}"
+            <a href="{{ route('memo.pending') }}"
                 class="flex justify-center items-center px-4 py-2 h-10 md:w-auto w-full rounded-md bg-red-600 hover:bg-red-700 text-white font-medium transition-all duration-150 mt-2 sm:mt-0">
-                Back
+                Reset
             </a>
-        </div>
+        </form>
+
         <!-- Sales Table -->
         <div class="overflow-x-auto bg-white rounded shadow">
             <table class="min-w-full table-auto">
@@ -136,12 +135,12 @@
                                     {{ ucfirst($m->memo_status) }}
                                 </span>
 
-                                <span
-                                    class="px-3 py-1 rounded text-white capitalize text-sm font-medium bg-green-600 cursor-pointer hover:bg-blue-700">
+                                <span onclick="window.location='{{ route('memo.edit', $m->id) }}'"
+                                    class="px-3 py-1 rounded text-white capitalize text-sm font-medium bg-green-600 cursor-pointer hover:bg-green-700">
                                     Edit
                                 </span>
-                                <span
-                                    class="px-3 py-1 rounded text-white capitalize text-sm font-medium bg-red-600 cursor-pointer hover:bg-blue-700">
+                                <span onclick="window.location='{{ route('memo.show', $m->id) }}'"
+                                    class="px-3 py-1 rounded text-white capitalize text-sm font-medium bg-red-600 cursor-pointer hover:bg-red-700">
                                     View
                                 </span>
                             </td>

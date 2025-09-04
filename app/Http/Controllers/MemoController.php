@@ -12,6 +12,7 @@ use App\Models\Size;
 use App\Models\MemoItem;
 use App\Models\MemoItemSize;
 use App\Models\Memo;
+use Carbon\Carbon;
 
 class MemoController extends Controller
 {
@@ -161,14 +162,61 @@ class MemoController extends Controller
         }
     }
 
-    public function pending(){
-        $memo = Memo::with(['customer'])->where('memo_status' , 'pending')->get();
-        return view('memo.pending' , compact('memo'));
+    public function pending(Request $request)
+{
+    $query = Memo::with('customer')
+        ->where('memo_status', 'pending');
+
+    if ($request->filled('search')) {
+        $search = strtolower($request->search);
+        $query->whereRaw('LOWER(memo_no) LIKE ?', ["%{$search}%"]);
     }
 
-    public function complete(){
-        $memo = Memo::with(['customer'])->where('memo_status' , 'complete')->get();
-        return view('memo.complete' , compact('memo'));
+    if ($request->filled('created_at')) {
+        try {
+            $date = Carbon::createFromFormat('d/m/Y', $request->created_at)
+                ->format('Y-m-d');
+            $query->whereDate('created_at', $date);
+        } catch (\Exception $e) {
+            \Log::error('Pending memo invalid date', [
+                'input' => $request->created_at,
+                'error' => $e->getMessage()
+            ]);
+        }
     }
+
+    $memo = $query->latest()->get();
+
+    return view('memo.pending', compact('memo'));
+}
+
+public function complete(Request $request)
+{
+    $query = Memo::with('customer')
+        ->where('memo_status', 'complete');
+
+    if ($request->filled('search')) {
+        $search = strtolower($request->search);
+        $query->whereRaw('LOWER(memo_no) LIKE ?', ["%{$search}%"]);
+    }
+
+    if ($request->filled('created_at')) {
+        try {
+            $date = Carbon::createFromFormat('d/m/Y', $request->created_at)
+                ->format('Y-m-d');
+            $query->whereDate('created_at', $date);
+        } catch (\Exception $e) {
+            \Log::error('Complete memo invalid date', [
+                'input' => $request->created_at,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    $memo = $query->latest()->get();
+
+    return view('memo.complete', compact('memo'));
+}
+
     
 }

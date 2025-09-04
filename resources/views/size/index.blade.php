@@ -64,7 +64,7 @@
 
             <a href="{{ route('sizes.index') }}"
                 class="flex justify-center items-center px-4 py-2 h-10 md:w-auto w-full rounded-md bg-red-600 hover:bg-red-700 text-white font-medium transition-all duration-150 mt-2 sm:mt-0">
-                Back
+                Reset
             </a>
         </div>
 
