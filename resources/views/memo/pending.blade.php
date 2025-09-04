@@ -166,7 +166,7 @@
         $(document).ready(function() {
             flatpickr("#created_at", {
                 dateFormat: "d/m/Y",
-                defaultDate: "{{ old('created_at', date('d/m/Y')) }}"
+                defaultDate: null
             });
         });
     </script>

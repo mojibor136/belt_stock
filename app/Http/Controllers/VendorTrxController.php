@@ -215,6 +215,34 @@ class VendorTrxController extends Controller
         return view('vendor.transaction', compact('transactions'));
     }
 
+    public function vendorTransaction(Request $request, $name, $id)
+    {
+        $vendor = Vendor::findOrFail($id);
+
+        $query = VendorTrx::where('vendor_id', $vendor->id);
+
+        if ($search = request('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('invoice_type', 'like', "%{$search}%")
+                  ->orWhere('payment', 'like', "%{$search}%")
+                  ->orWhere('invoice', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('date')) {
+            try {
+                $date = Carbon::createFromFormat('Y-m-d', $request->date)->startOfDay();
+                $query->whereDate('created_at', $date);
+            } catch (Exception $e) {
+                return back()->with('error', 'তারিখ সঠিক ফরম্যাটে দিন (YYYY-MM-DD)।');
+            }
+        }
+
+        $transactions = $query->orderBy('id', 'desc')->paginate(100);
+
+        return view('vendor.vendorTransaction', compact('vendor', 'transactions'));
+    }
+
     public function invoiceStore(Request $request)
     {
         return $this->storeTransaction($request, 'invoice');

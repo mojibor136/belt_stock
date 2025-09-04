@@ -1,6 +1,25 @@
 @extends('layouts.app')
 @section('title', 'Sales Reports')
 @section('content')
+    <style>
+        #created_at,
+        .flatpickr-input {
+            background-color: white !important;
+        }
+
+        #created_at:focus,
+        .flatpickr-input:focus {
+            background-color: white !important;
+            border-color: #2563eb !important;
+            outline: none !important;
+            box-shadow: 0 0 0 1px #2563eb !important;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
     <div class="w-full mb-4">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b rounded-md mb-4">
             <div class="flex flex-col gap-1 w-full md:w-2/3">
@@ -9,9 +28,9 @@
             </div>
 
             <div class="flex flex-row gap-2 mt-3 md:mt-0 w-full md:w-auto items-start sm:items-center">
-                <a href=""
+                <a href="{{ route('memo.create') }}"
                     class="flex items-center gap-2 h-10 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md shadow font-medium transition-all duration-200">
-                    <i class="ri-add-line text-lg"></i> Add Sales
+                    <i class="ri-add-line text-lg"></i> Add Memo
                 </a>
 
                 <button
@@ -22,35 +41,33 @@
         </div>
 
         <!-- Filter -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2 sm:gap-4">
+        <form method="GET" action="{{ route('sales.index') }}"
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2 sm:gap-4 w-full">
+
             <div class="flex flex-col sm:flex-row w-full sm:w-2/3 gap-2">
                 <div class="relative w-full sm:w-1/2">
-                    <input type="text" wire:model.defer="search" placeholder="Search sales..."
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search memo..."
                         class="w-full pl-10 pr-4 h-10 text-gray-700 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-600 focus:outline-none text-sm transition-all duration-150" />
                     <i
                         class="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-base"></i>
                 </div>
 
                 <div class="relative w-full sm:w-1/2">
-                    <select wire:model.defer="status"
-                        class="w-full px-4 h-10 text-gray-700 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-600 focus:outline-none text-sm transition-all duration-150">
-                        <option value="">All Status</option>
-                        <option value="active">Active</option>
-                        <option value="blocked">Blocked</option>
-                    </select>
+                    <input type="text" name="created_at" id="created_at" placeholder="dd/mm/yyyy"
+                        class="w-full p-2 border rounded border-gray-300 text-gray-700" value="{{ request('created_at') }}">
                 </div>
 
-                <button wire:click="applyFilter"
+                <button type="submit"
                     class="flex justify-center items-center px-4 py-2 h-10 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all duration-150 mt-2 sm:mt-0">
                     <i class="ri-search-line mr-1"></i> Search
                 </button>
             </div>
 
-            <a href="{{ route('customer.index') }}"
+            <a href="{{ route('sales.index') }}"
                 class="flex justify-center items-center px-4 py-2 h-10 md:w-auto w-full rounded-md bg-red-600 hover:bg-red-700 text-white font-medium transition-all duration-150 mt-2 sm:mt-0">
-                Back
+                Reset
             </a>
-        </div>
+        </form>
 
         <!-- Sales Table -->
         <div class="overflow-x-auto bg-white rounded shadow">
@@ -59,64 +76,64 @@
                     <tr>
                         <th class="px-4 py-3 text-left">#</th>
                         <th class="px-4 py-3 text-left">Customer</th>
+                        <th class="px-4 py-3 text-left">Memo No</th>
                         <th class="px-4 py-3 text-left">Brand</th>
                         <th class="px-4 py-3 text-center">Group</th>
                         <th class="px-4 py-3 text-center">Size</th>
                         <th class="px-4 py-3 text-center">Quantity</th>
-                        <th class="px-4 py-3 text-center">Date</th>
+                        <th class="px-4 py-3 text-center">Sales Date</th>
+                        <th class="px-4 py-3 text-center">Action</th>
                     </tr>
                 </thead>
+                @php $serial = 1; @endphp
                 <tbody class="text-sm text-gray-700 divide-y divide-gray-200">
-                    @php
-                        $sales = [
-                            [
-                                'customer' => 'Rahim Uddin',
-                                'brand' => 'Samsung',
-                                'group' => 'Electronics',
-                                'size' => 'Large',
-                                'qty' => 10,
-                                'date' => '2025-08-01',
-                            ],
-                            [
-                                'customer' => 'Karim Mia',
-                                'brand' => 'Walton',
-                                'group' => 'Home Appliance',
-                                'size' => 'Medium',
-                                'qty' => 5,
-                                'date' => '2025-08-05',
-                            ],
-                            [
-                                'customer' => 'Selina Begum',
-                                'brand' => 'Bata',
-                                'group' => 'Footwear',
-                                'size' => '42',
-                                'qty' => 3,
-                                'date' => '2025-08-08',
-                            ],
-                            [
-                                'customer' => 'Aziz Khan',
-                                'brand' => 'Pran',
-                                'group' => 'Food & Beverage',
-                                'size' => '500ml',
-                                'qty' => 20,
-                                'date' => '2025-08-10',
-                            ],
-                        ];
-                    @endphp
-
-                    @foreach ($sales as $index => $sale)
-                        <tr class="hover:bg-gray-100 transition-colors cursor-pointer">
-                            <td class="px-4 py-3">{{ $index + 1 }}</td>
-                            <td class="px-4 py-3 font-bold">{{ $sale['customer'] }}</td>
-                            <td class="px-4 py-3">{{ $sale['brand'] }}</td>
-                            <td class="px-4 py-3 text-center">{{ $sale['group'] }}</td>
-                            <td class="px-4 py-3 text-center">{{ $sale['size'] }}</td>
-                            <td class="px-4 py-3 text-center font-semibold">{{ $sale['qty'] }}</td>
-                            <td class="px-4 py-3 text-center text-gray-600">{{ $sale['date'] }}</td>
+                    @forelse ($memos as $index => $memo)
+                        @foreach ($memo->items as $item)
+                            @foreach ($item->sizes as $size)
+                                <tr class="hover:bg-gray-100 transition-colors cursor-pointer">
+                                    <td class="px-4 py-3">
+                                        {{ $serial++ }}
+                                    </td>
+                                    <td class="px-4 py-3 font-bold">{{ $memo->customer->name }}</td>
+                                    <td class="px-4 py-3">{{ $memo->memo_no }}</td>
+                                    <td class="px-4 py-3">{{ $item->brand->brand ?? '-' }}</td>
+                                    <td class="px-4 py-3 text-center">{{ $item->group->group ?? '-' }}</td>
+                                    <td class="px-4 py-3 text-center">{{ $size->size }}</td>
+                                    <td class="px-4 py-3 text-center font-semibold">{{ $size->quantity }}</td>
+                                    <td class="px-4 py-3 text-center text-gray-600">
+                                        {{ $memo->created_at->format('d/m/Y') }}</td>
+                                    <td class="px-4 py-3 text-center space-x-2">
+                                        <span onclick="window.location='{{ route('memo.show', $size->id) }}'"
+                                            class="px-3 py-1 rounded text-white capitalize text-sm font-medium bg-red-600 cursor-pointer hover:bg-red-700">
+                                            Return
+                                        </span>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="8" class="px-4 py-3 text-center text-gray-500">
+                                কোনো ডাটা পাওয়া যায়নি।
+                            </td>
                         </tr>
-                    @endforeach
+                    @endforelse
                 </tbody>
             </table>
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        $(document).ready(function() {
+            flatpickr("#created_at", {
+                dateFormat: "d/m/Y",
+                defaultDate: null
+            });
+        });
+    </script>
+@endpush

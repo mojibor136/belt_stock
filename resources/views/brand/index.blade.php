@@ -53,7 +53,7 @@
                 </div>
 
                 <div class="relative w-full sm:w-1/2">
-                    <input type="date" id="created_at" name="date" value="{{ request('date') }}"
+                    <input type="date" id="created_at" name="date" value="{{ request('date') }}" placeholder="dd/mm/yyyy"
                         class="w-full px-4 h-10 text-gray-700 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-600 focus:outline-none text-sm transition-all duration-150" />
                 </div>
 
@@ -130,16 +130,14 @@
 @endsection
 @push('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <script>
         $(document).ready(function() {
             flatpickr("#created_at", {
-                dateFormat: "Y-m-d",
-                defaultDate: "{{ old('date', request('date', date('Y-m-d'))) }}"
+                dateFormat: "d/m/Y",
+                defaultDate: null
             });
         });
     </script>
