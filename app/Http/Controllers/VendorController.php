@@ -50,7 +50,7 @@ class VendorController extends Controller
                         ->first();
 
         if ($exists) {
-            return back()->withInput()->with('error', 'Vendor with same Name, Phone and Address already exists!');
+            return back()->withInput()->with('error', 'একই নাম, ফোন ও ঠিকানার সাথে আরেকজন গ্রাহক ইতিমধ্যেই আছে!');
         }
 
         try {
@@ -63,7 +63,7 @@ class VendorController extends Controller
                 'status'  => 'Credit',
             ]);
 
-            return redirect()->route('vendor.index')->with('success', 'Vendor created successfully!');
+            return redirect()->route('vendor.index')->with('success', 'গ্রাহক সফলভাবে তৈরি হয়েছে!');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'Failed to create vendor. Please try again.');
         }
@@ -93,7 +93,7 @@ class VendorController extends Controller
                         ->first();
 
         if ($exists) {
-            return back()->withInput()->with('error', 'Another vendor with same Name, Phone and Address already exists!');
+            return back()->withInput()->with('error', 'একই নাম, ফোন ও ঠিকানার সাথে আরেকজন গ্রাহক ইতিমধ্যেই আছে!');
         }
 
         try {
@@ -107,7 +107,7 @@ class VendorController extends Controller
                 'address' => $request->address,
             ]);
 
-            return redirect()->route('vendor.index')->with('success', 'Vendor updated successfully!');
+            return redirect()->route('vendor.index')->with('success', 'গ্রাহক সফলভাবে আপডেট করা হয়েছে!');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'Failed to update vendor. Please try again.');
         }
@@ -118,9 +118,9 @@ class VendorController extends Controller
         try {
             $vendor = Vendor::findOrFail($id);
             $vendor->delete();
-            return redirect()->route('vendor.index')->with('success', 'Vendor deleted successfully!');
+            return redirect()->route('vendor.index')->with('success', 'গ্রাহক সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to delete vendor. Please try again.');
+            return back()->with('error', $e->getMessage());
         }
     }
 }

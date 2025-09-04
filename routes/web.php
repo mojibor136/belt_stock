@@ -65,6 +65,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/memo/update' , 'update')->name('memo.update');
         Route::get('/memo/pending' , 'pending')->name('memo.pending');
         Route::get('/memo/complete' , 'complete')->name('memo.complete');
+        Route::get('memo/status/{id}' , 'status')->name('memo.status');
     });
 
     Route::controller(VendorController::class)->group(function () {

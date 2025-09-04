@@ -19,6 +19,16 @@ class Memo extends Model
         'grand_total',
     ];
 
+    protected static function booted()
+    {
+        static::deleting(function ($memo) {
+            foreach ($memo->items as $item) {
+                $item->sizes()->delete();
+                $item->delete();
+            }
+        });
+    }
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);

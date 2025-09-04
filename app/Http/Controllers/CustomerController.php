@@ -66,7 +66,7 @@ class CustomerController extends Controller
                 ->exists();
 
             if ($exists) {
-                return back()->withInput()->with('error', 'Customer already exists with same Name, Phone & Address!');
+                return back()->withInput()->with('error', 'একই নাম, ফোন ও ঠিকানার সাথে আরেকজন গ্রাহক ইতিমধ্যেই আছে!');
             }
 
             Customer::create([
@@ -79,7 +79,7 @@ class CustomerController extends Controller
                 'status'    => 'Debit',
             ]);
 
-            return redirect()->route('customer.index')->with('success', 'Customer created successfully!');
+            return redirect()->route('customer.index')->with('success', 'গ্রাহক সফলভাবে তৈরি হয়েছে!');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'Something went wrong! Please try again.');
         }
@@ -114,7 +114,7 @@ class CustomerController extends Controller
                 ->exists();
 
             if ($exists) {
-                return back()->withInput()->with('error', 'Another customer already exists with same Name, Phone & Address!');
+                return back()->withInput()->with('error', 'একই নাম, ফোন ও ঠিকানার সাথে আরেকজন গ্রাহক ইতিমধ্যেই আছে!');
             }
 
             $customer->update([
@@ -126,7 +126,7 @@ class CustomerController extends Controller
                 'transport' => $request->transport,
             ]);
 
-            return redirect()->route('customer.index')->with('success', 'Customer updated successfully!');
+            return redirect()->route('customer.index')->with('success', 'গ্রাহক সফলভাবে আপডেট করা হয়েছে!');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'Failed to update customer. Please try again.');
         }
@@ -137,9 +137,9 @@ class CustomerController extends Controller
         try {
             $customer = Customer::findOrFail($id);
             $customer->delete();
-            return redirect()->route('customer.index')->with('success', 'Customer deleted successfully!');
+            return redirect()->route('customer.index')->with('success', 'গ্রাহক সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to delete customer. Please try again.');
+            return back()->with('error', $e->getMessage());
         }
     }
 

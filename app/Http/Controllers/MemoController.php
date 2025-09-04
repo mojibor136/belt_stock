@@ -5,14 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use App\Models\Brand;
-use App\Models\Customer;
 use App\Models\Group;
 use App\Models\Size;
 use App\Models\MemoItem;
 use App\Models\MemoItemSize;
 use App\Models\Memo;
+use App\Models\Customer;
+use App\Models\CustomerTrx;
 use Carbon\Carbon;
+use Exception;
 
 class MemoController extends Controller
 {
@@ -216,6 +219,115 @@ public function complete(Request $request)
     $memo = $query->latest()->get();
 
     return view('memo.complete', compact('memo'));
+}
+
+
+public function status($id)
+{
+    // Memo data find
+    $memo = Memo::findOrFail($id);
+
+    // শুধুমাত্র Memo data ব্যবহার
+    $amount       = $memo->grand_total;
+    $invoice_type = $memo->memo_no;
+    $customer_id  = $memo->customer_id;
+    $created_at   = $memo->created_at->format('d/m/Y');
+
+    if ($memo->memo_status == 'pending') {
+        // Memo data দিয়ে transaction store করা
+        return $this->storeTransactionFromMemo($memo, $customer_id, $invoice_type, $amount, $created_at, 'invoice');
+    } else {
+        return back();
+    }
+}
+
+private function storeTransactionFromMemo($memo, $customer_id, $invoice_type, $amount, $created_at, string $type)
+{
+    DB::beginTransaction();
+
+    try {
+        // Customer find
+        $customer = Customer::findOrFail($customer_id);
+
+        if (!in_array($customer->status, ['debit', 'credit'])) {
+            $customer->status = 'debit';
+        }
+
+        $customerAmount = (float) $customer->amount;
+        $requestAmount  = (float) $amount;
+
+        if ($type === 'invoice') {
+            if ($customer->status === 'debit') {
+                $customer->amount = $customerAmount + $requestAmount;
+            } else {
+                $customer->amount = $customerAmount - $requestAmount;
+                if ($customer->amount < 0) {
+                    $customer->status = 'debit';
+                    $customer->amount = abs($customer->amount);
+                }
+            }
+        } elseif ($type === 'payment') {
+            if ($customer->status === 'debit') {
+                $customer->amount = $customerAmount - $requestAmount;
+                if ($customer->amount < 0) {
+                    $customer->status = 'credit';
+                    $customer->amount = abs($customer->amount);
+                }
+            } else {
+                $customer->amount = $customerAmount + $requestAmount;
+            }
+        }
+
+        if ($customer->amount < 0) {
+            $customer->amount = abs($customer->amount);
+        }
+
+        if ($customer->amount == 0) {
+            $customer->status = 'debit';
+        }
+
+        $customer->save();
+
+        // Transaction data create
+        $trxData = [
+            'customer_id'    => $customer_id,
+            'invoice_type'   => $invoice_type,
+            'debit_credit'   => $customer->amount,
+            'status'         => $customer->status,
+        ];
+
+        if ($type === 'invoice') {
+            $trxData['invoice']        = $amount;
+            $trxData['invoice_status'] = 'Invoice';
+        } else {
+            $trxData['payment']        = $amount;
+            $trxData['invoice_status'] = 'Payment';
+        }
+
+        $trx = CustomerTrx::create($trxData);
+        $trx->created_at = Carbon::createFromFormat('d/m/Y', $created_at)->startOfDay();
+        $trx->save();
+
+        $memo->memo_status = 'complete';
+        $memo->save();
+
+        DB::commit();
+
+        return redirect()->route('customer.transaction')
+            ->with('success', 'লেনদেন সফলভাবে যুক্ত হয়েছে এবং ব্যালেন্স আপডেট হয়েছে।');
+
+    } catch (Exception $e) {
+        DB::rollBack();
+
+        Log::error('Transaction store failed', [
+            'error' => $e->getMessage(),
+            'line'  => $e->getLine(),
+            'file'  => $e->getFile(),
+            'trace' => $e->getTraceAsString(),
+        ]);
+
+        return back()->with('error', 'কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+    }
 }
 
     

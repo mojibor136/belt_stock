@@ -114,13 +114,21 @@
                             </td>
                             <td class="px-4 py-3 text-right">
                                 <div class="flex justify-end items-center gap-1">
+
+                                    <a href="{{ route('customer.all.transaction', ['name' => Str::slug($customer->name), 'id' => $customer->id]) }}"
+                                        class="inline-flex items-center justify-center w-10 h-8 bg-blue-500 hover:bg-blue-600 text-white rounded shadow"
+                                        title="View">
+                                        <i class="ri-eye-line text-lg"></i>
+                                    </a>
+
                                     <a href="{{ route('customer.edit', $customer->id) }}"
                                         class="inline-flex items-center justify-center w-10 h-8 bg-green-500 hover:bg-green-600 text-white rounded shadow"
                                         title="Edit">
                                         <i class="ri-edit-2-line text-md"></i>
                                     </a>
 
-                                    <form action="{{ route('customer.destroy', $customer->id) }}" method="POST">
+                                    <form action="{{ route('customer.destroy', $customer->id) }}" method="POST"
+                                        onsubmit="return confirm('আপনি কি নিশ্চিত যে এই গ্রাহকে মুছে ফেলতে চান?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
@@ -129,12 +137,6 @@
                                             <i class="ri-delete-bin-6-line text-md"></i>
                                         </button>
                                     </form>
-
-                                    <a href="{{ route('customer.all.transaction', ['name' => Str::slug($customer->name), 'id' => $customer->id]) }}"
-                                        class="inline-flex items-center justify-center w-10 h-8 bg-blue-500 hover:bg-blue-600 text-white rounded shadow"
-                                        title="View">
-                                        <i class="ri-eye-line text-lg"></i>
-                                    </a>
                                 </div>
                             </td>
                         </tr>

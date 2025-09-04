@@ -108,7 +108,7 @@
                             $debitCredit = (float) $m->debit_credit;
                             $total = 0;
 
-                            if ($m->debit_credit_status == 'Debit') {
+                            if ($m->debit_credit_status == 'debit') {
                                 $total = $debitCredit + $grandTotal;
                             } else {
                                 $total = $debitCredit - $grandTotal;

@@ -124,7 +124,7 @@
                                     </a>
 
                                     <form action="{{ route('vendor.destroy', $vendor->id) }}" method="POST"
-                                        onsubmit="return confirm('Are you sure you want to delete this vendor?');">
+                                        onsubmit="return confirm('আপনি কি নিশ্চিত যে এই গ্রাহকে মুছে ফেলতে চান?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"

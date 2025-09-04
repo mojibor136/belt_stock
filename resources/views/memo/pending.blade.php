@@ -108,7 +108,7 @@
                             $debitCredit = (float) $m->debit_credit;
                             $total = 0;
 
-                            if ($m->debit_credit_status == 'Debit') {
+                            if ($m->debit_credit_status == 'debit') {
                                 $total = $debitCredit + $grandTotal;
                             } else {
                                 $total = $debitCredit - $grandTotal;
@@ -129,7 +129,7 @@
                             </td>
                             <td class="px-4 py-3 text-center text-gray-600">{{ $m->created_at->format('d/m/Y') }}</td>
                             <td class="px-4 py-3 text-center space-x-2">
-                                <span
+                                <span onclick="window.location='{{ route('memo.status', $m->id) }}'"
                                     class="px-3 py-1 rounded text-white capitalize text-sm font-medium
                                 {{ $m->memo_status == 'pending' ? 'bg-yellow-500' : 'bg-green-600' }}">
                                     {{ ucfirst($m->memo_status) }}

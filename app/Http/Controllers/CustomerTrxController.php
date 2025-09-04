@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Models\Memo;
 use App\Models\Customer;
 use App\Models\CustomerTrx;
 use Carbon\Carbon;
@@ -73,7 +74,7 @@ class CustomerTrxController extends Controller
         $trx = CustomerTrx::find($id);
 
         if (!$trx) {
-            return back()->with('error', 'Transaction খুঁজে পাওয়া যায়নি।');
+            return back()->with('error', 'লেনদেন খুঁজে পাওয়া যায়নি।');
         }
 
         $latestTrx = CustomerTrx::where('customer_id', $trx->customer_id)
@@ -81,20 +82,26 @@ class CustomerTrxController extends Controller
             ->first();
 
         if ($latestTrx->id != $trx->id) {
-            return back()->with('error', 'শুধুমাত্র সর্বশেষ transaction ডিলিট করা যাবে।');
+            return back()->with('error', 'শুধুমাত্র সর্বশেষ লেনদেন ডিলিট করা যাবে।');
         }
 
         $customer = Customer::find($trx->customer_id);
 
         if (!$customer) {
-            return back()->with('error', 'Customer খুঁজে পাওয়া যায়নি।');
+            return back()->with('error', 'গ্রাহক খুঁজে পাওয়া যায়নি।');
         }
 
         $this->reverseTransaction($customer, $trx);
 
+$memoNo = $trx->invoice_type;
+
+if (!empty($memoNo)) {
+    $memo = Memo::where('memo_no', $memoNo)->first();
+    $memo->delete();
+}
         $trx->delete();
 
-        return back()->with('success', 'Transaction ডিলিট হয়েছে এবং Customer balance আপডেট হয়েছে।');
+        return back()->with('success', 'লেনদেন সফলভাবে মুছে ফেলা হয়েছে এবং গ্রাহকের ব্যালেন্স আপডেট হয়েছে।');
     }
 
     public function transaction(Request $request)

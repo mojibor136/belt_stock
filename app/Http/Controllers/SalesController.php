@@ -19,7 +19,7 @@ class SalesController extends Controller
 
 public function index(Request $request)
 {
-    $query = Memo::with(['customer','items.brand','items.group','items.sizes']);
+    $query = Memo::with(['customer','items.brand','items.group','items.sizes'])->where('memo_status' , 'complete' );
 
     if ($request->filled('search')) {
         $search = strtolower($request->search);

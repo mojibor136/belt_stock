@@ -199,7 +199,7 @@
                             }
 
                             if (isset($data['debit_credit_status']) && isset($data['debit_credit'])) {
-                                if ($data['debit_credit_status'] === 'Debit') {
+                                if ($data['debit_credit_status'] === 'debit') {
                                     $grandTotal += $data['debit_credit'];
                                 } elseif ($data['debit_credit_status'] === 'credit') {
                                     $grandTotal -= $data['debit_credit'];

@@ -63,7 +63,7 @@ class VendorTrxController extends Controller
         $trx = VendorTrx::find($id);
 
         if (!$trx) {
-            return back()->with('error', 'Transaction খুঁজে পাওয়া যায়নি।');
+            return back()->with('error', 'লেনদেন খুঁজে পাওয়া যায়নি।');
         }
 
         $latestTrx = VendorTrx::where('vendor_id', $trx->vendor_id)
@@ -71,19 +71,19 @@ class VendorTrxController extends Controller
             ->first();
 
         if ($latestTrx->id != $trx->id) {
-            return back()->with('error', 'শুধুমাত্র সর্বশেষ transaction ডিলিট করা যাবে।');
+            return back()->with('error', 'শুধুমাত্র সর্বশেষ লেনদেন ডিলিট করা যাবে।');
         }
 
         $vendor = Vendor::find($trx->vendor_id);
 
         if (!$vendor) {
-            return back()->with('error', 'Vendor খুঁজে পাওয়া যায়নি।');
+            return back()->with('error', 'গ্রাহক খুঁজে পাওয়া যায়নি।');
         }
 
         $this->reverseTransaction($vendor, $trx);
         $trx->delete();
 
-        return back()->with('success', 'Transaction ডিলিট হয়েছে এবং Vendor balance আপডেট হয়েছে।');
+        return back()->with('success', 'লেনদেন সফলভাবে মুছে ফেলা হয়েছে এবং গ্রাহকের ব্যালেন্স আপডেট হয়েছে।');
     }
 
     private function storeTransaction(Request $request, string $type)
