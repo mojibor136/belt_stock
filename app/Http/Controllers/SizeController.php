@@ -25,7 +25,7 @@ class SizeController extends Controller
             $query->where('group_id', $request->group);
         }
 
-        $sizes = $query->get();
+        $sizes  = $query->get();
         $brands = Brand::all();
         $groups = Group::all();
 
@@ -48,6 +48,20 @@ class SizeController extends Controller
             'cost_rate'  => 'required|numeric',
             'sales_rate' => 'required|numeric',
             'rate_type'  => 'required|in:inch,pieces',
+        ], [
+            'brand.required'     => 'ব্র্যান্ড নির্বাচন করা বাধ্যতামূলক।',
+            'brand.exists'       => 'বৈধ ব্র্যান্ড নির্বাচন করুন।',
+            'group.required'     => 'গ্রুপ নির্বাচন করা বাধ্যতামূলক।',
+            'group.exists'       => 'বৈধ গ্রুপ নির্বাচন করুন।',
+            'size.required'      => 'সাইজের নাম দিতে হবে।',
+            'size.string'        => 'সাইজের নাম অবশ্যই টেক্সট হতে হবে।',
+            'size.max'           => 'সাইজের নাম খুব বড়।',
+            'cost_rate.required' => 'কস্ট রেট দিতে হবে।',
+            'cost_rate.numeric'  => 'কস্ট রেট অবশ্যই সংখ্যা হতে হবে।',
+            'sales_rate.required'=> 'সেলস রেট দিতে হবে।',
+            'sales_rate.numeric' => 'সেলস রেট অবশ্যই সংখ্যা হতে হবে।',
+            'rate_type.required' => 'রেট টাইপ নির্বাচন করতে হবে।',
+            'rate_type.in'       => 'রেট টাইপ অবশ্যই "inch" বা "pieces" হতে হবে।',
         ]);
 
         try {
@@ -58,7 +72,7 @@ class SizeController extends Controller
 
             if ($exists) {
                 return back()->withInput()
-                    ->with('error', 'This combination of Brand, Group, and Size already exists!');
+                    ->with('error', 'এই ব্র্যান্ড, গ্রুপ, এবং সাইজের কম্বিনেশন ইতিমধ্যেই আছে!');
             }
 
             Size::create([
@@ -71,17 +85,17 @@ class SizeController extends Controller
             ]);
 
             return redirect()->route('sizes.index')
-                ->with('success', 'Size created successfully!');
+                ->with('success', 'সাইজ সফলভাবে তৈরি হয়েছে!');
         } catch (\Exception $e) {
             \Log::error('Size Store Error: ' . $e->getMessage());
             return back()->withInput()
-                ->with('error', 'Something went wrong! Please try again.');
+                ->with('error', 'কোনো সমস্যা হয়েছে! দয়া করে আবার চেষ্টা করুন।');
         }
     }
 
     public function edit($id)
     {
-        $size = Size::with(['brand', 'group'])->findOrFail($id);
+        $size   = Size::with(['brand', 'group'])->findOrFail($id);
         $brands = Brand::all();
         $groups = Group::where('brand_id', $size->brand_id)->get();
 
@@ -98,11 +112,28 @@ class SizeController extends Controller
             'cost_rate'  => 'required|numeric',
             'sales_rate' => 'required|numeric',
             'rate_type'  => 'required|in:inch,pieces',
+        ], [
+            'id.required'        => 'সাইজ আইডি প্রয়োজন।',
+            'id.exists'          => 'সাইজ পাওয়া যায়নি।',
+            'brand.required'     => 'ব্র্যান্ড নির্বাচন করা বাধ্যতামূলক।',
+            'brand.exists'       => 'বৈধ ব্র্যান্ড নির্বাচন করুন।',
+            'group.required'     => 'গ্রুপ নির্বাচন করা বাধ্যতামূলক।',
+            'group.exists'       => 'বৈধ গ্রুপ নির্বাচন করুন।',
+            'size.required'      => 'সাইজের নাম দিতে হবে।',
+            'size.string'        => 'সাইজের নাম অবশ্যই টেক্সট হতে হবে।',
+            'size.max'           => 'সাইজের নাম খুব বড়।',
+            'cost_rate.required' => 'কস্ট রেট দিতে হবে।',
+            'cost_rate.numeric'  => 'কস্ট রেট অবশ্যই সংখ্যা হতে হবে।',
+            'sales_rate.required'=> 'সেলস রেট দিতে হবে।',
+            'sales_rate.numeric' => 'সেলস রেট অবশ্যই সংখ্যা হতে হবে।',
+            'rate_type.required' => 'রেট টাইপ নির্বাচন করতে হবে।',
+            'rate_type.in'       => 'রেট টাইপ অবশ্যই "inch" বা "pieces" হতে হবে।',
         ]);
 
         try {
             $size = Size::findOrFail($request->id);
 
+            // Duplicate check
             $exists = Size::where('brand_id', $request->brand)
                 ->where('group_id', $request->group)
                 ->where('size', $request->size)
@@ -111,9 +142,10 @@ class SizeController extends Controller
 
             if ($exists) {
                 return back()->withInput()
-                    ->with('error', 'This combination of Brand, Group, and Size already exists!');
+                    ->with('error', 'এই ব্র্যান্ড, গ্রুপ, এবং সাইজের কম্বিনেশন ইতিমধ্যেই আছে!');
             }
 
+            // Update
             $size->update([
                 'brand_id'   => $request->brand,
                 'group_id'   => $request->group,
@@ -124,11 +156,11 @@ class SizeController extends Controller
             ]);
 
             return redirect()->route('sizes.index')
-                ->with('success', 'Size updated successfully!');
+                ->with('success', 'সাইজ সফলভাবে আপডেট হয়েছে!');
         } catch (\Exception $e) {
             \Log::error('Size Update Error: ' . $e->getMessage());
             return back()->withInput()
-                ->with('error', 'Something went wrong! Please try again.');
+                ->with('error', 'কোনো সমস্যা হয়েছে! দয়া করে আবার চেষ্টা করুন।');
         }
     }
 
@@ -139,10 +171,10 @@ class SizeController extends Controller
             $size->delete();
 
             return redirect()->route('sizes.index')
-                ->with('success', 'Size deleted successfully.');
+                ->with('success', 'সাইজ সফলভাবে ডিলিট হয়েছে।');
         } catch (\Exception $e) {
             return redirect()->route('sizes.index')
-                ->with('error', 'Something went wrong while deleting.');
+                ->with('error', $e->getMessage());
         }
     }
 

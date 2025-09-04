@@ -60,6 +60,15 @@ class GroupController extends Controller
             'group'      => 'required|string|max:255|unique:groups,group,NULL,id,brand_id,' . $request->brand,
             'cost_rate'  => 'required|numeric',
             'sales_rate' => 'required|numeric',
+        ], [
+            'brand.required'     => 'ব্র্যান্ড নির্বাচন করা বাধ্যতামূলক।',
+            'brand.exists'       => 'বৈধ ব্র্যান্ড নির্বাচন করুন।',
+            'group.required'     => 'গ্রুপের নাম দিতে হবে।',
+            'group.unique'       => 'এই ব্র্যান্ডের জন্য গ্রুপের নাম ইতিমধ্যেই আছে!',
+            'cost_rate.required' => 'কস্ট রেট দিতে হবে।',
+            'cost_rate.numeric'  => 'কস্ট রেট অবশ্যই সংখ্যা হতে হবে।',
+            'sales_rate.required'=> 'সেলস রেট দিতে হবে।',
+            'sales_rate.numeric' => 'সেলস রেট অবশ্যই সংখ্যা হতে হবে।',
         ]);
 
         try {
@@ -72,11 +81,11 @@ class GroupController extends Controller
             ]);
 
             return redirect()->route('groups.index')
-                             ->with('success', 'Group created successfully!');
+                             ->with('success', 'গ্রুপ সফলভাবে তৈরি হয়েছে!');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Something went wrong: ' . $e->getMessage())
-                ->withInput();
+                             ->with('error', 'কোনো সমস্যা হয়েছে: ' . $e->getMessage())
+                             ->withInput();
         }
     }
 
@@ -103,6 +112,17 @@ class GroupController extends Controller
             ],
             'cost_rate'  => 'required|numeric',
             'sales_rate' => 'required|numeric',
+        ], [
+            'id.required'       => 'গ্রুপ আইডি প্রয়োজন।',
+            'id.exists'         => 'গ্রুপ পাওয়া যায়নি।',
+            'brand_id.required' => 'ব্র্যান্ড নির্বাচন করা বাধ্যতামূলক।',
+            'brand_id.exists'   => 'বৈধ ব্র্যান্ড নির্বাচন করুন।',
+            'group.required'    => 'গ্রুপের নাম দিতে হবে।',
+            'group.unique'      => 'এই ব্র্যান্ডের জন্য গ্রুপের নাম ইতিমধ্যেই আছে!',
+            'cost_rate.required'=> 'কস্ট রেট দিতে হবে।',
+            'cost_rate.numeric' => 'কস্ট রেট অবশ্যই সংখ্যা হতে হবে।',
+            'sales_rate.required'=> 'সেলস রেট দিতে হবে।',
+            'sales_rate.numeric'=> 'সেলস রেট অবশ্যই সংখ্যা হতে হবে।',
         ]);
 
         try {
@@ -114,10 +134,10 @@ class GroupController extends Controller
             $group->save();
 
             return redirect()->route('groups.index')
-                             ->with('success', 'Group updated successfully');
+                             ->with('success', 'গ্রুপ সফলভাবে আপডেট হয়েছে!');
         } catch (\Exception $e) {
             return redirect()->route('groups.index')
-                             ->with('error', 'Something went wrong: ' . $e->getMessage());
+                             ->with('error', 'কোনো সমস্যা হয়েছে: ' . $e->getMessage());
         }
     }
 
@@ -128,10 +148,10 @@ class GroupController extends Controller
             $group->delete();
 
             return redirect()->route('groups.index')
-                             ->with('success', 'Group deleted successfully');
+                             ->with('success', 'গ্রুপ সফলভাবে ডিলিট হয়েছে!');
         } catch (\Exception $e) {
             return redirect()->route('groups.index')
-                             ->with('error', 'Failed to delete group: ' . $e->getMessage());
+                             ->with('error', 'কোনো সমস্যা হয়েছে: ' . $e->getMessage());
         }
     }
 

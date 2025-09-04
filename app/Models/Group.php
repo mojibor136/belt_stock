@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Exception;
 
 class Group extends Model
 {
@@ -27,5 +28,18 @@ class Group extends Model
     public function stocks()
     {
         return $this->hasMany(Stock::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($group) {
+            if ($group->stocks()->exists()) {
+                throw new \Exception('এই গ্রুপটি ডিলিট করা সম্ভব নয়। সম্পর্কিত স্টক আছে।');
+            }
+
+            $group->sizes()->delete();
+        });
     }
 };

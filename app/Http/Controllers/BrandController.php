@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Brand;
+use Illuminate\Validation\Rule;
 
 class BrandController extends Controller
 {
@@ -33,6 +34,10 @@ class BrandController extends Controller
     {
         $request->validate([
             'name' => 'required|string|unique:brands,brand',
+        ], [
+            'name.required' => 'ব্র্যান্ডের নাম দিতে হবে।',
+            'name.string'   => 'ব্র্যান্ডের নাম অবশ্যই টেক্সট হতে হবে।',
+            'name.unique'   => 'এই ব্র্যান্ডের নাম ইতিমধ্যেই আছে!',
         ]);
 
         try {
@@ -41,10 +46,10 @@ class BrandController extends Controller
             ]);
 
             return redirect()->route('brands.index')
-                             ->with('success', 'Brand created successfully!');
+                             ->with('success', 'ব্র্যান্ড সফলভাবে তৈরি হয়েছে!');
         } catch (\Exception $e) {
             return redirect()->back()
-                             ->with('error', 'Something went wrong: ' . $e->getMessage())
+                             ->with('error', 'কোনো সমস্যা হয়েছে: ' . $e->getMessage())
                              ->withInput();
         }
     }
@@ -59,7 +64,17 @@ class BrandController extends Controller
     {
         $request->validate([
             'id'   => 'required|exists:brands,id',
-            'name' => 'required|string',
+            'name' => [
+                'required',
+                'string',
+                Rule::unique('brands', 'brand')->ignore($request->id),
+            ],
+        ], [
+            'id.required'   => 'ব্র্যান্ড আইডি প্রয়োজন।',
+            'id.exists'     => 'ব্র্যান্ড পাওয়া যায়নি।',
+            'name.required' => 'ব্র্যান্ডের নাম দিতে হবে।',
+            'name.string'   => 'ব্র্যান্ডের নাম অবশ্যই টেক্সট হতে হবে।',
+            'name.unique'   => 'এই ব্র্যান্ডের নাম ইতিমধ্যেই আছে!',
         ]);
 
         try {
@@ -68,10 +83,10 @@ class BrandController extends Controller
             $brand->save();
 
             return redirect()->route('brands.index')
-                             ->with('success', 'Brand updated successfully!');
+                             ->with('success', 'ব্র্যান্ড সফলভাবে আপডেট হয়েছে!');
         } catch (\Exception $e) {
             return redirect()->back()
-                             ->with('error', 'Something went wrong: ' . $e->getMessage())
+                             ->with('error', 'কোনো সমস্যা হয়েছে: ' . $e->getMessage())
                              ->withInput();
         }
     }
@@ -83,10 +98,10 @@ class BrandController extends Controller
             $brand->delete();
 
             return redirect()->route('brands.index')
-                             ->with('success', 'Brand deleted successfully!');
+                             ->with('success', 'ব্র্যান্ড সফলভাবে ডিলিট হয়েছে!');
         } catch (\Exception $e) {
             return redirect()->back()
-                             ->with('error', 'Something went wrong: ' . $e->getMessage());
+                             ->with('error', 'কোনো সমস্যা হয়েছে: ' . $e->getMessage());
         }
     }
 
