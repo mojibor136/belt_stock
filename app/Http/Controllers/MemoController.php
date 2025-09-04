@@ -330,5 +330,28 @@ private function storeTransactionFromMemo($memo, $customer_id, $invoice_type, $a
     }
 }
 
+
+public function destroy($id)
+{
+    try {
+        $memo = Memo::findOrFail($id);
+
+        if ($memo->memo_status !== 'pending') {
+            return redirect()->route('memo.pending')
+                ->with('error', 'শুধুমাত্র Pending মেমো ডিলিট করা যাবে।');
+        }
+
+        $memo->delete();
+
+        return redirect()->route('memo.pending')
+            ->with('success', 'মেমো সফলভাবে ডিলিট হয়েছে!');
+    } catch (\Exception $e) {
+        \Log::error('Memo Delete Error: ' . $e->getMessage());
+
+        return redirect()->route('memo.pending')
+            ->with('error', 'মেমো ডিলিট করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+    }
+}
+
     
 }

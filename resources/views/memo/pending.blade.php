@@ -140,9 +140,20 @@
                                     Edit
                                 </span>
                                 <span onclick="window.location='{{ route('memo.show', $m->id) }}'"
-                                    class="px-3 py-1 rounded text-white capitalize text-sm font-medium bg-red-600 cursor-pointer hover:bg-red-700">
+                                    class="px-3 py-1 rounded text-white capitalize text-sm font-medium bg-gray-600 cursor-pointer hover:bg-gray-700">
                                     View
                                 </span>
+
+                                <form class="inline-block" action="{{ route('memo.destroy', $m->id) }}" method="POST"
+                                    onsubmit="return confirm('আপনি কি নিশ্চিত যে এই মেমো মুছে ফেলতে চান?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="inline-flex items-center justify-center px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded shadow cursor-pointer"
+                                        title="Delete">
+                                        <i class="ri-delete-bin-6-line text-md"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     @empty

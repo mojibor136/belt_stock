@@ -97,7 +97,9 @@
                                     Inch
                                 @endif
                             </td>
-                            <td class="px-4 py-3 text-center">{{ $size->stocks->count() }}</td>
+                            <td class="px-4 py-3 text-center">
+                                {{ $size->stocks->sum('quantity') }}
+                            </td>
                             <td class="px-4 py-3 text-center">{{ $size->created_at->format('d M, Y') }}</td>
                             <td class="px-4 py-3 text-right">
                                 <div class="flex justify-end items-center gap-1">

@@ -66,6 +66,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/memo/pending' , 'pending')->name('memo.pending');
         Route::get('/memo/complete' , 'complete')->name('memo.complete');
         Route::get('memo/status/{id}' , 'status')->name('memo.status');
+        Route::delete('/memo/destroy/{id}' , 'destroy')->name('memo.destroy');
     });
 
     Route::controller(VendorController::class)->group(function () {
