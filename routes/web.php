@@ -75,6 +75,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/vendor/store' , 'store')->name('vendor.store');
         Route::get('/vendor/edit/{id}' , 'edit')->name('vendor.edit');
         Route::post('/vendor/update' , 'update')->name('vendor.update');
+        Route::get('/vendor/analysis/{name}/{id}' , 'vendorAnalysis')->name('vendor.analysis');
         Route::delete('/vendor/destroy/{id}' , 'destroy')->name('vendor.destroy');
     });
 
@@ -96,6 +97,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/customer/store' , 'store')->name('customer.store');
         Route::post('/customer/update' , 'update')->name('customer.update');
         Route::get('/customer/sales/mojibor' , 'customerSales')->name('customer.sales');
+        Route::get('/customer/analysis/{name}/{id}' , 'customerAnalysis')->name('customer.analysis');
     });
 
     Route::controller(CustomerTrxController::class)->group(function () {

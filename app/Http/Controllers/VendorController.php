@@ -123,4 +123,9 @@ class VendorController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
+
+    public function vendorAnalysis($name , $id){
+        $vendor = Vendor::find($id);
+        return view('vendor.analysis' , compact('vendor'));
+    }
 }

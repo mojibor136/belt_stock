@@ -114,7 +114,11 @@
                             </td>
                             <td class="px-4 py-3 text-right">
                                 <div class="flex justify-end items-center gap-1">
-
+                                    <div onclick="window.location.href='{{ route('customer.analysis', ['name' => Str::slug($customer->name), 'id' => $customer->id]) }}'"
+                                        class="bg-indigo-600 text-white rounded px-4 flex justify-center items-center gap-0.5 h-8 cursor-pointer">
+                                        <i class="ri-computer-line"></i>
+                                        <span>Analysis</span>
+                                    </div>
                                     <a href="{{ route('customer.all.transaction', ['name' => Str::slug($customer->name), 'id' => $customer->id]) }}"
                                         class="inline-flex items-center justify-center w-10 h-8 bg-blue-500 hover:bg-blue-600 text-white rounded shadow"
                                         title="View">

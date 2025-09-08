@@ -147,4 +147,9 @@ class CustomerController extends Controller
     {
         return view('customer.customerSales');
     }
+
+    public function customerAnalysis($name , $id){
+        $customer = Customer::find($id);
+        return view('customer.analysis' , compact('customer'));
+    }
 }
