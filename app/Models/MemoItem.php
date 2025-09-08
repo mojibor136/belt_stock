@@ -15,6 +15,8 @@ class MemoItem extends Model
         'group_id',
         'piece_rate',
         'inch_rate',
+        'cost_inch_rate',
+        'cost_piece_rate',
         'item_total',
     ];
 

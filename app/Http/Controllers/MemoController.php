@@ -120,11 +120,17 @@ class MemoController extends Controller
                     : (isset($item['rate']) ? (float) $item['rate'] : 0);
                 $pieceRate = isset($item['piece_rate']) ? (float) $item['piece_rate'] : 0;
 
+                $costInchRate = 0;
+                $costPieceRate = 0;
+  
+
                 $memoItem = $memo->items()->create([
                     'brand_id' => $item['brand_id'] ?? null,
                     'group_id' => $item['group_id'] ?? null,
                     'inch_rate' => $inchRate,
                     'piece_rate' => $pieceRate,
+                    'cost_inch_rate' => 0,
+                    'cost_piece_rate' => 0,
                     'item_total' => 0,
                 ]);
 
@@ -136,6 +142,20 @@ class MemoController extends Controller
                         ? $sizeVal * $inchRate * $sizeQty
                         : $pieceRate * $sizeQty;
 
+
+                    $sizeData = Size::where('size', $sizeVal)
+                    ->where('group_id', $item['group_id'])
+                    ->where('brand_id', $item['brand_id'])
+                    ->first();    
+
+                if ($sizeData) {
+                    if ($sizeData->rate_type === 'inch') {
+                        $costInchRate = $sizeData->cost_rate;
+                    } elseif ($sizeData->rate_type === 'pieces') {
+                        $costPieceRate = $sizeData->cost_rate;
+                    }
+                }
+
                     $memoItemSize = $memoItem->sizes()->create([
                         'size' => $sizeVal,
                         'quantity' => $sizeQty,
@@ -145,7 +165,11 @@ class MemoController extends Controller
                     $itemTotal += $subtotal;
                 }
 
-                $memoItem->update(['item_total' => $itemTotal]);
+            $memoItem->update([
+                'item_total' => $itemTotal,
+                'cost_inch_rate' => $costInchRate,
+                'cost_piece_rate' => $costPieceRate,
+            ]);
 
                 $grandTotal += $itemTotal;
             }

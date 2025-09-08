@@ -76,6 +76,7 @@
                         <th class="px-4 py-3 text-left">Sizes</th>
                         <th class="px-4 py-3 text-left">Brand</th>
                         <th class="px-4 py-3 text-center">Group</th>
+                        <th class="px-4 py-3 text-center">Cost Rate</th>
                         <th class="px-4 py-3 text-center">Sales Rate</th>
                         <th class="px-4 py-3 text-center">Stock</th>
                         <th class="px-4 py-3 text-center">Created At</th>
@@ -89,6 +90,14 @@
                             <td class="px-4 py-3">{{ $size->size }}</td>
                             <td class="px-4 py-3 capitalize">{{ $size->brand->brand }}</td>
                             <td class="px-4 py-3 text-center">{{ $size->group->group }}</td>
+                            <td class="px-4 py-3 text-center">
+                                {{ $size->cost_rate }}
+                                @if ($size->rate_type == 'pieces')
+                                    Ps
+                                @elseif($size->rate_type == 'inch')
+                                    Inch
+                                @endif
+                            </td>
                             <td class="px-4 py-3 text-center">
                                 {{ $size->sales_rate }}
                                 @if ($size->rate_type == 'pieces')

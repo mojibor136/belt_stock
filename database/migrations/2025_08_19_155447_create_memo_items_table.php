@@ -18,6 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('group_id')->index();
             $table->string('inch_rate')->default(0);
             $table->string('piece_rate')->default(0);
+            $table->string('cost_piece_rate')->default(0);
+            $table->string('cost_inch_rate')->default(0);
             $table->string('item_total')->default(0);
             $table->timestamps();
             $table->index('created_at');

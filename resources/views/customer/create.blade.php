@@ -27,7 +27,7 @@
         <div class="w-full bg-white rounded shadow px-6">
             <form action="{{ route('customer.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                
+
                 <div class="mb-4 mt-6">
                     <label for="name" class="block text-gray-700 font-medium">Customer Name <span
                             class="text-red-500">*</span></label> <input type="text" name="name" id="name"
@@ -78,9 +78,9 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="transport" class="block text-gray-700 font-medium">Transport</span></label> <input
-                        type="text" name="transport" id="transport" placeholder="Transport"
-                        class="w-full mt-2 p-2 border rounded border-gray-300 text-gray-700"
+                    <label for="transport" class="block text-gray-700 font-medium">Transport<span
+                            class="text-red-500">*</span></label> <input type="text" name="transport" id="transport"
+                        placeholder="Transport" class="w-full mt-2 p-2 border rounded border-gray-300 text-gray-700"
                         value="{{ old('transport') }}">
                     @error('transport')
                         <div class="text-red-600 text-sm mt-1">{{ $message }}</div>

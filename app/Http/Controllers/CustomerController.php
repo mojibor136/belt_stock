@@ -76,7 +76,7 @@ class CustomerController extends Controller
                 'email'     => $request->email,
                 'address'   => $request->address,
                 'transport' => $request->transport,
-                'status'    => 'Debit',
+                'status'    => 'debit',
             ]);
 
             return redirect()->route('customer.index')->with('success', 'গ্রাহক সফলভাবে তৈরি হয়েছে!');
