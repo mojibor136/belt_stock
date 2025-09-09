@@ -18,15 +18,23 @@ class HomeController extends Controller
         $data = $this->completeMemosSalesProfit();
         $totalCustomer = Customer::count();
         $customerDebit = Customer::where('status', 'debit')->sum('amount');
+        $customerCredit = Customer::where('status', 'credit')->sum('amount');
         $totalVendor = Vendor::count();
         $vendorCredit = Vendor::where('status', 'credit')->sum('amount');
+        $vendorDebit = Vendor::where('status', 'debit')->sum('amount');
         $totalBrand = Brand::count();
         $totalGroup = Group::count();
         $totalSize = Size::count();
         $totalStock = Stock::sum('quantity');
         $exhaustedStock = Stock::where('quantity', 0)->count();
 
-        return view('dashboard', compact('data' , 'exhaustedStock' , 'totalStock' , 'totalSize' , 'totalGroup' , 'totalBrand' , 'vendorCredit' , 'totalVendor' , 'customerDebit' , 'totalCustomer'));
+        $stockValue = Size::with('stocks')->get()->sum(function ($size) {
+            return $size->stocks->sum(function ($stock) use ($size) {
+               return $size->size * $size->cost_rate * $stock->quantity;
+            });
+        });
+
+        return view('dashboard', compact('data' , 'exhaustedStock' , 'stockValue' , 'totalStock' , 'totalSize' , 'totalGroup' , 'totalBrand' , 'vendorCredit' , 'vendorDebit' , 'totalVendor' , 'customerDebit' , 'customerCredit' , 'totalCustomer'));
     }
 
     private function completeMemosSalesProfit()
