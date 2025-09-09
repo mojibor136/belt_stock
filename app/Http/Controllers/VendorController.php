@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Vendor;
+use App\Models\VendorTrx;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class VendorController extends Controller
 {
@@ -124,8 +127,42 @@ class VendorController extends Controller
         }
     }
 
-    public function vendorAnalysis($name , $id){
-        $vendor = Vendor::find($id);
-        return view('vendor.analysis' , compact('vendor'));
+    public function vendorAnalysis(Request $request, $name, $id)
+    {
+        $vendor = Vendor::findOrFail($id);
+
+        $startDate = $request->start_date 
+            ? Carbon::createFromFormat('d/m/Y', $request->start_date)->startOfDay() 
+            : null;
+        $endDate = $request->end_date 
+            ? Carbon::createFromFormat('d/m/Y', $request->end_date)->endOfDay() 
+            : null;
+
+        $query = VendorTrx::where('vendor_id', $id);
+
+        if ($startDate && $endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        } elseif ($startDate) {
+            $query->where('created_at', '>=', $startDate);
+        } elseif ($endDate) {
+            $query->where('created_at', '<=', $endDate);
+        }
+
+        $totalInvoice = (clone $query)->where('invoice_status', 'invoice')->sum('invoice');
+        $totalPayment = (clone $query)->where('invoice_status', 'payment')->sum('payment');
+        $totalTransaction = (clone $query)->sum(DB::raw('invoice + payment'));
+        $totalMemo = (clone $query)->where('invoice_status', 'invoice')->count();
+        $lastPayment = (clone $query)->where('invoice_status', 'payment')->orderBy('created_at', 'desc')->first();
+
+        return view('vendor.analysis', compact(
+            'vendor',
+            'totalMemo',
+            'lastPayment',
+            'totalInvoice',
+            'totalPayment',
+            'totalTransaction',
+            'startDate',
+            'endDate'
+        ));
     }
 }

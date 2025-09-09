@@ -22,17 +22,18 @@
 
     <div class="flex flex-col">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-3">
+
             <a href="#"
-                class="bg-gradient-to-r from-blue-500 to-indigo-700 backdrop-blur-sm px-6 py-6 rounded-md shadow-lg hover:-translate-y-1 hover:scale-105 transition-transform duration-300 block">
+                class="bg-gradient-to-r from-yellow-400 to-orange-500 backdrop-blur-sm px-6 py-6 rounded-md shadow-lg hover:-translate-y-1 hover:scale-105 transition-transform duration-300 block">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center justify-center gap-4">
                         <div
                             class="w-11 h-11 rounded-lg flex justify-center items-center bg-white/10 backdrop-blur-xl border border-white/30 shadow-inner">
-                            <i class="ri-bank-card-fill text-2xl text-white"></i>
+                            <i class="ri-shopping-bag-3-fill text-2xl text-white"></i>
                         </div>
                         <div class="flex flex-col gap-0.5">
-                            <span class="text-lg font-semibold text-white">Total Invoice</span>
-                            <span class="text-sm text-gray-100">&#2547; 66,666</span>
+                            <span class="text-lg font-semibold text-white">Total Purchase</span>
+                            <span class="text-sm text-gray-100">&#2547; {{ number_format($totalInvoice, 2) }}</span>
                         </div>
                     </div>
                 </div>
@@ -48,39 +49,7 @@
                         </div>
                         <div class="flex flex-col gap-0.5">
                             <span class="text-lg font-semibold text-white">Total Payment</span>
-                            <span class="text-sm text-gray-100">&#2547; 7,666</span>
-                        </div>
-                    </div>
-                </div>
-            </a>
-
-            <a href="#"
-                class="bg-gradient-to-r from-yellow-400 to-orange-500 backdrop-blur-sm px-6 py-6 rounded-md shadow-lg hover:-translate-y-1 hover:scale-105 transition-transform duration-300 block">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center justify-center gap-4">
-                        <div
-                            class="w-11 h-11 rounded-lg flex justify-center items-center bg-white/10 backdrop-blur-xl border border-white/30 shadow-inner">
-                            <i class="ri-shopping-bag-3-fill text-2xl text-white"></i>
-                        </div>
-                        <div class="flex flex-col gap-0.5">
-                            <span class="text-lg font-semibold text-white">Total Purchase</span>
-                            <span class="text-sm text-gray-100">&#2547; 6,666</span>
-                        </div>
-                    </div>
-                </div>
-            </a>
-
-            <a href="#"
-                class="bg-gradient-to-r from-teal-500 to-cyan-600 backdrop-blur-sm px-6 py-6 rounded-md shadow-lg hover:-translate-y-1 hover:scale-105 transition-transform duration-300 block">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center justify-center gap-4">
-                        <div
-                            class="w-11 h-11 rounded-lg flex justify-center items-center bg-white/10 backdrop-blur-xl border border-white/30 shadow-inner">
-                            <i class="ri-bar-chart-2-fill text-2xl text-white"></i>
-                        </div>
-                        <div class="flex flex-col gap-0.5">
-                            <span class="text-lg font-semibold text-white">Total Profit</span>
-                            <span class="text-sm text-gray-100">&#2547; 6,000</span>
+                            <span class="text-sm text-gray-100">&#2547; {{ number_format($totalPayment, 2) }}</span>
                         </div>
                     </div>
                 </div>
@@ -96,7 +65,7 @@
                         </div>
                         <div class="flex flex-col gap-0.5">
                             <span class="text-lg font-semibold text-white">Total Memo</span>
-                            <span class="text-sm text-gray-100">&#2547; 666,666</span>
+                            <span class="text-sm text-gray-100">#{{ $totalMemo }}</span>
                         </div>
                     </div>
                 </div>
@@ -112,7 +81,7 @@
                         </div>
                         <div class="flex flex-col gap-0.5">
                             <span class="text-lg font-semibold text-white">Total Transaction</span>
-                            <span class="text-sm text-gray-100">666,660 Transactions</span>
+                            <span class="text-sm text-gray-100">&#2547; {{ number_format($totalTransaction, 2) }}</span>
                         </div>
                     </div>
                 </div>
@@ -126,7 +95,25 @@
                     </div>
                     <div class="flex flex-col">
                         <span class="text-lg font-semibold text-white">Current Balance</span>
-                        <span class="text-sm text-gray-100">&#2547; 80,000</span>
+                        <span class="text-sm text-gray-100">&#2547; {{ number_format($vendor->amount ?? 0, 2) }}</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="#"
+                class="bg-gradient-to-r from-pink-500 to-rose-600 backdrop-blur-sm px-6 py-6 rounded-md shadow-lg hover:-translate-y-1 hover:scale-105 transition-transform duration-300 block">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center justify-center gap-4">
+                        <div
+                            class="w-11 h-11 rounded-lg flex justify-center items-center bg-white/10 backdrop-blur-xl border border-white/30 shadow-inner">
+                            <i class="ri-calendar-event-fill text-2xl text-white"></i>
+                        </div>
+                        <div class="flex flex-col gap-0.5">
+                            <span class="text-lg font-semibold text-white">Last Payment</span>
+                            <span class="text-sm text-gray-100">
+                                {{ $lastPayment ? $lastPayment->created_at->format('d M, Y') : 'No Payment' }}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </a>
@@ -139,23 +126,54 @@
                     </div>
                     <div class="flex flex-col">
                         <span class="text-lg font-semibold text-white">Balance Status</span>
-                        <span class="text-sm text-gray-100">Debit</span>
+                        <span class="text-sm text-gray-100 capitalize">
+                            {{ $vendor->status ?? 'N/A' }}
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="#"
+                class="bg-gradient-to-r from-indigo-400 to-purple-500 backdrop-blur-sm px-6 py-6 rounded-md shadow-lg hover:-translate-y-1 hover:scale-105 transition-transform duration-300 block">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center justify-center gap-4">
+                        <div
+                            class="w-11 h-11 rounded-lg flex justify-center items-center bg-white/10 backdrop-blur-xl border border-white/30 shadow-inner">
+                            <i class="ri-calendar-fill text-2xl text-white"></i>
+                        </div>
+                        <div class="flex flex-col gap-0.5">
+                            <span class="text-lg font-semibold text-white">Vendor Created</span>
+                            <span class="text-sm text-gray-100">{{ $vendor->created_at->format('d M, Y') }}</span>
+                        </div>
                     </div>
                 </div>
             </a>
         </div>
+
         <form method="GET"
             action="{{ route('vendor.analysis', ['name' => Str::slug($vendor->name), 'id' => $vendor->id]) }}"
             class="flex md:flex-row flex-col items-center gap-2 mt-2">
-            <input type="date" id="created_at" name="date" value="{{ request('date') }}" placeholder="dd/mm/yyyy"
+
+            <input type="text" id="start_date" name="start_date"
+                value="{{ $startDate ? $startDate->format('d/m/Y') : '' }}" placeholder="dd/mm/yyyy"
                 class="w-full px-4 h-12 text-gray-700 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-600 focus:outline-none text-md transition-all duration-150" />
+
             <i class="ri-arrow-left-right-line text-lg text-gray-700 hidden md:block"></i>
-            <input type="date" id="created_at" name="date" value="{{ request('date') }}" placeholder="dd/mm/yyyy"
+
+            <input type="text" id="end_date" name="end_date" value="{{ $endDate ? $endDate->format('d/m/Y') : '' }}"
+                placeholder="dd/mm/yyyy"
                 class="w-full px-4 h-12 text-gray-700 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-600 focus:outline-none text-md transition-all duration-150" />
+
             <button type="submit"
                 class="flex items-center justify-center gap-2 text-white bg-blue-600 rounded-md px-6 h-12 w-full md:w-fit hover:bg-blue-700 transition duration-200">
                 <i class="ri-bar-chart-line"></i>
                 Analysis
+            </button>
+            <button type="button"
+                onclick="window.location='{{ route('vendor.analysis', ['name' => Str::slug($vendor->name), 'id' => $vendor->id]) }}'"
+                class="flex items-center justify-center gap-2 text-white bg-red-600 rounded-md px-6 h-12 w-full md:w-fit hover:bg-gray-600 transition duration-200">
+                <i class="ri-refresh-line"></i>
+                Reset
             </button>
         </form>
 
@@ -248,7 +266,12 @@
 
     <script>
         $(document).ready(function() {
-            flatpickr("#created_at", {
+            flatpickr("#start_date", {
+                dateFormat: "d/m/Y",
+                defaultDate: null
+            });
+
+            flatpickr("#end_date", {
                 dateFormat: "d/m/Y",
                 defaultDate: null
             });
