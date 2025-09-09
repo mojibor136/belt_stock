@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use App\Models\CustomerTrx;
+use App\Models\Memo;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class CustomerController extends Controller
 {
@@ -35,7 +39,7 @@ class CustomerController extends Controller
     {
         $customer = Customer::find($id);
 
-        if($customer) {
+        if ($customer) {
             return response()->json($customer);
         }
 
@@ -148,8 +152,72 @@ class CustomerController extends Controller
         return view('customer.customerSales');
     }
 
-    public function customerAnalysis($name , $id){
-        $customer = Customer::find($id);
-        return view('customer.analysis' , compact('customer'));
+    public function customerAnalysis(Request $request, $name, $id)
+    {
+        $customer = Customer::findOrFail($id);
+
+        $startDate = $request->start_date
+            ? Carbon::createFromFormat('d/m/Y', $request->start_date)->startOfDay()
+            : null;
+        $endDate = $request->end_date
+            ? Carbon::createFromFormat('d/m/Y', $request->end_date)->endOfDay()
+            : null;
+
+        $query = CustomerTrx::where('customer_id', $id);
+
+        if ($startDate && $endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        } elseif ($startDate) {
+            $query->where('created_at', '>=', $startDate);
+        } elseif ($endDate) {
+            $query->where('created_at', '<=', $endDate);
+        }
+
+        $totalInvoice = (clone $query)->where('invoice_status', 'invoice')->sum('invoice');
+        $totalPayment = (clone $query)->where('invoice_status', 'payment')->sum('payment');
+        $totalTransaction = (clone $query)->sum(DB::raw('invoice + payment'));
+        $totalMemo = (clone $query)->where('invoice_status', 'invoice')->count();
+
+        $totalProfit = 0;
+        $memoQuery = Memo::where('customer_id', $id)
+            ->where('memo_status', 'complete')
+            ->with('items.sizes');
+
+        if ($startDate && $endDate) {
+            $memoQuery->whereBetween('created_at', [$startDate, $endDate]);
+        } elseif ($startDate) {
+            $memoQuery->where('created_at', '>=', $startDate);
+        } elseif ($endDate) {
+            $memoQuery->where('created_at', '<=', $endDate);
+        }
+
+        $memos = $memoQuery->get();
+
+        foreach ($memos as $memo) {
+            foreach ($memo->items as $item) {
+                foreach ($item->sizes as $size) {
+                    $sales = $item->inch_rate > 0
+                        ? $size->size * $item->inch_rate * $size->quantity
+                        : $item->piece_rate * $size->quantity;
+
+                    $cost = $item->cost_inch_rate > 0
+                        ? $size->size * $item->cost_inch_rate * $size->quantity
+                        : $item->cost_piece_rate * $size->quantity;
+
+                    $totalProfit += ($sales - $cost);
+                }
+            }
+        }
+
+        return view('customer.analysis', compact(
+            'customer',
+            'totalInvoice',
+            'totalPayment',
+            'totalTransaction',
+            'totalMemo',
+            'totalProfit',
+            'startDate',
+            'endDate'
+        ));
     }
 }
