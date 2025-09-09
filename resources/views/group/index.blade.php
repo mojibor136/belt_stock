@@ -64,6 +64,8 @@
                         <th class="px-4 py-3 text-center">Group</th>
                         <th class="px-4 py-3 text-center">Brand</th>
                         <th class="px-4 py-3 text-center">Total Size</th>
+                        <th class="px-4 py-3 text-center">Inchi</th>
+                        <th class="px-4 py-3 text-center">Value</th>
                         <th class="px-4 py-3 text-center">Created At</th>
                         <th class="px-4 py-3 text-right pr-8">Actions</th>
                     </tr>
@@ -75,6 +77,8 @@
                             <td class="px-4 py-3 capitalize text-center">{{ $group->group }}</td>
                             <td class="px-4 py-3 capitalize text-center">{{ $group->brand->brand ?? 'N/A' }}</td>
                             <td class="px-4 py-3 text-center">{{ $group->sizes_count }}</td>
+                            <td class="px-4 py-3 text-center">{{ number_format($group->total_inchi, 2) }}</td>
+                            <td class="px-4 py-3 text-center">&#2547;{{ number_format($group->total_value, 2) }}</td>
                             <td class="px-4 py-3 text-center">{{ $group->created_at->format('d M, Y') }}</td>
                             <td class="px-4 py-3 text-right">
                                 <div class="flex justify-end items-center gap-1">

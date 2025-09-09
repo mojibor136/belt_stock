@@ -13,7 +13,7 @@ class GroupController extends Controller
     {
         $brands = Brand::all();
 
-        $query = Group::with('brand')
+        $query = Group::with(['brand', 'sizes.stocks'])
             ->withCount('sizes')
             ->orderBy('created_at', 'desc');
 
@@ -25,7 +25,22 @@ class GroupController extends Controller
             $query->where('brand_id', $request->brand);
         }
 
-        $groups = $query->get();
+        $groups = $query->get()->map(function ($group) {
+            $group->total_inchi = 0;
+            $group->total_value = 0;
+
+            foreach ($group->sizes as $size) {
+                $quantity = $size->stocks->sum('quantity');
+
+                if ($size->rate_type === 'inch') {
+                    $group->total_inchi += $size->size * $quantity;
+                }
+
+                $group->total_value += $size->size * $size->cost_rate * $quantity;
+            }
+
+            return $group;
+        });
 
         return view('group.index', compact('groups', 'brands'));
     }
@@ -61,14 +76,14 @@ class GroupController extends Controller
             'cost_rate'  => 'required|numeric',
             'sales_rate' => 'required|numeric',
         ], [
-            'brand.required'     => 'ব্র্যান্ড নির্বাচন করা বাধ্যতামূলক।',
-            'brand.exists'       => 'বৈধ ব্র্যান্ড নির্বাচন করুন।',
-            'group.required'     => 'গ্রুপের নাম দিতে হবে।',
-            'group.unique'       => 'এই ব্র্যান্ডের জন্য গ্রুপের নাম ইতিমধ্যেই আছে!',
-            'cost_rate.required' => 'কস্ট রেট দিতে হবে।',
-            'cost_rate.numeric'  => 'কস্ট রেট অবশ্যই সংখ্যা হতে হবে।',
-            'sales_rate.required'=> 'সেলস রেট দিতে হবে।',
-            'sales_rate.numeric' => 'সেলস রেট অবশ্যই সংখ্যা হতে হবে।',
+            'brand.required'      => 'ব্র্যান্ড নির্বাচন করা বাধ্যতামূলক।',
+            'brand.exists'        => 'বৈধ ব্র্যান্ড নির্বাচন করুন।',
+            'group.required'      => 'গ্রুপের নাম দিতে হবে।',
+            'group.unique'        => 'এই ব্র্যান্ডের জন্য গ্রুপের নাম ইতিমধ্যেই আছে!',
+            'cost_rate.required'  => 'কস্ট রেট দিতে হবে।',
+            'cost_rate.numeric'   => 'কস্ট রেট অবশ্যই সংখ্যা হতে হবে।',
+            'sales_rate.required' => 'সেলস রেট দিতে হবে।',
+            'sales_rate.numeric'  => 'সেলস রেট অবশ্যই সংখ্যা হতে হবে।',
         ]);
 
         try {
@@ -107,30 +122,30 @@ class GroupController extends Controller
                 'string',
                 'max:255',
                 Rule::unique('groups')
-                    ->where(fn($query) => $query->where('brand_id', $request->brand_id))
+                    ->where(fn ($query) => $query->where('brand_id', $request->brand_id))
                     ->ignore($request->id),
             ],
             'cost_rate'  => 'required|numeric',
             'sales_rate' => 'required|numeric',
         ], [
-            'id.required'       => 'গ্রুপ আইডি প্রয়োজন।',
-            'id.exists'         => 'গ্রুপ পাওয়া যায়নি।',
-            'brand_id.required' => 'ব্র্যান্ড নির্বাচন করা বাধ্যতামূলক।',
-            'brand_id.exists'   => 'বৈধ ব্র্যান্ড নির্বাচন করুন।',
-            'group.required'    => 'গ্রুপের নাম দিতে হবে।',
-            'group.unique'      => 'এই ব্র্যান্ডের জন্য গ্রুপের নাম ইতিমধ্যেই আছে!',
-            'cost_rate.required'=> 'কস্ট রেট দিতে হবে।',
-            'cost_rate.numeric' => 'কস্ট রেট অবশ্যই সংখ্যা হতে হবে।',
-            'sales_rate.required'=> 'সেলস রেট দিতে হবে।',
-            'sales_rate.numeric'=> 'সেলস রেট অবশ্যই সংখ্যা হতে হবে।',
+            'id.required'         => 'গ্রুপ আইডি প্রয়োজন।',
+            'id.exists'           => 'গ্রুপ পাওয়া যায়নি।',
+            'brand_id.required'   => 'ব্র্যান্ড নির্বাচন করা বাধ্যতামূলক।',
+            'brand_id.exists'     => 'বৈধ ব্র্যান্ড নির্বাচন করুন।',
+            'group.required'      => 'গ্রুপের নাম দিতে হবে।',
+            'group.unique'        => 'এই ব্র্যান্ডের জন্য গ্রুপের নাম ইতিমধ্যেই আছে!',
+            'cost_rate.required'  => 'কস্ট রেট দিতে হবে।',
+            'cost_rate.numeric'   => 'কস্ট রেট অবশ্যই সংখ্যা হতে হবে।',
+            'sales_rate.required' => 'সেলস রেট দিতে হবে।',
+            'sales_rate.numeric'  => 'সেলস রেট অবশ্যই সংখ্যা হতে হবে।',
         ]);
 
         try {
-            $group              = Group::findOrFail($request->id);
-            $group->brand_id    = $request->brand_id;
-            $group->group       = $request->group;
-            $group->cost_rate   = $request->cost_rate;
-            $group->sales_rate  = $request->sales_rate;
+            $group             = Group::findOrFail($request->id);
+            $group->brand_id   = $request->brand_id;
+            $group->group      = $request->group;
+            $group->cost_rate  = $request->cost_rate;
+            $group->sales_rate = $request->sales_rate;
             $group->save();
 
             return redirect()->route('groups.index')

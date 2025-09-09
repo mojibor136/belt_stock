@@ -53,7 +53,8 @@
                 </div>
 
                 <div class="relative w-full sm:w-1/2">
-                    <input type="date" id="created_at" name="date" value="{{ request('date') }}" placeholder="dd/mm/yyyy"
+                    <input type="date" id="created_at" name="date" value="{{ request('date') }}"
+                        placeholder="dd/mm/yyyy"
                         class="w-full px-4 h-10 text-gray-700 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-600 focus:outline-none text-sm transition-all duration-150" />
                 </div>
 
@@ -77,6 +78,8 @@
                         <th class="px-4 py-3 text-left">Brand</th>
                         <th class="px-4 py-3 text-center">Total Group</th>
                         <th class="px-4 py-3 text-center">Total Size</th>
+                        <th class="px-4 py-3 text-center">Inchi</th>
+                        <th class="px-4 py-3 text-center">Value</th>
                         <th class="px-4 py-3 text-center">Created At</th>
                         <th class="px-4 py-3 text-right pr-8">Actions</th>
                     </tr>
@@ -88,6 +91,29 @@
                             <td class="px-4 py-3 capitalize">{{ $brand->brand }}</td>
                             <td class="px-4 py-3 text-center">{{ $brand->groups_count }}</td>
                             <td class="px-4 py-3 text-center">{{ $brand->sizes_count }}</td>
+                            <td class="px-4 py-3 text-center">
+                                @php
+                                    $total_inchi = 0;
+                                    $total_value = 0;
+
+                                    foreach ($brand->groups as $group) {
+                                        foreach ($group->sizes as $size) {
+                                            $quantity = $size->stocks->sum('quantity');
+
+                                            if ($size->rate_type === 'inch') {
+                                                $total_inchi += $size->size * $quantity;
+                                            }
+
+                                            $total_value += $size->size * $size->cost_rate * $quantity;
+                                        }
+                                    }
+                                @endphp
+                                {{ number_format($total_inchi, 2) }}
+                            </td>
+
+                            <td class="px-4 py-3 text-center">
+                                {{ number_format($total_value, 2) }}
+                            </td>
                             <td class="px-4 py-3 text-center">{{ $brand->created_at->format('d M, Y') }}</td>
                             <td class="px-4 py-3 text-right">
                                 <div class="flex justify-end items-center gap-1">

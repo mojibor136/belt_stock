@@ -79,6 +79,8 @@
                         <th class="px-4 py-3 text-center">Cost Rate</th>
                         <th class="px-4 py-3 text-center">Sales Rate</th>
                         <th class="px-4 py-3 text-center">Stock</th>
+                        <th class="px-4 py-3 text-center">Inchi</th>
+                        <th class="px-4 py-3 text-center">Value</th>
                         <th class="px-4 py-3 text-center">Created At</th>
                         <th class="px-4 py-3 text-right pr-8">Actions</th>
                     </tr>
@@ -108,6 +110,16 @@
                             </td>
                             <td class="px-4 py-3 text-center">
                                 {{ $size->stocks->sum('quantity') }}
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                @if ($size->rate_type == 'inch')
+                                    {{ number_format($size->size * $size->stocks->sum('quantity'), 2) }}
+                                @else
+                                    0
+                                @endif
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                {{ number_format($size->size * $size->cost_rate * $size->stocks->sum('quantity'), 2) }}
                             </td>
                             <td class="px-4 py-3 text-center">{{ $size->created_at->format('d M, Y') }}</td>
                             <td class="px-4 py-3 text-right">
