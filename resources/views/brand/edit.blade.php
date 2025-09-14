@@ -27,7 +27,7 @@
         <div class="w-full bg-white rounded shadow px-6">
             <form action="{{ route('brands.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                
+
                 <input type="hidden" value="{{ $brand->id }}" name="id">
 
                 <div class="mb-4 mt-6">

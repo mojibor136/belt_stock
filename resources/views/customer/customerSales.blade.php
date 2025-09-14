@@ -1,6 +1,5 @@
 @extends('layouts.app')
 @section('title', 'Customer Sales')
-
 @section('content')
     <div class="bg-white w-full mb-6 flex flex-col">
         <div

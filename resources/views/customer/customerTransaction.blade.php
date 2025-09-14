@@ -16,9 +16,6 @@
             box-shadow: 0 0 0 1px #2563eb !important;
         }
     </style>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     <div class="bg-white w-full mb-6 flex flex-col">
         <div
@@ -146,10 +143,6 @@
     </script>
 @endpush
 @push('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
     <script>
         $(document).ready(function() {
             flatpickr("#created_at", {

@@ -1,7 +1,5 @@
 @extends('layouts.app')
-
 @section('title', 'Memo Details')
-
 @section('content')
     <style>
         @page {

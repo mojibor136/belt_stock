@@ -2,7 +2,6 @@
 @section('title', 'Stock Management')
 @section('content')
     @include('components.toast')
-
     <div class="w-full mb-4">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b rounded-md mb-4">
             <div class="flex flex-col gap-1 w-full md:w-2/3">

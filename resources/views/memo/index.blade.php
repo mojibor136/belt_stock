@@ -81,10 +81,6 @@
         }
     </style>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
     <div class="p-6 bg-white mb-6 rounded shadow border border-gray-200">
         <h1 class="text-2xl font-bold mb-6 text-gray-800">📝 Create Memo</h1>
         <form action="{{ route('memo.store') }}" method="POST" class="space-y-6">
@@ -216,9 +212,6 @@
 @endsection
 
 @push('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         let sizesArray = {};
         let rowIndex = 1;
