@@ -6,16 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title')</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Nunito:wght@400;600;700&display=swap"
-        rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    @vite(['resources/js/app.js', 'resources/css/app.css'])
+    <link href="{{ asset('RemixIcon/RemixIcon-3.5.0/fonts/remixicon.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
     <style>
+        @font-face {
+            font-family: 'Roboto';
+            src: url('Roboto/Roboto-Regular.woff2') format('woff2');
+            font-weight: 600;
+        }
+
         body {
-            font-family: 'Nunito', sans-serif;
+            font-family: 'Roboto', sans-serif;
         }
 
         .submenu {
