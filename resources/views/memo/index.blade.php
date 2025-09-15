@@ -134,7 +134,7 @@
                             <th class="border p-2">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="items-container" class="text-gray-700">
+                    <tbody id="items-container" class="text-gray-700 hidden">
                         <tr class="item-row hover:bg-gray-50 transition">
                             <td class="border p-2 text-center">
                                 <select name="items[0][brand_id]"
@@ -256,6 +256,17 @@
 
         $('#customer-select').on('change', function() {
             let customerID = $(this).val();
+
+            if (customerID) {
+                $('#items-container').removeClass('hidden');
+            } else {
+                $('#items-container').addClass('hidden');
+                $('#customer-info').html('');
+                $('#debit').val('');
+                $('#debit_credit_status').val('');
+                recalcGrandTotal();
+            }
+
             if (customerID) {
                 $.ajax({
                     url: '/get-customer-data/' + customerID,
