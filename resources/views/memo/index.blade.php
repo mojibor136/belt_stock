@@ -7,8 +7,12 @@
             height: 38px !important;
             padding: 5px 10px;
             font-size: 14px;
-            border-radius: 0.375rem;
+            border-radius: 4px;
             border: 1px solid #f3f8ff;
+        }
+
+        .select2-container--default .select2-selection--single {
+            border-color: rgb(209 213 219 / var(--tw-border-opacity, 1)) !important;
         }
 
         .select2-container--default .select2-selection--single .select2-selection__arrow {
@@ -65,6 +69,10 @@
         .select2-container--default .select2-results__option--highlighted {
             background-color: #2563eb !important;
             color: #ffffff !important;
+        }
+
+        .border {
+            border-color: rgb(209 213 219 / var(--tw-border-opacity, 1)) !important;
         }
 
         #created_at,
@@ -155,7 +163,7 @@
                                         </select>
                                         <div class="flex size items-center justify-center border rounded h-10 w-full">
                                             <input type="number" name="items[0][sizes][0][quantity]"
-                                                class="px-2 h-full border-r w-full min-w-0 qty-input text-center focus:outline-none focus:ring-0"
+                                                class="px-2 h-full w-full min-w-0 qty-input border-none text-center focus:outline-none focus:ring-0"
                                                 placeholder="Qty">
                                             <button type="button"
                                                 class="remove-size bg-red-500 text-white px-3.5 h-full w-10 flex items-center justify-center hover:bg-red-600">✖</button>
