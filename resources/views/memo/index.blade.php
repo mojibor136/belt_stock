@@ -256,7 +256,6 @@
 
         $('#customer-select').on('change', function() {
             let customerID = $(this).val();
-
             if (customerID) {
                 $('#items-container').removeClass('hidden');
             } else {
@@ -266,7 +265,6 @@
                 $('#debit_credit_status').val('');
                 recalcGrandTotal();
             }
-
             if (customerID) {
                 $.ajax({
                     url: '/get-customer-data/' + customerID,
@@ -274,19 +272,16 @@
                     dataType: 'json',
                     success: function(data) {
                         let html = `
-                <div class="p-4 bg-white border border-gray-100 rounded space-y-2">
-                    <p><strong class="text-gray-700">Name:</strong> 
-                       <span class="text-green-600 font-semibold">${data.name}</span></p>
-                    <p><strong class="text-gray-700">Phone:</strong> 
-                       <span class="text-blue-600 font-medium">${data.phone}</span></p>
-                    <p><strong class="text-gray-700">Address:</strong> 
-                       <span class="text-gray-800">${data.address}</span></p>
-                </div>
-                `;
+                    <div class="p-4 bg-white border border-gray-100 rounded space-y-2">
+                        <p><strong class="text-gray-700">Name:</strong> 
+                           <span class="text-green-600 font-semibold">${data.name}</span></p>
+                        <p><strong class="text-gray-700">Phone:</strong> 
+                           <span class="text-blue-600 font-medium">${data.phone}</span></p>
+                        <p><strong class="text-gray-700">Address:</strong> 
+                           <span class="text-gray-800">${data.address}</span></p>
+                    </div>`;
                         $('#customer-info').html(html);
-
                         customerStatus = data.status ? data.status.toLowerCase() : '';
-
                         if (data.amount) {
                             $('#debit').val(data.amount);
                             $('#debit_credit_status').val(data.status);
@@ -297,11 +292,6 @@
                         alert('Failed to fetch customer data!');
                     }
                 });
-            } else {
-                $('#customer-info').html('');
-                $('#debit').val('');
-                $('#debit_credit_status').val('');
-                recalcGrandTotal();
             }
         });
 
@@ -328,6 +318,7 @@
                 });
             }
         });
+
         $(document).on('change', '.group-select', function() {
             let tr = $(this).closest('tr');
             let groupID = $(this).val();
@@ -354,46 +345,70 @@
             }
         });
 
+        $(document).on('change', '.size-select', function() {
+            let tr = $(this).closest('tr');
+            let brandID = tr.find('.brand-select').val();
+            let groupID = tr.find('.group-select').val();
+            let size = $(this).val();
+            let qtyInput = $(this).closest('.size-row').find('.qty-input');
+
+            if (brandID && groupID && size) {
+                $.ajax({
+                    url: `/check-quantity/${brandID}/${groupID}/${size}`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        qtyInput.attr('data-max-qty', data.available_quantity);
+                        if (parseInt(qtyInput.val()) > data.available_quantity) {
+                            qtyInput.val(data.available_quantity);
+                            alert(`Available quantity for this size is ${data.available_quantity}`);
+                        }
+                    },
+                    error: function() {
+                        alert('Failed to fetch available quantity!');
+                    }
+                });
+            }
+        });
+
+        $(document).on('input', '.qty-input', function() {
+            let maxQty = parseInt($(this).attr('data-max-qty')) || 0;
+            if (parseInt($(this).val()) > maxQty) {
+                $(this).val(maxQty);
+                alert(`You cannot enter more than available quantity (${maxQty})`);
+            }
+            recalcSubtotal($(this).closest('tr')[0]);
+        });
+
         document.getElementById('add-row').addEventListener('click', function() {
             let totalSizes = document.querySelectorAll('.sizes-container .size-row').length;
             if (totalSizes >= 70) {
                 alert('আপনি সর্বোচ্চ ১৪টি সারি (row) যোগ করতে পারবেন!');
                 return;
             }
-
             const container = document.getElementById('items-container');
             const templateRow = container.querySelector('.item-row');
-
-            if (totalSizes >= 70) {
-                alert('আপনি সর্বোচ্চ ১৪টি সারি (row) যোগ করতে পারবেন!');
-                return;
-            }
 
             let currentRowCount = 0;
             $('#items-container .item-row').each(function() {
                 let sizeCount = $(this).find('.size-row').length;
                 currentRowCount += Math.ceil(sizeCount / 5);
             });
-
             if (currentRowCount >= 14) {
                 alert('সব মিলিয়ে সর্বোচ্চ ৭০টি সাইজ যোগ করা যাবে!');
                 return;
             }
 
             let newRow = templateRow.cloneNode(true);
-
             let sizesContainer = newRow.querySelector('.sizes-container');
             let sizeRows = sizesContainer.querySelectorAll('.size-row');
             sizeRows.forEach((row, idx) => {
                 if (idx > 0) row.remove();
                 else {
-                    let select = row.querySelector('.size-select');
-                    let qty = row.querySelector('.qty-input');
-                    if (select) select.selectedIndex = 0;
-                    if (qty) qty.value = '';
+                    row.querySelector('.size-select').selectedIndex = 0;
+                    row.querySelector('.qty-input').value = '';
                 }
             });
-
             $(newRow).find('.select2-container').remove();
 
             newRow.querySelectorAll('input').forEach(el => el.value = '');
@@ -408,51 +423,36 @@
             newRow.querySelectorAll('input, select').forEach(el => {
                 el.name = el.name.replace(/\d+/, rowIndex);
             });
-
             container.appendChild(newRow);
             initSelect2();
             rowIndex++;
         });
 
-
         document.addEventListener('click', function(e) {
             let tr, container;
-
             if (e.target.classList.contains('add-size')) {
                 let totalSizes = document.querySelectorAll('.sizes-container .size-row').length;
                 if (totalSizes >= 70) {
                     alert('সব মিলিয়ে সর্বোচ্চ ৭০টি সাইজ যোগ করা যাবে!');
                     return;
                 }
-
                 tr = e.target.closest('tr');
                 container = tr.querySelector('.sizes-container');
-
                 let firstSizeRow = container.querySelector('.size-row');
                 let newSize = firstSizeRow.cloneNode(true);
                 $(newSize).find('.select2-container').remove();
-
-                let select = newSize.querySelector('.size-select');
-                let qty = newSize.querySelector('.qty-input');
-                if (select) select.selectedIndex = 0;
-                if (qty) qty.value = '';
-
+                newSize.querySelector('.size-select').selectedIndex = 0;
+                newSize.querySelector('.qty-input').value = '';
                 let sizeCount = container.querySelectorAll('.size-row').length;
                 newSize.querySelectorAll('input, select').forEach(el => {
                     el.name = el.name.replace(/\[sizes\]\[\d+\]/, `[sizes][${sizeCount}]`);
                 });
-
-                let addBtn = newSize.querySelector('.add-size');
-                if (addBtn) addBtn.remove();
-
-                let removeBtn = newSize.querySelector('.remove-size');
-                if (removeBtn) removeBtn.style.display = "flex";
-
+                newSize.querySelector('.add-size').remove();
+                newSize.querySelector('.remove-size').style.display = "flex";
                 container.appendChild(newSize);
                 initSelect2();
                 recalcSubtotal(tr);
             }
-
             if (e.target.classList.contains('remove-size')) {
                 tr = e.target.closest('tr');
                 container = tr.querySelector('.sizes-container');
@@ -461,7 +461,6 @@
                     recalcSubtotal(tr);
                 }
             }
-
             if (e.target.classList.contains('remove-row')) {
                 tr = e.target.closest('tr');
                 tr.remove();
@@ -482,25 +481,19 @@
             $(tr).find('.subtotal-cell').text(subtotal.toFixed(2));
             recalcGrandTotal();
         }
+
         $(document).on('input', '.size-select,.qty-input,.rate-input,.piece-rate-input', function() {
             recalcSubtotal($(this).closest('tr')[0]);
         });
 
         function recalcGrandTotal() {
             let total = 0;
-
             $('#items-container .item-row').each(function() {
                 total += parseFloat($(this).find('.subtotal-cell').text()) || 0;
             });
-
             let debit = parseFloat($('#debit').val()) || 0;
-
-            if (customerStatus === 'debit') {
-                total += debit;
-            } else if (customerStatus === 'credit') {
-                total -= debit;
-            }
-
+            if (customerStatus === 'debit') total += debit;
+            else if (customerStatus === 'credit') total -= debit;
             $('#total').val(total.toFixed(2));
         }
     </script>

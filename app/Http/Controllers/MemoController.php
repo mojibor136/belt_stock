@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Brand;
 use App\Models\Group;
 use App\Models\Size;
+use App\Models\Stock;
 use App\Models\MemoItem;
 use App\Models\MemoItemSize;
 use App\Models\Memo;
@@ -376,6 +377,54 @@ public function destroy($id)
             ->with('error', 'মেমো ডিলিট করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
     }
 }
+
+public function checkQuantity($brandId, $groupId, $sizeValue)
+{
+    try {
+        // Brand → Group
+        $brand = Brand::find($brandId);
+        if (!$brand) {
+            return response()->json(['error' => 'Brand not found'], 404);
+        }
+
+        $group = $brand->groups()->find($groupId);
+        if (!$group) {
+            return response()->json(['error' => 'Group not found in this brand'], 404);
+        }
+
+        // UI থেকে আসা size number দিয়ে Size model এ খোঁজা
+        $size = $group->sizes()->where('size', $sizeValue)->first();
+        if (!$size) {
+            return response()->json(['error' => 'Size not found in this group'], 404);
+        }
+
+        // stock quantity sum using size_id
+        $quantity = Stock::where('brand_id', $brandId)
+                         ->where('group_id', $groupId)
+                         ->where('size_id', $size->id)
+                         ->sum('quantity');
+
+        return response()->json([
+            'brand' => $brand->brand,
+            'group' => $group->group,
+            'size' => $size->size,
+            'available_quantity' => $quantity
+        ]);
+
+    } catch (\Exception $e) {
+        // Log the error
+        Log::error('Check Quantity Error: ' . $e->getMessage(), [
+            'brand_id' => $brandId,
+            'group_id' => $groupId,
+            'size' => $sizeValue
+        ]);
+
+        return response()->json([
+            'error' => 'Something went wrong while checking quantity.'
+        ], 500);
+    }
+}
+
 
     
 }

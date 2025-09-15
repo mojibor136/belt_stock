@@ -122,6 +122,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/stocks/update' , 'update')->name('stocks.update');
     });
 
+    Route::get('/check-quantity/{brand}/{group}/{size}', [MemoController::class, 'checkQuantity']);
     Route::get('/get-sizes-by-group', [SizeController::class, 'getSizesByGroup']);
     Route::get('/get-groups-by-brand', [SizeController::class, 'getGroupsByBrand'])->name('get.groups.by.brand');
     Route::get('/get-group-rate', [SizeController::class, 'getGroupRate'])->name('get.group.rate');
