@@ -55,6 +55,14 @@ class MemoController extends Controller
 
     public function store(Request $request)
     {
+        if($request->old_memo_id){
+            $oldMemo = Memo::find($request->old_memo_id);
+            if($oldMemo){
+                $oldMemo->items()->delete(); 
+                $oldMemo->delete();          
+            }
+        }
+
         try{
             $validator=Validator::make($request->all(),[
                 'customer'=>'required|exists:customers,id',
@@ -229,5 +237,12 @@ class MemoController extends Controller
             Log::error('Check Quantity Error: '.$e->getMessage(),['brand_id'=>$brandId,'group_id'=>$groupId,'size'=>$sizeValue]);
             return response()->json(['error'=>'Something went wrong while checking quantity.'],500);
         }
+    }
+
+    public function edit($id){
+        $memo = Memo::with('items.sizes')->findOrFail($id);
+        $brands=Brand::all();
+        $customers=Customer::all();
+        return view('memo.edit' ,compact('memo' , 'brands','customers'));
     }
 }

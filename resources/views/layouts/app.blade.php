@@ -8,9 +8,11 @@
     <title>@yield('title')</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     @vite(['resources/js/app.js', 'resources/css/app.css'])
+    <link rel="icon" href="{{ asset($setting->fav_icon) }}">
     <link href="{{ asset('RemixIcon/RemixIcon-3.5.0/fonts/remixicon.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
+    @include('components.toast')
     <style>
         @font-face {
             font-family: 'Roboto';
@@ -64,7 +66,7 @@
                 <div class="flex justify-between w-full items-center">
                     <div class="logo flex flex-row gap-16 hidden md:block">
                         <div class="flex flex-row gap-2 items-center">
-                            <img src="{{ asset('image/logo.png') }}" alt="Logo" class="w-44 h-auto" />
+                            <img src="{{ asset($setting->site_logo) }}" alt="Logo" class="w-44 h-auto" />
                         </div>
                     </div>
                     <i id="menuBtn" class="ri-menu-line md:hidden block text-white text-xl font-medium"></i>
@@ -79,8 +81,9 @@
                         </div>
                         <i class="ri-moon-line text-white/80 cursor-pointer hover:text-white text-[21px]"></i>
                         <div id="profile_menu_btn" class="flex items-center flex-row gap-2 cursor-pointer">
-                            <img src="https://i.pravatar.cc/80?img=3" alt="Admin" class="w-10 h-10 rounded-full">
-                            <span class="text-white/80 text-[15px]">Admin</span>
+                            <img src="{{ asset(auth()->user()->image) }}" alt="{{ auth()->user()->name }}"
+                                class="w-10 h-10 rounded-full">
+                            <span class="text-white/80 text-[15px]">{{ auth()->user()->name }}</span>
                             <i class="ri-arrow-down-s-line text-white/80"></i>
                         </div>
                         <i class="ri-settings-2-line cursor-pointer text-white/80 hover:text-white text-[21px]"></i>
@@ -328,13 +331,35 @@
                             </ul>
                         </li>
 
-                        <!-- Settings -->
+                        <!-- Setting Management -->
                         <li class="group">
                             <a href="#"
-                                class="mb-1 flex items-center pl-4 py-2.5 text-gray-300 hover:text-white hover:bg-[#3b3f5c] rounded">
+                                class="mb-1 flex items-center pl-4 py-2.5 text-gray-300 hover:text-white hover:bg-[#3b3f5c] rounded submenu-toggle"
+                                data-menu-key="settings">
                                 <i class="ri-settings-3-line mr-1"></i>
-                                <span class="text-[15px]">Account Settings</span>
+                                <span class="text-[15px]">Setting Management</span>
+                                <i class="ri-arrow-down-s-line ml-auto mr-4"></i>
                             </a>
+                            <ul class="submenu pl-2 bg-[#2a2f45]">
+                                <li>
+                                    <a href="{{ route('account.setting') }}"
+                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        <i class="ri-user-smile-line mr-2"></i>Account Setting
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('general.setting') }}"
+                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        <i class="ri-user-add-line mr-2"></i>General Setting
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('system.setting') }}"
+                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        <i class="ri-history-line mr-2"></i>System Setting
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
 
                     </ul>

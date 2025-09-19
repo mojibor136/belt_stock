@@ -11,6 +11,7 @@ use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VendorTrxController;
 use App\Http\Controllers\CustomerTrxController;
 use App\Http\Controllers\MemoController;
+use App\Http\Controllers\SettingController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(HomeController::class)->middleware(['auth'])->group(function(){
@@ -120,6 +121,15 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/stocks/destroy/{id}' , 'destroy')->name('stocks.destroy');
         Route::get('/stocks/edit/{id}' , 'edit')->name('stocks.edit');
         Route::post('/stocks/update' , 'update')->name('stocks.update');
+    });
+
+    Route::controller(SettingController::class)->group(function () {
+        Route::get('/account/setting', 'account')->name('account.setting');
+        Route::post('/account/store', 'accountStore')->name('account.store');
+        Route::get('/general/setting' , 'general')->name('general.setting');
+        Route::post('/general/store', 'generalStore')->name('general.store');
+        Route::get('/system/setting' , 'system')->name('system.setting');
+        Route::post('/system/store', 'systemStore')->name('system.store');
     });
 
     Route::get('/check-quantity/{brand}/{group}/{size}', [MemoController::class, 'checkQuantity']);
