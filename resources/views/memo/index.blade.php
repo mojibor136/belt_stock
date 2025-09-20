@@ -371,6 +371,36 @@
             }
         });
 
+        $(document).on('change', '.size-select', function() {
+            let tr = $(this).closest('tr');
+            let brandID = tr.find('.brand-select').val();
+            let groupID = tr.find('.group-select').val();
+            let size = $(this).val();
+            let qtyInput = $(this).closest('.size-row').find('.qty-input');
+
+            if (brandID && groupID && size) {
+                $.ajax({
+                    url: `/get-rate-type/${brandID}/${groupID}/${size}`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.rate_type) {
+                            if (data.rate_type === 'inch') {
+                                tr.find('.rate-input').prop('readonly', false);
+                                tr.find('.piece-rate-input').prop('readonly', true).val('');
+                            } else if (data.rate_type === 'pieces') {
+                                tr.find('.rate-input').prop('readonly', true).val('');
+                                tr.find('.piece-rate-input').prop('readonly', false);
+                            }
+                        }
+                    },
+                    error: function() {
+                        alert('Failed to fetch available quantity!');
+                    }
+                });
+            }
+        });
+
         $(document).on('input', '.qty-input', function() {
             let maxQty = parseInt($(this).attr('data-max-qty')) || 0;
             if (parseInt($(this).val()) > maxQty) {

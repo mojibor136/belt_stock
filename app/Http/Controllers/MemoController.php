@@ -90,14 +90,21 @@ class MemoController extends Controller
             DB::beginTransaction();
             $data = $request->all();
             $grandTotal = 0;
+
+            $lastMemo = Memo::latest('id')->first();
+            $nextId = $lastMemo ? $lastMemo->id + 1 : 1;
+
+            $memoNo = 'M-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
+
             $memo = Memo::create([
-                'memo_no' => 'M-'.time(),
+                'memo_no' => $memoNo,
                 'customer_id' => $data['customer'],
                 'debit_credit' => $data['debit'] ?? 0,
                 'memo_status' => 'pending',
                 'debit_credit_status' => $data['debit_credit_status'] ?? null,
                 'grand_total' => 0,
             ]);
+
             if (! empty($data['created_at'])) {
                 $memo->update([
                     'created_at' => Carbon::createFromFormat('d/m/Y', $data['created_at']),
@@ -305,6 +312,40 @@ class MemoController extends Controller
             return response()->json(['error' => 'Something went wrong while checking quantity.'], 500);
         }
     }
+
+public function checkRateType($brandId, $groupId, $sizeValue)
+{
+    try {
+        $brand = Brand::find($brandId);
+        if (! $brand) {
+            return response()->json(['error' => 'Brand not found'], 404);
+        }
+        $group = $brand->groups()->find($groupId);
+        if (! $group) {
+            return response()->json(['error' => 'Group not found in this brand'], 404);
+        }
+        $size = $group->sizes()->where('size', $sizeValue)->first();
+        if (! $size) {
+            return response()->json(['error' => 'Size not found in this group'], 404);
+        }
+
+        return response()->json([
+            'brand' => $brand->brand,
+            'group' => $group->group,
+            'size' => $size->size,
+            'rate_type' => $size->rate_type
+        ]);
+    } catch (\Exception $e) {
+        \Log::error('Check RateType Error: '.$e->getMessage(), [
+            'brand_id' => $brandId,
+            'group_id' => $groupId,
+            'size' => $sizeValue
+        ]);
+
+        return response()->json(['error' => 'Something went wrong while checking rate type.'], 500);
+    }
+}
+
 
     public function edit($id)
     {

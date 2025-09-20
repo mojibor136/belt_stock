@@ -287,6 +287,40 @@
             });
         }
 
+        function triggerRateType(tr) {
+            $('#items-container .item-row').each(function() {
+                let tr = $(this);
+                let brandID = tr.find('.brand-select').val();
+                let groupID = tr.find('.group-select').val();
+                let size = tr.find('.size-select').val();
+
+                if (brandID && groupID && size) {
+                    $.ajax({
+                        url: `/get-rate-type/${brandID}/${groupID}/${size}`,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.rate_type) {
+                                if (data.rate_type === 'inch') {
+                                    tr.find('.rate-input').prop('readonly', false);
+                                    tr.find('.piece-rate-input').prop('readonly',
+                                        true).val('');
+                                } else if (data.rate_type === 'pieces') {
+                                    tr.find('.rate-input').prop('readonly', true)
+                                        .val('');
+                                    tr.find('.piece-rate-input').prop('readonly',
+                                        false);
+                                }
+                            }
+                        },
+                        error: function() {
+                            console.log('Failed to fetch rate type!');
+                        }
+                    });
+                }
+            });
+        }
+
         function recalcSubtotal(tr) {
             let subtotal = 0;
             let rate = parseFloat($(tr).find('.rate-input').val()) || 0;
@@ -347,6 +381,7 @@
         $(document).ready(function() {
             $('#items-container .item-row').each(function() {
                 triggerQuantityCheck($(this));
+                triggerRateType($(this));
             });
 
             $('#customer-select').on('change', function() {
@@ -402,6 +437,7 @@
                         });
                         groupSelect.trigger('change.select2');
                         triggerQuantityCheck(tr);
+                        triggerRateType(tr);
                     },
                     error: function() {
                         alert('Failed to fetch groups!');
@@ -428,6 +464,7 @@
                                 sizeObj.size + '</option>');
                         });
                         triggerQuantityCheck(tr);
+                        triggerRateType(tr);
                     },
                     error: function() {
                         alert('Failed to fetch group data!');
@@ -437,6 +474,7 @@
 
             $(document).on('change', '.size-select', function() {
                 triggerQuantityCheck($(this).closest('tr'));
+                triggerRateType($(this).closest('tr'));
             });
 
             $(document).on('input', '.qty-input', function() {

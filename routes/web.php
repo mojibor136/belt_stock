@@ -132,6 +132,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/system/store', 'systemStore')->name('system.store');
     });
 
+    Route::get('/get-rate-type/{brand}/{group}/{size}', [MemoController::class, 'checkRateType']);
     Route::get('/check-quantity/{brand}/{group}/{size}', [MemoController::class, 'checkQuantity']);
     Route::get('/get-sizes-by-group', [SizeController::class, 'getSizesByGroup']);
     Route::get('/get-groups-by-brand', [SizeController::class, 'getGroupsByBrand'])->name('get.groups.by.brand');
