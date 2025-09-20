@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Edit Memo')
+@section('title', 'Create Memo')
 @section('content')
     @include('components.toast')
     <style>
@@ -93,19 +93,18 @@
         <h1 class="text-2xl font-bold mb-6 text-gray-800">📝 Create Memo</h1>
         <form action="{{ route('memo.store') }}" method="POST" class="space-y-6">
             @csrf
-            <input type="hidden" name="old_memo_id" value="{{ $memo->id }}">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Memo No</label>
-                    <input type="text" name="memo_no" value="{{ old('memo_no', $memo->memo_no) }}"
+                    <input type="text" name="memo_no"
                         class="border border-gray-300 focus:ring-1 focus:ring-blue-600 focus:outline-none px-3 h-10 text-gray-700 w-full rounded"
-                        placeholder="5050">
+                        placeholder="5050" value="{{ old('memo_no', $memo->memo_no) }}">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Date</label>
                     <input type="text" name="created_at" id="created_at" placeholder="dd/mm/yyyy"
                         class="w-full px-3 h-10 border rounded border-gray-300 text-gray-700 focus:ring-1 focus:ring-blue-600 focus:outline-none"
-                        value="{{ old('created_at', $memo->created_at->format('d/m/Y')) }}">
+                        value="{{ old('created_at', date('d/m/Y', strtotime($memo->created_at))) }}">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Select Customer</label>
@@ -137,63 +136,77 @@
                             <th class="border p-2">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="items-container" class="text-gray-700 hidden">
-                        <tr class="item-row hover:bg-gray-50 transition">
-                            <td class="border p-2 text-center">
-                                <select name="items[0][brand_id]"
-                                    class="brand-select border border-gray-300 h-10 px-2 w-32 rounded focus:ring-1 focus:ring-blue-600 focus:outline-none"
-                                    required>
-                                    <option value="">Select Brand</option>
-                                    @foreach ($brands as $brand)
-                                        <option value="{{ $brand->id }}">{{ $brand->brand }}</option>
-                                    @endforeach
-                                </select>
-                            </td>
-                            <td class="border p-2 text-center">
-                                <select name="items[0][group_id]"
-                                    class="group-select border border-gray-300 h-10 px-2 w-32 rounded focus:ring-1 focus:ring-blue-600 focus:outline-none"
-                                    required>
-                                    <option value="">Select Group</option>
-                                </select>
-                            </td>
-                            <td class="p-2">
-                                <div class="flex flex-col sizes-container">
-                                    <div class="size-row w-full flex flex-row gap-2">
-                                        <select name="items[0][sizes][0][size]"
-                                            class="size-select px-2 h-full flex-1 border-r text-center focus:outline-none focus:ring-0"
-                                            required>
-                                            <option value="">Select Size</option>
-                                        </select>
-                                        <div class="flex size items-center justify-center border rounded h-10 w-full">
-                                            <input type="number" name="items[0][sizes][0][quantity]"
-                                                class="px-2 h-full w-full min-w-0 qty-input border-none text-center focus:outline-none focus:ring-0"
-                                                placeholder="Qty">
-                                            <button type="button"
-                                                class="remove-size bg-red-500 text-white px-3.5 h-full w-10 flex items-center justify-center hover:bg-red-600">✖</button>
-                                            <button type="button"
-                                                class="add-size text-2xl w-10 bg-blue-200 px-3 h-full flex items-center justify-center">+</button>
-                                        </div>
+                    <tbody id="items-container" class="text-gray-700 {{ $memo->items->isEmpty() ? 'hidden' : '' }}">
+                        @foreach ($memo->items as $index => $item)
+                            <tr class="item-row hover:bg-gray-50 transition">
+                                <td class="border p-2 text-center">
+                                    <select name="items[{{ $index }}][brand_id]"
+                                        class="brand-select border border-gray-300 h-10 px-2 w-32 rounded focus:ring-1 focus:ring-blue-600 focus:outline-none"
+                                        required>
+                                        <option value="">Select Brand</option>
+                                        @foreach ($brands as $brand)
+                                            <option value="{{ $brand->id }}"
+                                                {{ $item->brand_id == $brand->id ? 'selected' : '' }}>
+                                                {{ $brand->brand }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td class="border p-2 text-center">
+                                    <select name="items[{{ $index }}][group_id]"
+                                        class="group-select border border-gray-300 h-10 px-2 w-32 rounded focus:ring-1 focus:ring-blue-600 focus:outline-none"
+                                        required>
+                                        <option value="{{ $item->group_id }}">{{ optional($item->group)->group }}</option>
+                                    </select>
+                                </td>
+                                <td class="p-2">
+                                    <div class="flex flex-col sizes-container">
+                                        @foreach ($item->sizes as $sizeIndex => $size)
+                                            <div class="size-row w-full flex flex-row gap-2">
+                                                <select
+                                                    name="items[{{ $index }}][sizes][{{ $sizeIndex }}][size]"
+                                                    class="size-select px-2 h-full flex-1 border-r text-center focus:outline-none focus:ring-0"
+                                                    required>
+                                                    <option value="{{ $size->size }}" selected>{{ $size->size }}
+                                                    </option>
+                                                </select>
+                                                <div
+                                                    class="flex size items-center justify-center border rounded h-10 w-full">
+                                                    <input type="number"
+                                                        name="items[{{ $index }}][sizes][{{ $sizeIndex }}][quantity]"
+                                                        class="px-2 h-full w-full min-w-0 qty-input border-none text-center focus:outline-none focus:ring-0"
+                                                        value="{{ $size->quantity }}" placeholder="Qty">
+                                                    <button type="button"
+                                                        class="remove-size bg-red-500 text-white px-3.5 h-full w-10 flex items-center justify-center hover:bg-red-600">✖</button>
+                                                    <button type="button"
+                                                        class="add-size text-2xl w-10 bg-blue-200 px-3 h-full flex items-center justify-center">+</button>
+                                                </div>
+                                            </div>
+                                        @endforeach
                                     </div>
-                                </div>
-                            </td>
-                            <td class="border p-2 text-center">
-                                <input type="text" name="items[0][rate]" placeholder="0"
-                                    class="border px-2 rounded h-10 w-full text-center rate-input focus:outline-none focus:ring-0">
-                            </td>
-                            <td class="border p-2 text-center">
-                                <input type="text" name="items[0][piece_rate]" placeholder="0"
-                                    class="border px-2 rounded h-10 w-full text-center piece-rate-input focus:outline-none focus:ring-0">
-                            </td>
-                            <td class="border p-2 text-center">
-                                <div
-                                    class="subtotal-cell border bg-gray-100 h-10 w-full px-4 rounded flex items-center justify-center">
-                                    0</div>
-                            </td>
-                            <td class="border py-2 px-2 text-center">
-                                <button type="button"
-                                    class="remove-row px-2 h-10 w-full bg-red-100 rounded">Remove</button>
-                            </td>
-                        </tr>
+                                </td>
+                                <td class="border p-2 text-center">
+                                    <input type="text" name="items[{{ $index }}][inch_rate]" placeholder="0"
+                                        class="border px-2 rounded h-10 w-full text-center rate-input focus:outline-none focus:ring-0"
+                                        value="{{ $item->inch_rate }}">
+                                </td>
+                                <td class="border p-2 text-center">
+                                    <input type="text" name="items[{{ $index }}][piece_rate]" placeholder="0"
+                                        class="border px-2 rounded h-10 w-full text-center piece-rate-input focus:outline-none focus:ring-0"
+                                        value="{{ $item->piece_rate }}">
+                                </td>
+                                <td class="border p-2 text-center">
+                                    <div
+                                        class="subtotal-cell border bg-gray-100 h-10 w-full px-4 rounded flex items-center justify-center">
+                                        {{ $item->item_total }}
+                                    </div>
+                                </td>
+                                <td class="border py-2 px-2 text-center">
+                                    <button type="button"
+                                        class="remove-row px-2 h-10 w-full bg-red-100 rounded">Remove</button>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -226,6 +239,7 @@
     <script>
         let sizesArray = {};
         let rowIndex = 1;
+        let customerStatus = '';
 
         function initSelect2() {
             $('.customer-select').select2({
@@ -246,230 +260,31 @@
             });
         }
 
-        $(document).ready(function() {
-            initSelect2();
-            flatpickr("#created_at", {
-                dateFormat: "d/m/Y",
-                defaultDate: "{{ old('created_at', date('d/m/Y')) }}"
-            });
-            $('.sizes-container .size-row:first .remove-size').hide();
-        });
-
-        let customerStatus = '';
-
-        $('#customer-select').on('change', function() {
-            let customerID = $(this).val();
-            if (customerID) {
-                $('#items-container').removeClass('hidden');
-            } else {
-                $('#items-container').addClass('hidden');
-                $('#customer-info').html('');
-                $('#debit').val('');
-                $('#debit_credit_status').val('');
-                recalcGrandTotal();
-            }
-            if (customerID) {
-                $.ajax({
-                    url: '/get-customer-data/' + customerID,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        let html = `
-                    <div class="p-4 bg-white border border-gray-100 rounded space-y-2">
-                        <p><strong class="text-gray-700">Name:</strong> 
-                           <span class="text-green-600 font-semibold">${data.name}</span></p>
-                        <p><strong class="text-gray-700">Phone:</strong> 
-                           <span class="text-blue-600 font-medium">${data.phone}</span></p>
-                        <p><strong class="text-gray-700">Address:</strong> 
-                           <span class="text-gray-800">${data.address}</span></p>
-                    </div>`;
-                        $('#customer-info').html(html);
-                        customerStatus = data.status ? data.status.toLowerCase() : '';
-                        if (data.amount) {
-                            $('#debit').val(data.amount);
-                            $('#debit_credit_status').val(data.status);
-                            recalcGrandTotal();
-                        }
-                    },
-                    error: function() {
-                        alert('Failed to fetch customer data!');
-                    }
-                });
-            }
-        });
-
-        $(document).on('change', '.brand-select', function() {
-            let tr = $(this).closest('tr');
-            let brandID = $(this).val();
-            let groupSelect = tr.find('.group-select');
-            groupSelect.empty().append('<option value="">Select Group</option>');
-            if (brandID) {
-                $.ajax({
-                    url: '/get-groups/' + brandID,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        $.each(data, function(key, value) {
-                            groupSelect.append('<option value="' + value.id + '">' + value
-                                .group + '</option>');
-                        });
-                        groupSelect.trigger('change.select2');
-                    },
-                    error: function() {
-                        alert('Failed to fetch groups!');
-                    }
-                });
-            }
-        });
-
-        $(document).on('change', '.group-select', function() {
-            let tr = $(this).closest('tr');
-            let groupID = $(this).val();
-            let rateInput = tr.find('.rate-input');
-            if (groupID) {
-                $.ajax({
-                    url: '/get-group-data/' + groupID,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        rateInput.val(data.rate);
-                        sizesArray[groupID] = data.sizes;
-                        let sizeSelect = tr.find('.size-select');
-                        sizeSelect.empty().append('<option value="">Select Size</option>');
-                        $.each(data.sizes, function(idx, sizeObj) {
-                            sizeSelect.append('<option value="' + sizeObj.size + '">' + sizeObj
-                                .size + '</option>');
-                        });
-                    },
-                    error: function() {
-                        alert('Failed to fetch group data!');
-                    }
-                });
-            }
-        });
-
-        $(document).on('change', '.size-select', function() {
-            let tr = $(this).closest('tr');
+        function triggerQuantityCheck(tr) {
             let brandID = tr.find('.brand-select').val();
             let groupID = tr.find('.group-select').val();
-            let size = $(this).val();
-            let qtyInput = $(this).closest('.size-row').find('.qty-input');
-
-            if (brandID && groupID && size) {
-                $.ajax({
-                    url: `/check-quantity/${brandID}/${groupID}/${size}`,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        qtyInput.attr('data-max-qty', data.available_quantity);
-                        if (parseInt(qtyInput.val()) > data.available_quantity) {
-                            qtyInput.val(data.available_quantity);
-                            alert(`Available quantity for this size is ${data.available_quantity}`);
+            tr.find('.size-select').each(function() {
+                let size = $(this).val();
+                let qtyInput = $(this).closest('.size-row').find('.qty-input');
+                if (brandID && groupID && size) {
+                    $.ajax({
+                        url: `/check-quantity/${brandID}/${groupID}/${size}`,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            qtyInput.attr('data-max-qty', data.available_quantity);
+                            if (parseInt(qtyInput.val()) > data.available_quantity) {
+                                qtyInput.val(data.available_quantity);
+                                alert(`Available quantity for this size is ${data.available_quantity}`);
+                            }
+                        },
+                        error: function() {
+                            console.log('Failed to fetch available quantity!');
                         }
-                    },
-                    error: function() {
-                        alert('Failed to fetch available quantity!');
-                    }
-                });
-            }
-        });
-
-        $(document).on('input', '.qty-input', function() {
-            let maxQty = parseInt($(this).attr('data-max-qty')) || 0;
-            if (parseInt($(this).val()) > maxQty) {
-                $(this).val(maxQty);
-                alert(`You cannot enter more than available quantity (${maxQty})`);
-            }
-            recalcSubtotal($(this).closest('tr')[0]);
-        });
-
-        document.getElementById('add-row').addEventListener('click', function() {
-            let totalSizes = document.querySelectorAll('.sizes-container .size-row').length;
-            if (totalSizes >= 70) {
-                alert('আপনি সর্বোচ্চ ১৪টি সারি (row) যোগ করতে পারবেন!');
-                return;
-            }
-            const container = document.getElementById('items-container');
-            const templateRow = container.querySelector('.item-row');
-
-            let currentRowCount = 0;
-            $('#items-container .item-row').each(function() {
-                let sizeCount = $(this).find('.size-row').length;
-                currentRowCount += Math.ceil(sizeCount / 5);
-            });
-            if (currentRowCount >= 14) {
-                alert('সব মিলিয়ে সর্বোচ্চ ৭০টি সাইজ যোগ করা যাবে!');
-                return;
-            }
-
-            let newRow = templateRow.cloneNode(true);
-            let sizesContainer = newRow.querySelector('.sizes-container');
-            let sizeRows = sizesContainer.querySelectorAll('.size-row');
-            sizeRows.forEach((row, idx) => {
-                if (idx > 0) row.remove();
-                else {
-                    row.querySelector('.size-select').selectedIndex = 0;
-                    row.querySelector('.qty-input').value = '';
+                    });
                 }
             });
-            $(newRow).find('.select2-container').remove();
-
-            newRow.querySelectorAll('input').forEach(el => el.value = '');
-            let brandSelect = newRow.querySelector('.brand-select');
-            let groupSelect = newRow.querySelector('.group-select');
-            let sizeSelect = newRow.querySelector('.size-select');
-            brandSelect.selectedIndex = 0;
-            groupSelect.innerHTML = '<option value="">Select Group</option>';
-            sizeSelect.innerHTML = '<option value="">Select Size</option>';
-            newRow.querySelector('.subtotal-cell').innerText = '0';
-
-            newRow.querySelectorAll('input, select').forEach(el => {
-                el.name = el.name.replace(/\d+/, rowIndex);
-            });
-            container.appendChild(newRow);
-            initSelect2();
-            rowIndex++;
-        });
-
-        document.addEventListener('click', function(e) {
-            let tr, container;
-            if (e.target.classList.contains('add-size')) {
-                let totalSizes = document.querySelectorAll('.sizes-container .size-row').length;
-                if (totalSizes >= 70) {
-                    alert('সব মিলিয়ে সর্বোচ্চ ৭০টি সাইজ যোগ করা যাবে!');
-                    return;
-                }
-                tr = e.target.closest('tr');
-                container = tr.querySelector('.sizes-container');
-                let firstSizeRow = container.querySelector('.size-row');
-                let newSize = firstSizeRow.cloneNode(true);
-                $(newSize).find('.select2-container').remove();
-                newSize.querySelector('.size-select').selectedIndex = 0;
-                newSize.querySelector('.qty-input').value = '';
-                let sizeCount = container.querySelectorAll('.size-row').length;
-                newSize.querySelectorAll('input, select').forEach(el => {
-                    el.name = el.name.replace(/\[sizes\]\[\d+\]/, `[sizes][${sizeCount}]`);
-                });
-                newSize.querySelector('.add-size').remove();
-                newSize.querySelector('.remove-size').style.display = "flex";
-                container.appendChild(newSize);
-                initSelect2();
-                recalcSubtotal(tr);
-            }
-            if (e.target.classList.contains('remove-size')) {
-                tr = e.target.closest('tr');
-                container = tr.querySelector('.sizes-container');
-                if (container.querySelectorAll('.size-row').length > 1) {
-                    e.target.closest('.size-row').remove();
-                    recalcSubtotal(tr);
-                }
-            }
-            if (e.target.classList.contains('remove-row')) {
-                tr = e.target.closest('tr');
-                tr.remove();
-                recalcGrandTotal();
-            }
-        });
+        }
 
         function recalcSubtotal(tr) {
             let subtotal = 0;
@@ -485,10 +300,6 @@
             recalcGrandTotal();
         }
 
-        $(document).on('input', '.size-select,.qty-input,.rate-input,.piece-rate-input', function() {
-            recalcSubtotal($(this).closest('tr')[0]);
-        });
-
         function recalcGrandTotal() {
             let total = 0;
             $('#items-container .item-row').each(function() {
@@ -500,40 +311,213 @@
             $('#total').val(total.toFixed(2));
         }
 
-        let memoItems = @json($memo->items);
-        if (memoItems.length) {
-            let container = $('#items-container');
-            container.empty().removeClass('hidden');
-            memoItems.forEach((item, i) => {
-                let row = $('.item-row:first').clone();
-                row.find('.brand-select').val(item.brand_id).select2({
-                    placeholder: "Select Brand",
-                    width: '100%'
-                });
-                row.find('.group-select').val(item.group_id).select2({
-                    placeholder: "Select Group",
-                    width: '100%'
-                });
-                row.find('.rate-input').val(item.rate);
-                row.find('.piece-rate-input').val(item.piece_rate);
-
-                let sizesContainer = row.find('.sizes-container');
-                sizesContainer.empty();
-                item.sizes.forEach((sizeObj, j) => {
-                    let sizeRow = $('.size-row:first').clone();
-                    sizeRow.find('.select2-container').remove();
-                    sizeRow.find('.size-select').val(sizeObj.size).select2({
-                        placeholder: "Select Size",
-                        width: '100%'
-                    });
-                    sizeRow.find('.qty-input').val(sizeObj.quantity);
-                    if (j > 0) sizeRow.find('.remove-size').show();
-                    sizesContainer.append(sizeRow);
-                });
-
-                container.append(row);
-                rowIndex = i + 1;
+        function updateSizeRowNames(sizeRow, index) {
+            sizeRow.querySelectorAll('input, select').forEach(el => {
+                el.name = el.name.replace(/\[sizes\]\[\d+\]/, `[sizes][${index}]`);
             });
         }
+
+        function updateSizeRowButtons() {
+            $('#items-container .item-row').each(function() {
+                $(this).find('.sizes-container .size-row').each(function(index) {
+                    let addBtn = $(this).find('.add-size');
+                    let removeBtn = $(this).find('.remove-size');
+
+                    if (index === 0) {
+                        addBtn.show();
+                        removeBtn.hide();
+                    } else {
+                        addBtn.hide();
+                        removeBtn.show();
+                    }
+                });
+            });
+        }
+
+        $(document).ready(function() {
+            initSelect2();
+            flatpickr("#created_at", {
+                dateFormat: "d/m/Y",
+                defaultDate: "{{ old('created_at', date('d/m/Y', strtotime($memo->created_at))) }}"
+            });
+            updateSizeRowButtons();
+        });
+
+        $(document).ready(function() {
+            $('#items-container .item-row').each(function() {
+                triggerQuantityCheck($(this));
+            });
+
+            $('#customer-select').on('change', function() {
+                let customerID = $(this).val();
+                if (customerID) $('#items-container').removeClass('hidden');
+                else {
+                    $('#items-container').addClass('hidden');
+                    $('#customer-info').html('');
+                    $('#debit').val('');
+                    $('#debit_credit_status').val('');
+                    recalcGrandTotal();
+                }
+                if (!customerID) return;
+                $.ajax({
+                    url: '/get-customer-data/' + customerID,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        let html =
+                            `<div class="p-4 bg-white border border-gray-100 rounded space-y-2">
+                        <p><strong class="text-gray-700">Name:</strong> <span class="text-green-600 font-semibold">${data.name}</span></p>
+                        <p><strong class="text-gray-700">Phone:</strong> <span class="text-blue-600 font-medium">${data.phone}</span></p>
+                        <p><strong class="text-gray-700">Address:</strong> <span class="text-gray-800">${data.address}</span></p></div>`;
+                        $('#customer-info').html(html);
+                        customerStatus = data.status ? data.status.toLowerCase() : '';
+                        if (data.amount) {
+                            $('#debit').val(data.amount);
+                            $('#debit_credit_status').val(data.status);
+                            recalcGrandTotal();
+                        }
+                    },
+                    error: function() {
+                        alert('Failed to fetch customer data!');
+                    }
+                });
+            });
+            if ($('#customer-select').val()) $('#customer-select').trigger('change');
+
+            $(document).on('change', '.brand-select', function() {
+                let tr = $(this).closest('tr');
+                let brandID = $(this).val();
+                let groupSelect = tr.find('.group-select');
+                groupSelect.empty().append('<option value="">Select Group</option>');
+                if (!brandID) return;
+                $.ajax({
+                    url: '/get-groups/' + brandID,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        $.each(data, function(key, value) {
+                            groupSelect.append('<option value="' + value.id + '">' +
+                                value.group + '</option>');
+                        });
+                        groupSelect.trigger('change.select2');
+                        triggerQuantityCheck(tr);
+                    },
+                    error: function() {
+                        alert('Failed to fetch groups!');
+                    }
+                });
+            });
+
+            $(document).on('change', '.group-select', function() {
+                let tr = $(this).closest('tr');
+                let groupID = $(this).val();
+                let rateInput = tr.find('.rate-input');
+                if (!groupID) return;
+                $.ajax({
+                    url: '/get-group-data/' + groupID,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        rateInput.val(data.rate);
+                        sizesArray[groupID] = data.sizes;
+                        let sizeSelect = tr.find('.size-select');
+                        sizeSelect.empty().append('<option value="">Select Size</option>');
+                        $.each(data.sizes, function(idx, sizeObj) {
+                            sizeSelect.append('<option value="' + sizeObj.size + '">' +
+                                sizeObj.size + '</option>');
+                        });
+                        triggerQuantityCheck(tr);
+                    },
+                    error: function() {
+                        alert('Failed to fetch group data!');
+                    }
+                });
+            });
+
+            $(document).on('change', '.size-select', function() {
+                triggerQuantityCheck($(this).closest('tr'));
+            });
+
+            $(document).on('input', '.qty-input', function() {
+                let maxQty = parseInt($(this).attr('data-max-qty')) || 0;
+                if (parseInt($(this).val()) > maxQty) {
+                    $(this).val(maxQty);
+                    alert(`You cannot enter more than available quantity (${maxQty})`);
+                }
+                recalcSubtotal($(this).closest('tr')[0]);
+            });
+
+            $('#add-row').on('click', function() {
+                let totalSizes = document.querySelectorAll('.sizes-container .size-row').length;
+                if (totalSizes >= 70) {
+                    alert('আপনি সর্বোচ্চ ৭০টি সাইজ যোগ করতে পারবেন!');
+                    return;
+                }
+                let container = document.getElementById('items-container');
+                let templateRow = container.querySelector('.item-row');
+                let newRow = templateRow.cloneNode(true);
+                let sizesContainer = newRow.querySelector('.sizes-container');
+                let sizeRows = sizesContainer.querySelectorAll('.size-row');
+                sizeRows.forEach((row, idx) => {
+                    if (idx > 0) row.remove();
+                    else {
+                        row.querySelector('.size-select').selectedIndex = 0;
+                        row.querySelector('.qty-input').value = '';
+                    }
+                });
+                $(newRow).find('.select2-container').remove();
+                newRow.querySelectorAll('input').forEach(el => el.value = '');
+                newRow.querySelector('.brand-select').selectedIndex = 0;
+                newRow.querySelector('.group-select').innerHTML = '<option value="">Select Group</option>';
+                newRow.querySelector('.size-select').innerHTML = '<option value="">Select Size</option>';
+                newRow.querySelector('.subtotal-cell').innerText = '0';
+                newRow.querySelectorAll('input, select').forEach(el => {
+                    el.name = el.name.replace(/\d+/, rowIndex);
+                });
+                container.appendChild(newRow);
+                initSelect2();
+                rowIndex++;
+                updateSizeRowButtons();
+            });
+
+            $(document).on('click', function(e) {
+                let tr, container;
+                if (e.target.classList.contains('add-size')) {
+                    tr = e.target.closest('tr');
+                    container = tr.querySelector('.sizes-container');
+                    let firstSizeRow = container.querySelector('.size-row');
+                    let newSize = firstSizeRow.cloneNode(true);
+                    $(newSize).find('.select2-container').remove();
+                    newSize.querySelector('.size-select').selectedIndex = 0;
+                    newSize.querySelector('.qty-input').value = '';
+                    let sizeCount = container.querySelectorAll('.size-row').length;
+                    updateSizeRowNames(newSize, sizeCount);
+                    newSize.querySelector('.add-size').remove();
+                    newSize.querySelector('.remove-size').style.display = "flex";
+                    container.appendChild(newSize);
+                    initSelect2();
+                    recalcSubtotal(tr);
+                    updateSizeRowButtons();
+                }
+                if (e.target.classList.contains('remove-size')) {
+                    tr = e.target.closest('tr');
+                    container = tr.querySelector('.sizes-container');
+                    if (container.querySelectorAll('.size-row').length > 1) {
+                        e.target.closest('.size-row').remove();
+                        recalcSubtotal(tr);
+                        updateSizeRowButtons();
+                    }
+                }
+                if (e.target.classList.contains('remove-row')) {
+                    tr = e.target.closest('tr');
+                    tr.remove();
+                    recalcGrandTotal();
+                }
+            });
+
+            $(document).on('input change', '.size-select,.qty-input,.rate-input,.piece-rate-input', function() {
+                recalcSubtotal($(this).closest('tr')[0]);
+            });
+        });
     </script>
 @endpush

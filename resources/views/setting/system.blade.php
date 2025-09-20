@@ -16,16 +16,16 @@
 
                 <!-- Invoice Permission -->
                 <div class="mt-4 flex items-center gap-3">
-                    <input type="checkbox" id="invoice" name="permissions[]" value="invoice"
-                        {{ in_array('invoice', $settings->permissions ?? []) ? 'checked' : '' }}
+                    <input type="checkbox" id="invoice" name="invoice" value="1"
+                        {{ $setting && $setting->invoice ? 'checked' : '' }}
                         class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                     <label for="invoice" class="text-md font-medium text-gray-700">Invoice</label>
                 </div>
 
                 <!-- Vendor Stock Permission -->
                 <div class="mt-4 flex items-center gap-3">
-                    <input type="checkbox" id="vendor_stock" name="permissions[]" value="vendor_stock"
-                        {{ in_array('vendor_stock', $settings->permissions ?? []) ? 'checked' : '' }}
+                    <input type="checkbox" id="vendor_stock" name="vendor_stock" value="1"
+                        {{ $setting && $setting->vendor_stock ? 'checked' : '' }}
                         class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                     <label for="vendor_stock" class="text-md font-medium text-gray-700">Vendor Stock</label>
                 </div>

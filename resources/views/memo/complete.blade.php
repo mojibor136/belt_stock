@@ -126,12 +126,13 @@
                             <td class="px-4 py-3 text-center text-gray-600">{{ $m->created_at->format('d/m/Y') }}</td>
                             <td class="px-4 py-3 text-center space-x-2">
                                 <span
-                                    class="px-3 py-1 rounded text-white capitalize text-sm font-medium
-                                {{ $m->memo_status == 'pending' ? 'bg-yellow-500' : 'bg-green-600' }}">
+                                    class="inline-flex items-center justify-center h-8 px-3 rounded text-white capitalize text-sm font-medium
+                                    {{ $m->memo_status == 'pending' ? 'bg-yellow-500' : 'bg-green-600' }}">
                                     {{ ucfirst($m->memo_status) }}
                                 </span>
+
                                 <span onclick="window.location='{{ route('memo.show', $m->id) }}'"
-                                    class="px-3 py-1 rounded text-white capitalize text-sm font-medium bg-red-600 cursor-pointer hover:bg-red-700">
+                                    class="inline-flex items-center justify-center h-8 px-3 rounded text-white capitalize text-sm font-medium bg-red-600 cursor-pointer hover:bg-red-700">
                                     View
                                 </span>
                             </td>

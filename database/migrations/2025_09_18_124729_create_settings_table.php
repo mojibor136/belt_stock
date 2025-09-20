@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('fav_icon')->nullable();
             $table->string('site_logo')->nullable();
-            $table->string('invoice')->nullable();
+            $table->boolean('invoice')->default(0);
             $table->boolean('vendor_stock')->default(0);
             $table->json('shop_name')->nullable();
             $table->json('shop_address')->nullable();

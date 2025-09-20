@@ -126,17 +126,18 @@
                             <td class="px-4 py-3 text-center text-gray-600">{{ $m->created_at->format('d/m/Y') }}</td>
                             <td class="px-4 py-3 text-center space-x-2">
                                 <span onclick="window.location='{{ route('memo.status', $m->id) }}'"
-                                    class="px-3 py-1 rounded text-white capitalize text-sm font-medium
-                                {{ $m->memo_status == 'pending' ? 'bg-yellow-500' : 'bg-green-600' }}">
+                                    class="inline-flex items-center justify-center h-8 px-3 rounded text-white capitalize text-sm font-medium cursor-pointer
+                                    {{ $m->memo_status == 'pending' ? 'bg-yellow-500' : 'bg-green-600' }}">
                                     {{ ucfirst($m->memo_status) }}
                                 </span>
 
                                 <span onclick="window.location='{{ route('memo.edit', $m->id) }}'"
-                                    class="px-3 py-1 rounded text-white capitalize text-sm font-medium bg-green-600 cursor-pointer hover:bg-green-700">
+                                    class="inline-flex items-center justify-center h-8 px-3 rounded text-white capitalize text-sm font-medium bg-blue-600 cursor-pointer hover:bg-blue-700">
                                     Edit
                                 </span>
+
                                 <span onclick="window.location='{{ route('memo.show', $m->id) }}'"
-                                    class="px-3 py-1 rounded text-white capitalize text-sm font-medium bg-gray-600 cursor-pointer hover:bg-gray-700">
+                                    class="inline-flex items-center justify-center h-8 px-3 rounded text-white capitalize text-sm font-medium bg-gray-600 cursor-pointer hover:bg-gray-700">
                                     View
                                 </span>
 
@@ -145,7 +146,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
-                                        class="inline-flex items-center justify-center px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded shadow cursor-pointer"
+                                        class="inline-flex items-center justify-center h-8 px-3 bg-red-600 hover:bg-red-700 text-white rounded shadow"
                                         title="Delete">
                                         <i class="ri-delete-bin-6-line text-md"></i>
                                     </button>

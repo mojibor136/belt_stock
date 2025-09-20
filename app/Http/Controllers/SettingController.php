@@ -119,6 +119,19 @@ class SettingController extends Controller
 
     public function system()
     {
-        return view('setting.system');
+        $setting = Setting::first();
+        return view('setting.system' , compact('setting'));
+    }
+
+    public function systemStore(Request $request)
+    {
+        $settings = Setting::firstOrCreate(['id' => 1]);
+
+        $settings->invoice = $request->has('invoice') ? 1 : 0;
+        $settings->vendor_stock = $request->has('vendor_stock') ? 1 : 0;
+
+        $settings->save();
+
+        return redirect()->back()->with('success', 'System settings updated successfully!');
     }
 }
