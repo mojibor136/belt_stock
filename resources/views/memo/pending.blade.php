@@ -114,10 +114,14 @@
                             <td class="px-4 py-3">{{ $index + 1 }}</td>
                             <td class="px-4 py-3 font-bold">{{ $m->customer->name }}</td>
                             <td class="px-4 py-3">{{ $m->memo_no }}</td>
-                            <td
-                                class="px-4 py-3 text-left capitalize 
-                                {{ $m->debit_credit_status == 'Debit' ? 'text-red-600' : 'text-green-600' }}">
-                                {{ $m->debit_credit_status }} &#2547; ({{ bd_format($m->debit_credit) }})
+                            <td class="px-4 py-3 text-left">
+                                <div class="inline-flex items-center space-x-2">
+                                    <span
+                                        class="px-3 py-1 rounded-full text-sm font-semibold capitalize
+                                        {{ $m->debit_credit_status == 'debit' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
+                                        {{ $m->debit_credit_status }} &#2547; {{ bd_format($m->debit_credit) }}
+                                    </span>
+                                </div>
                             </td>
                             <td class="px-4 py-3 text-left font-semibold">&#2547; {{ bd_format($m->grand_total) }}.00</td>
                             <td class="px-4 py-3 text-left font-semibold">

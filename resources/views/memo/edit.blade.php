@@ -93,6 +93,7 @@
         <h1 class="text-2xl font-bold mb-6 text-gray-800">📝 Create Memo</h1>
         <form action="{{ route('memo.store') }}" method="POST" class="space-y-6">
             @csrf
+            <input type="hidden" name="old_memo_id" value="{{ $memo->id }}">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Memo No</label>
