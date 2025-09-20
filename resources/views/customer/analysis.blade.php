@@ -189,7 +189,7 @@
                             </div>
                             <div>
                                 <p class="text-gray-500 text-sm">Customer Name</p>
-                                <p class="text-lg font-semibold text-gray-800">{{ $customer->name }}</p>
+                                <p class="text-md font-semibold text-gray-600">{{ $customer->name }}</p>
                             </div>
                         </div>
 
@@ -199,7 +199,7 @@
                             </div>
                             <div>
                                 <p class="text-gray-500 text-sm">Phone</p>
-                                <p class="text-lg font-semibold text-gray-800">{{ $customer->phone ?? 'N/A' }}</p>
+                                <p class="text-md font-semibold text-gray-600">{{ $customer->phone ?? 'N/A' }}</p>
                             </div>
                         </div>
 
@@ -210,7 +210,7 @@
                             </div>
                             <div>
                                 <p class="text-gray-500 text-sm">Email</p>
-                                <p class="text-lg font-semibold text-gray-800">{{ $customer->email ?? 'N/A' }}</p>
+                                <p class="text-md font-semibold text-gray-600">{{ $customer->email ?? 'N/A' }}</p>
                             </div>
                         </div>
 
@@ -221,7 +221,7 @@
                             </div>
                             <div>
                                 <p class="text-gray-500 text-sm">Address</p>
-                                <p class="text-lg font-semibold text-gray-800">{{ $customer->address ?? 'N/A' }}</p>
+                                <p class="text-md font-semibold text-gray-600">{{ $customer->address ?? 'N/A' }}</p>
                             </div>
                         </div>
 
@@ -231,7 +231,7 @@
                             </div>
                             <div>
                                 <p class="text-gray-500 text-sm">Current Balance</p>
-                                <p class="text-lg font-semibold text-gray-800">&#2547;
+                                <p class="text-md font-semibold text-gray-600">&#2547;
                                     {{ number_format($customer->amount ?? 0, 2) }}</p>
                             </div>
                         </div>

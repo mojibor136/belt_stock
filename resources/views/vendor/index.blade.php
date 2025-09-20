@@ -78,7 +78,7 @@
                     @foreach ($vendors as $index => $vendor)
                         <tr class="hover:bg-gray-100 transition-colors cursor-pointer">
                             <td class="px-4 py-3">{{ $index + 1 }}</td>
-                            <td class="px-4 py-3 font-bold">
+                            <td class="px-4 py-3">
                                 @php $randColor = $colors[array_rand($colors)]; @endphp
                                 <span class="text-transparent text-sm bg-clip-text bg-gradient-to-r {{ $randColor }}">
                                     {{ $vendor->name }}
@@ -86,25 +86,25 @@
                             </td>
                             <td class="px-4 py-3">
                                 <span
-                                    class="px-2 py-1 text-sm font-semibold rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+                                    class="px-2 py-1 text-sm rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
                                     {{ $vendor->phone }}
                                 </span>
                             </td>
                             <td class="px-4 py-3 text-center">
                                 <span
-                                    class="text-md font-bold {{ strtolower($vendor->status) === 'credit' ? 'text-green-600' : 'text-red-600' }}">
+                                    class="text-md {{ strtolower($vendor->status) === 'credit' ? 'text-green-600' : 'text-red-600' }}">
                                     ৳ {{ number_format($vendor->amount) }}
                                 </span>
                             </td>
                             <td class="px-4 py-3 text-center">
                                 @if (strtolower($vendor->status) === 'credit')
                                     <span
-                                        class="px-8 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white shadow">
+                                        class="px-8 py-1 text-xs rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white shadow">
                                         Credit
                                     </span>
                                 @else
                                     <span
-                                        class="px-8 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-red-400 to-red-600 text-white shadow">
+                                        class="px-8 py-1 text-xs rounded-full bg-gradient-to-r from-red-400 to-red-600 text-white shadow">
                                         Debit
                                     </span>
                                 @endif

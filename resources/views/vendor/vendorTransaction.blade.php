@@ -18,15 +18,26 @@
     </style>
 
     <div class="bg-white w-full mb-6 flex flex-col">
-        <div
-            class="py-4 bg-white rounded flex flex-col md:flex-row justify-between items-center md:items-start gap-6 border-b border-gray-200">
-            <div class="flex flex-col items-center md:items-start gap-1 w-full md:w-1/2">
-                <span class="text-3xl font-extrabold text-green-700">{{ $vendor->name }}</span>
-                <span class="text-gray-600 text-base">Phone: <span class="font-medium">{{ $vendor->phone }}</span></span>
-            </div>
-            <div class="flex flex-col items-center md:items-end gap-1 w-full md:w-1/2 text-gray-700">
-                <p class="font-medium text-sm">Address: {{ $vendor->address }}</p>
-                <p class="font-medium text-sm">Email: {{ $vendor->email }}</p>
+        <div class="py-6 px-4 mb-4 bg-gradient-to-r from-indigo-50 via-white to-emerald-50 rounded">
+            <div class="grid grid-cols-1 md:grid-cols-3 items-center text-center md:text-left gap-4">
+                <div class="flex flex-col items-center md:items-start gap-2">
+                    <span class="text-gray-700 text-md">
+                        Phone: <span class="font-medium">{{ $vendor->phone }}</span>
+                    </span>
+                    <p class="font-medium text-md text-gray-700">Address: {{ $vendor->address }}</p>
+                    <p class="font-medium text-md text-gray-700">Subject: Transaction</p>
+                </div>
+
+                <div class="flex flex-col items-center gap-2">
+                    <span class="text-2xl font-extrabold text-green-700">{{ $vendor->name }}</span>
+                    <img src="{{ asset($setting->site_logo) }}" alt="Logo" class="w-44 h-auto" />
+                </div>
+
+                <div class="flex flex-col items-center md:items-end gap-2 text-gray-700">
+                    <p class="font-medium text-md">Email: {{ $vendor->email }}</p>
+                    <p class="font-medium text-md text-gray-700">Transport: Null</p>
+                    <p class="font-medium text-MD">Vendor ID: #1023</p>
+                </div>
             </div>
         </div>
 
@@ -79,18 +90,18 @@
                                     <td class="px-4 py-3">
                                         @if ($trx->status === 'credit')
                                             <span
-                                                class="px-8 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white shadow">
+                                                class="px-8 py-1 text-xs rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white shadow">
                                                 Credit
                                             </span>
                                         @else
                                             <span
-                                                class="px-8 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-red-400 to-red-600 text-white shadow">
+                                                class="px-8 py-1 text-xs rounded-full bg-gradient-to-r from-red-400 to-red-600 text-white shadow">
                                                 Debit
                                             </span>
                                         @endif
                                     </td>
                                     <td
-                                        class="px-4 py-3 font-semibold {{ $trx->status == 'credit' ? 'text-green-600' : 'text-red-600' }}">
+                                        class="px-4 py-3 {{ $trx->status == 'credit' ? 'text-green-600' : 'text-red-600' }}">
                                         ৳ {{ number_format($trx->debit_credit) }} .00
                                     </td>
                                     <td class="px-4 py-3 text-center">
@@ -99,7 +110,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="px-6 py-1 text-white bg-red-600 hover:bg-red-700 rounded-3xl text-xs font-semibold transition">
+                                                class="px-6 py-1 text-white bg-red-600 hover:bg-red-700 rounded-3xl text-xs transition">
                                                 Delete
                                             </button>
                                         </form>

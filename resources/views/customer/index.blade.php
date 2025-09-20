@@ -4,9 +4,9 @@
     @include('components.toast')
     <div class="w-full mb-4">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b rounded-md mb-4">
-            <div class="flex flex-col gap-1 w-full md:w-2/3">
-                <h1 class="text-2xl font-bold text-gray-800">Customer Management</h1>
-                <p class="text-sm text-gray-500">Manage your customers and their transactions efficiently</p>
+            <div class="flex flex-col gap-2 w-full md:w-2/3">
+                <h1 class="text-xl font-bold text-gray-800">Customer Management</h1>
+                <p class="text-sm text-gray-500 ml-1">Manage your customers and their transactions efficiently</p>
             </div>
             <div class="flex flex-row gap-2 mt-3 md:mt-0 w-full md:w-auto items-start sm:items-center">
                 <a href="{{ route('customer.create') }}"
@@ -53,7 +53,7 @@
                         <th class="px-4 py-3 text-left">Phone</th>
                         <th class="px-4 py-3 text-center">Amount</th>
                         <th class="px-4 py-3 text-center">Credit / Debit</th>
-                        <th class="px-4 py-3 text-center">Memo</th>
+                        <th class="px-4 py-3 text-center">Memo/Sales</th>
                         <th class="px-4 py-3 text-right pr-8">Actions</th>
                     </tr>
                 </thead>
@@ -71,7 +71,7 @@
                     @foreach ($customers as $index => $customer)
                         <tr class="hover:bg-gray-100 transition-colors cursor-pointer">
                             <td class="px-4 py-3">{{ $index + 1 }}</td>
-                            <td class="px-4 py-3 font-bold">
+                            <td class="px-4 py-3">
                                 @php $randColor = $colors[array_rand($colors)]; @endphp
                                 <span
                                     class="text-transparent text-[13px] bg-clip-text bg-gradient-to-r {{ $randColor }}">
@@ -80,42 +80,51 @@
                             </td>
                             <td class="px-4 py-3">
                                 <span
-                                    class="px-2 py-1 text-sm font-semibold rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+                                    class="px-2 py-1 text-sm rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
                                     {{ $customer->phone }}
                                 </span>
                             </td>
                             <td class="px-4 py-3 text-center">
                                 <span
-                                    class="text-md font-bold {{ $customer->status == 'credit' ? 'text-green-600' : 'text-red-600' }}">
+                                    class="text-md {{ $customer->status == 'credit' ? 'text-green-600' : 'text-red-600' }}">
                                     ৳ {{ number_format($customer->amount) }}
                                 </span>
                             </td>
                             <td class="px-4 py-3 text-center">
                                 @if ($customer->status === 'credit')
                                     <span
-                                        class="px-8 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white shadow">
+                                        class="px-8 py-1 text-xs rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white shadow">
                                         Credit
                                     </span>
                                 @else
                                     <span
-                                        class="px-8 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-red-400 to-red-600 text-white shadow">
+                                        class="px-8 py-1 text-xs rounded-full bg-gradient-to-r from-red-400 to-red-600 text-white shadow">
                                         Debit
                                     </span>
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <div class="flex justify-center items-center gap-1">
-                                    <a href="{{ route('customer.sales', $customer->id) }}"
-                                        class="inline-flex items-center justify-center w-10 h-8 bg-orange-500 hover:bg-orange-600 text-white rounded shadow"
-                                        title="View">
-                                        <i class="ri-eye-line text-lg"></i>
-                                    </a>
+                                <div class="flex justify-center gap-2">
+                                    <div class="flex justify-center items-center gap-1">
+                                        <a href="{{ route('customer.memo', [$customer->id, Str::slug($customer->name)]) }}"
+                                            class="inline-flex items-center justify-center w-14 h-8 bg-indigo-600 hover:bg-indigo-700 text-white rounded shadow"
+                                            title="View">
+                                            <span>Memo</span>
+                                        </a>
+                                    </div>
+                                    <div class="flex justify-center items-center gap-1">
+                                        <a href="{{ route('customer.sales', [$customer->id, Str::slug($customer->name)]) }}"
+                                            class="inline-flex items-center justify-center w-14 h-8 bg-orange-600 hover:bg-orange-700 text-white rounded shadow"
+                                            title="View">
+                                            <span>Sales</span>
+                                        </a>
+                                    </div>
                                 </div>
                             </td>
                             <td class="px-4 py-3 text-right">
                                 <div class="flex justify-end items-center gap-1">
                                     <div onclick="window.location.href='{{ route('customer.analysis', ['name' => Str::slug($customer->name), 'id' => $customer->id]) }}'"
-                                        class="bg-indigo-600 text-white rounded px-4 flex justify-center items-center gap-0.5 h-8 cursor-pointer">
+                                        class="bg-indigo-600 hover:bg-indigo-700 text-white rounded px-4 flex justify-center items-center gap-0.5 h-8 cursor-pointer">
                                         <i class="ri-computer-line"></i>
                                         <span>Analysis</span>
                                     </div>

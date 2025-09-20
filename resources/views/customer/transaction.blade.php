@@ -19,9 +19,9 @@
 
     <div class="w-full mb-4">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b rounded-md mb-4">
-            <div class="flex flex-col gap-1 w-full md:w-2/3">
-                <h1 class="text-2xl font-bold text-gray-800">Transaction</h1>
-                <p class="text-sm text-gray-500">Manage your customers and their transactions efficiently</p>
+            <div class="flex flex-col gap-2 w-full md:w-2/3">
+                <h1 class="text-xl font-bold text-gray-800">Transaction</h1>
+                <p class="text-sm text-gray-500 ml-1">Manage your customers and their transactions efficiently</p>
             </div>
         </div>
 
@@ -82,7 +82,7 @@
                     @foreach ($transactions as $index => $trx)
                         <tr class="hover:bg-gray-100 transition-colors">
                             <td class="px-4 py-3">{{ $index + $transactions->firstItem() }}</td>
-                            <td class="px-4 py-3 font-bold text-[13px]">
+                            <td class="px-4 py-3 text-[13px]">
                                 {{ $trx->customer ? $trx->customer->name : 'N/A' }}
                             </td>
                             <td class="px-4 py-3">{{ $trx->invoice_type }}</td>
@@ -98,12 +98,12 @@
                             <td class="px-4 py-3">
                                 @if ($trx->status === 'credit')
                                     <span
-                                        class="px-8 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white shadow">
+                                        class="px-8 py-1 text-xs rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white shadow">
                                         Credit
                                     </span>
                                 @else
                                     <span
-                                        class="px-8 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-red-400 to-red-600 text-white shadow">
+                                        class="px-8 py-1 text-xs rounded-full bg-gradient-to-r from-red-400 to-red-600 text-white shadow">
                                         Debit
                                     </span>
                                 @endif

@@ -97,7 +97,8 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/customer/destroy/{id}' , 'destroy')->name('customer.destroy');
         Route::post('/customer/store' , 'store')->name('customer.store');
         Route::post('/customer/update' , 'update')->name('customer.update');
-        Route::get('/customer/sales/mojibor' , 'customerSales')->name('customer.sales');
+        Route::get('/customer/sales/{name}/{id}' , 'customerSales')->name('customer.sales');
+        Route::get('/customer/memo/{name}/{id}' , 'customerMemo')->name('customer.memo');
         Route::get('/customer/analysis/{name}/{id}' , 'customerAnalysis')->name('customer.analysis');
     });
 

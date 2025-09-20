@@ -82,7 +82,7 @@
                     @foreach ($transactions as $index => $trx)
                         <tr class="hover:bg-gray-100 transition-colors">
                             <td class="px-4 py-3">{{ $index + $transactions->firstItem() }}</td>
-                            <td class="px-4 py-3 font-bold text-[13px]">
+                            <td class="px-4 py-3 text-[13px]">
                                 {{ $trx->vendor ? $trx->vendor->name : 'N/A' }}
                             </td>
                             <td class="px-4 py-3">{{ $trx->invoice_type }}</td>
@@ -98,12 +98,12 @@
                             <td class="px-4 py-3">
                                 @if ($trx->status === 'credit')
                                     <span
-                                        class="px-8 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white shadow">
+                                        class="px-8 py-1 text-xs rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white shadow">
                                         Credit
                                     </span>
                                 @else
                                     <span
-                                        class="px-8 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-red-400 to-red-600 text-white shadow">
+                                        class="px-8 py-1 text-xs rounded-full bg-gradient-to-r from-red-400 to-red-600 text-white shadow">
                                         Debit
                                     </span>
                                 @endif

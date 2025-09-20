@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\CustomerTrx;
 use App\Models\Memo;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CustomerController extends Controller
 {
@@ -17,12 +17,12 @@ class CustomerController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('address', 'like', "%{$search}%")
-                  ->orWhere('transport', 'like', "%{$search}%");
+                    ->orWhere('phone', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('address', 'like', "%{$search}%")
+                    ->orWhere('transport', 'like', "%{$search}%");
             });
         }
 
@@ -54,11 +54,11 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'      => 'required|string|max:255',
-            'phone'     => 'required|string|max:20',
-            'amount'    => 'required|numeric|min:0',
-            'email'     => 'nullable|email|max:255',
-            'address'   => 'required|string|max:500',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'amount' => 'required|numeric|min:0',
+            'email' => 'nullable|email|max:255',
+            'address' => 'required|string|max:500',
             'transport' => 'nullable|string|max:255',
         ]);
 
@@ -74,13 +74,13 @@ class CustomerController extends Controller
             }
 
             Customer::create([
-                'name'      => $request->name,
-                'phone'     => $request->phone,
-                'amount'    => $request->amount,
-                'email'     => $request->email,
-                'address'   => $request->address,
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'amount' => $request->amount,
+                'email' => $request->email,
+                'address' => $request->address,
                 'transport' => $request->transport,
-                'status'    => 'debit',
+                'status' => 'debit',
             ]);
 
             return redirect()->route('customer.index')->with('success', 'গ্রাহক সফলভাবে তৈরি হয়েছে!');
@@ -92,18 +92,19 @@ class CustomerController extends Controller
     public function edit($id)
     {
         $customer = Customer::findOrFail($id);
+
         return view('customer.edit', compact('customer'));
     }
 
     public function update(Request $request)
     {
         $request->validate([
-            'id'        => 'required|exists:customers,id',
-            'name'      => 'required|string|max:255',
-            'phone'     => 'required|string|max:20',
-            'amount'    => 'required|numeric|min:0',
-            'email'     => 'nullable|email|max:255',
-            'address'   => 'required|string|max:500',
+            'id' => 'required|exists:customers,id',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'amount' => 'required|numeric|min:0',
+            'email' => 'nullable|email|max:255',
+            'address' => 'required|string|max:500',
             'transport' => 'nullable|string|max:255',
         ]);
 
@@ -122,11 +123,11 @@ class CustomerController extends Controller
             }
 
             $customer->update([
-                'name'      => $request->name,
-                'phone'     => $request->phone,
-                'amount'    => $request->amount,
-                'email'     => $request->email,
-                'address'   => $request->address,
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'amount' => $request->amount,
+                'email' => $request->email,
+                'address' => $request->address,
                 'transport' => $request->transport,
             ]);
 
@@ -141,6 +142,7 @@ class CustomerController extends Controller
         try {
             $customer = Customer::findOrFail($id);
             $customer->delete();
+
             return redirect()->route('customer.index')->with('success', 'গ্রাহক সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -150,6 +152,29 @@ class CustomerController extends Controller
     public function customerSales()
     {
         return view('customer.customerSales');
+    }
+
+    public function customerMemo(Request $request, $id)
+    {
+        $query = Memo::with('customer')->where('customer_id', $id);
+
+        $customer = Customer::find($id);
+
+        if ($request->filled('search')) {
+            $search = strtolower($request->search);
+            $query->whereRaw('LOWER(memo_no) LIKE ?', ["%{$search}%"]);
+        }
+        if ($request->filled('created_at')) {
+            try {
+                $date = Carbon::createFromFormat('d/m/Y', $request->created_at)->format('Y-m-d');
+                $query->whereDate('created_at', $date);
+            } catch (\Exception $e) {
+                Log::error('Pending memo invalid date', ['input' => $request->created_at, 'error' => $e->getMessage()]);
+            }
+        }
+        $memo = $query->latest()->get();
+
+        return view('customer.customerMemo', compact('memo', 'customer'));
     }
 
     public function customerAnalysis(Request $request, $name, $id)
