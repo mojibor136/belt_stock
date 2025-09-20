@@ -376,7 +376,6 @@
             let brandID = tr.find('.brand-select').val();
             let groupID = tr.find('.group-select').val();
             let size = $(this).val();
-            let qtyInput = $(this).closest('.size-row').find('.qty-input');
 
             if (brandID && groupID && size) {
                 $.ajax({
@@ -386,18 +385,70 @@
                     success: function(data) {
                         if (data.rate_type) {
                             if (data.rate_type === 'inch') {
-                                tr.find('.rate-input').prop('readonly', false);
-                                tr.find('.piece-rate-input').prop('readonly', true).val('');
+                                tr.find('.rate-input')
+                                    .prop('readonly', false)
+                                    .val(data.sales_rate ?? '');
+                                tr.find('.piece-rate-input')
+                                    .prop('readonly', true)
+                                    .val('');
                             } else if (data.rate_type === 'pieces') {
-                                tr.find('.rate-input').prop('readonly', true).val('');
-                                tr.find('.piece-rate-input').prop('readonly', false);
+                                tr.find('.rate-input')
+                                    .prop('readonly', true)
+                                    .val('');
+                                tr.find('.piece-rate-input')
+                                    .prop('readonly', false)
+                                    .val(data.sales_rate ?? '');
+                            } else {
+                                tr.find('.rate-input, .piece-rate-input')
+                                    .prop('readonly', true)
+                                    .val('');
                             }
                         }
                     },
                     error: function() {
-                        alert('Failed to fetch available quantity!');
+                        alert('Failed to fetch rate type!');
                     }
                 });
+            }
+        });
+
+        $(document).on('change', '.size-select', function() {
+            let currentSizeSelect = $(this);
+            let tr = currentSizeSelect.closest('tr');
+            let brandID = tr.find('.brand-select').val();
+            let groupID = tr.find('.group-select').val();
+            let size = currentSizeSelect.val();
+
+            if (!brandID || !groupID || !size) return;
+
+            let duplicate = false;
+
+            $('#items-container .item-row').each(function() {
+                let itemRow = $(this);
+                let rowBrand = itemRow.find('.brand-select').val();
+                let rowGroup = itemRow.find('.group-select').val();
+
+                itemRow.find('.size-row').each(function() {
+                    let sizeRow = $(this);
+                    let sizeSelect = sizeRow.find('.size-select');
+
+                    if (sizeSelect[0] === currentSizeSelect[0]) return true;
+
+                    let otherSize = sizeSelect.val();
+                    if (!otherSize) return true;
+
+                    if (brandID === rowBrand && groupID === rowGroup && size === otherSize) {
+                        duplicate = true;
+                        return false;
+                    }
+                });
+
+                if (duplicate) return false;
+            });
+
+            if (duplicate) {
+                alert('এই ব্র্যান্ড + গ্রুপ + সাইজ ইতিমধ্যেই যোগ করা হয়েছে!');
+                currentSizeSelect.val(null).trigger('change');
             }
         });
 
@@ -413,7 +464,7 @@
         document.getElementById('add-row').addEventListener('click', function() {
             let totalSizes = document.querySelectorAll('.sizes-container .size-row').length;
             if (totalSizes >= 70) {
-                alert('আপনি সর্বোচ্চ ১৪টি সারি (row) যোগ করতে পারবেন!');
+                alert('আপনি সর্বোচ্চ ১৪টি সারি যোগ করতে পারবেন!');
                 return;
             }
             const container = document.getElementById('items-container');
@@ -424,6 +475,7 @@
                 let sizeCount = $(this).find('.size-row').length;
                 currentRowCount += Math.ceil(sizeCount / 5);
             });
+
             if (currentRowCount >= 14) {
                 alert('সব মিলিয়ে সর্বোচ্চ ৭০টি সাইজ যোগ করা যাবে!');
                 return;
@@ -439,6 +491,7 @@
                     row.querySelector('.qty-input').value = '';
                 }
             });
+
             $(newRow).find('.select2-container').remove();
 
             newRow.querySelectorAll('input').forEach(el => el.value = '');

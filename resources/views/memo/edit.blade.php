@@ -321,6 +321,77 @@
             });
         }
 
+        $(document).on('change', '.size-select', function() {
+            let currentSizeSelect = $(this);
+            let tr = currentSizeSelect.closest('tr');
+            let brandID = tr.find('.brand-select').val();
+            let groupID = tr.find('.group-select').val();
+            let size = currentSizeSelect.val();
+
+            if (!brandID || !groupID || !size) return;
+
+            let duplicate = false;
+
+            $('#items-container .item-row').each(function() {
+                let itemRow = $(this);
+                let rowBrand = itemRow.find('.brand-select').val();
+                let rowGroup = itemRow.find('.group-select').val();
+
+                itemRow.find('.size-row').each(function() {
+                    let sizeRow = $(this);
+                    let sizeSelect = sizeRow.find('.size-select');
+
+                    if (sizeSelect[0] === currentSizeSelect[0]) return true;
+
+                    let otherSize = sizeSelect.val();
+                    if (!otherSize) return true;
+
+                    if (brandID === rowBrand && groupID === rowGroup && size === otherSize) {
+                        duplicate = true;
+                        return false;
+                    }
+                });
+
+                if (duplicate) return false;
+            });
+
+            if (duplicate) {
+                alert('এই ব্র্যান্ড + গ্রুপ + সাইজ ইতিমধ্যেই যোগ করা হয়েছে!');
+                currentSizeSelect.val(null).trigger('change');
+            }
+        });
+
+        $(document).on('change', '.size-select', function() {
+            let tr = $(this).closest('tr');
+            let brandID = tr.find('.brand-select').val();
+            let groupID = tr.find('.group-select').val();
+            let size = $(this).val();
+
+            if (brandID && groupID && size) {
+                $.ajax({
+                    url: `/get-rate-type/${brandID}/${groupID}/${size}`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.rate_type) {
+                            if (data.rate_type === 'inch') {
+                                tr.find('.rate-input').val(data.sales_rate ?? '');
+                                tr.find('.piece-rate-input').val('');
+                            } else if (data.rate_type === 'pieces') {
+                                tr.find('.rate-input').val('');
+                                tr.find('.piece-rate-input').val(data.sales_rate ?? '');
+                            } else {
+                                tr.find('.rate-input, .piece-rate-input').val('');
+                            }
+                        }
+                    },
+                    error: function() {
+                        alert('Failed to fetch rate type!');
+                    }
+                });
+            }
+        });
+
         function recalcSubtotal(tr) {
             let subtotal = 0;
             let rate = parseFloat($(tr).find('.rate-input').val()) || 0;
@@ -488,15 +559,24 @@
 
             $('#add-row').on('click', function() {
                 let totalSizes = document.querySelectorAll('.sizes-container .size-row').length;
-                if (totalSizes >= 70) {
-                    alert('আপনি সর্বোচ্চ ৭০টি সাইজ যোগ করতে পারবেন!');
+                let totalRows = document.querySelectorAll('#items-container .item-row').length;
+
+                if (totalRows >= 14) {
+                    alert('আপনি সর্বোচ্চ ১৪টি সারি (row) যোগ করতে পারবেন!');
                     return;
                 }
+
+                if (totalSizes >= 70) {
+                    alert('সব মিলিয়ে সর্বোচ্চ ৭০টি সাইজ যোগ করা যাবে!');
+                    return;
+                }
+
                 let container = document.getElementById('items-container');
                 let templateRow = container.querySelector('.item-row');
                 let newRow = templateRow.cloneNode(true);
                 let sizesContainer = newRow.querySelector('.sizes-container');
                 let sizeRows = sizesContainer.querySelectorAll('.size-row');
+
                 sizeRows.forEach((row, idx) => {
                     if (idx > 0) row.remove();
                     else {
@@ -504,15 +584,18 @@
                         row.querySelector('.qty-input').value = '';
                     }
                 });
+
                 $(newRow).find('.select2-container').remove();
                 newRow.querySelectorAll('input').forEach(el => el.value = '');
                 newRow.querySelector('.brand-select').selectedIndex = 0;
                 newRow.querySelector('.group-select').innerHTML = '<option value="">Select Group</option>';
                 newRow.querySelector('.size-select').innerHTML = '<option value="">Select Size</option>';
                 newRow.querySelector('.subtotal-cell').innerText = '0';
+
                 newRow.querySelectorAll('input, select').forEach(el => {
                     el.name = el.name.replace(/\d+/, rowIndex);
                 });
+
                 container.appendChild(newRow);
                 initSelect2();
                 rowIndex++;
@@ -522,6 +605,19 @@
             $(document).on('click', function(e) {
                 let tr, container;
                 if (e.target.classList.contains('add-size')) {
+                    let totalSizes = document.querySelectorAll('.sizes-container .size-row').length;
+                    let totalRows = document.querySelectorAll('#items-container .item-row').length;
+
+                    if (totalSizes >= 70) {
+                        alert('সব মিলিয়ে সর্বোচ্চ ৭০টি সাইজ যোগ করা যাবে!');
+                        return;
+                    }
+
+                    if (totalRows > 14) {
+                        alert('আপনি সর্বোচ্চ ১৪টি সারি (row) যোগ করতে পারবেন!');
+                        return;
+                    }
+
                     tr = e.target.closest('tr');
                     container = tr.querySelector('.sizes-container');
                     let firstSizeRow = container.querySelector('.size-row');
@@ -538,6 +634,7 @@
                     recalcSubtotal(tr);
                     updateSizeRowButtons();
                 }
+
                 if (e.target.classList.contains('remove-size')) {
                     tr = e.target.closest('tr');
                     container = tr.querySelector('.sizes-container');
@@ -547,6 +644,7 @@
                         updateSizeRowButtons();
                     }
                 }
+
                 if (e.target.classList.contains('remove-row')) {
                     tr = e.target.closest('tr');
                     tr.remove();

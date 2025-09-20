@@ -330,9 +330,7 @@ public function checkRateType($brandId, $groupId, $sizeValue)
         }
 
         return response()->json([
-            'brand' => $brand->brand,
-            'group' => $group->group,
-            'size' => $size->size,
+            'sales_rate' => $size->sales_rate,
             'rate_type' => $size->rate_type
         ]);
     } catch (\Exception $e) {
