@@ -55,7 +55,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::controller(SalesController::class)->group(function () {
-        Route::get('/sales', 'index')->name('sales.index');
+        Route::get('/sales/items', 'index')->name('sales.index');
     });
 
     Route::controller(MemoController::class)->group(function () {
@@ -97,7 +97,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/customer/destroy/{id}' , 'destroy')->name('customer.destroy');
         Route::post('/customer/store' , 'store')->name('customer.store');
         Route::post('/customer/update' , 'update')->name('customer.update');
-        Route::get('/customer/sales/{name}/{id}' , 'customerSales')->name('customer.sales');
+        Route::get('/customer/sales/items/{name}/{id}' , 'customerSales')->name('customer.sales.items');
         Route::get('/customer/memo/{name}/{id}' , 'customerMemo')->name('customer.memo');
         Route::get('/customer/analysis/{name}/{id}' , 'customerAnalysis')->name('customer.analysis');
     });

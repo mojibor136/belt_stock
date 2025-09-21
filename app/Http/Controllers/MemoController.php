@@ -94,7 +94,7 @@ class MemoController extends Controller
             $lastMemo = Memo::latest('id')->first();
             $nextId = $lastMemo ? $lastMemo->id + 1 : 1;
 
-            $memoNo = 'M-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
+            $memoNo = 'M-'.str_pad($nextId, 3, '0', STR_PAD_LEFT);
 
             $memo = Memo::create([
                 'memo_no' => $memoNo,
@@ -313,37 +313,36 @@ class MemoController extends Controller
         }
     }
 
-public function checkRateType($brandId, $groupId, $sizeValue)
-{
-    try {
-        $brand = Brand::find($brandId);
-        if (! $brand) {
-            return response()->json(['error' => 'Brand not found'], 404);
-        }
-        $group = $brand->groups()->find($groupId);
-        if (! $group) {
-            return response()->json(['error' => 'Group not found in this brand'], 404);
-        }
-        $size = $group->sizes()->where('size', $sizeValue)->first();
-        if (! $size) {
-            return response()->json(['error' => 'Size not found in this group'], 404);
-        }
+    public function checkRateType($brandId, $groupId, $sizeValue)
+    {
+        try {
+            $brand = Brand::find($brandId);
+            if (! $brand) {
+                return response()->json(['error' => 'Brand not found'], 404);
+            }
+            $group = $brand->groups()->find($groupId);
+            if (! $group) {
+                return response()->json(['error' => 'Group not found in this brand'], 404);
+            }
+            $size = $group->sizes()->where('size', $sizeValue)->first();
+            if (! $size) {
+                return response()->json(['error' => 'Size not found in this group'], 404);
+            }
 
-        return response()->json([
-            'sales_rate' => $size->sales_rate,
-            'rate_type' => $size->rate_type
-        ]);
-    } catch (\Exception $e) {
-        \Log::error('Check RateType Error: '.$e->getMessage(), [
-            'brand_id' => $brandId,
-            'group_id' => $groupId,
-            'size' => $sizeValue
-        ]);
+            return response()->json([
+                'sales_rate' => $size->sales_rate,
+                'rate_type' => $size->rate_type,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Check RateType Error: '.$e->getMessage(), [
+                'brand_id' => $brandId,
+                'group_id' => $groupId,
+                'size' => $sizeValue,
+            ]);
 
-        return response()->json(['error' => 'Something went wrong while checking rate type.'], 500);
+            return response()->json(['error' => 'Something went wrong while checking rate type.'], 500);
+        }
     }
-}
-
 
     public function edit($id)
     {
@@ -351,6 +350,6 @@ public function checkRateType($brandId, $groupId, $sizeValue)
         $brands = Brand::all();
         $customers = Customer::all();
 
-        return view('memo.edit' ,compact('memo' , 'brands','customers'));
+        return view('memo.edit', compact('memo', 'brands', 'customers'));
     }
 }

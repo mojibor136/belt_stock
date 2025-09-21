@@ -120,7 +120,8 @@ class SettingController extends Controller
     public function system()
     {
         $setting = Setting::first();
-        return view('setting.system' , compact('setting'));
+
+        return view('setting.system', compact('setting'));
     }
 
     public function systemStore(Request $request)

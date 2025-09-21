@@ -19,7 +19,7 @@
     <div class="w-full mb-4">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b rounded-md mb-4">
             <div class="flex flex-col gap-2 w-full md:w-2/3">
-                <h1 class="text-2xl font-bold text-gray-800">Sales Reports</h1>
+                <h1 class="text-2xl font-bold text-gray-800">Sales Items Reports</h1>
                 <p class="text-sm text-gray-500 ml-1">Manage your sales and their transactions efficiently</p>
             </div>
 
@@ -100,7 +100,7 @@
                                         {{ $memo->created_at->format('d/m/Y') }}</td>
                                     <td class="px-4 py-3 text-center space-x-2">
                                         <span onclick="window.location='{{ route('memo.show', $size->id) }}'"
-                                            class="px-3 py-1 rounded text-white capitalize text-sm font-medium bg-red-600 cursor-pointer hover:bg-red-700">
+                                            class="px-3 py-2 rounded text-white capitalize text-sm font-medium bg-red-600 cursor-pointer hover:bg-red-700">
                                             Return
                                         </span>
                                     </td>

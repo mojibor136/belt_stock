@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Group;
 use App\Models\Brand;
+use App\Models\Group;
 use App\Models\Size;
+use Illuminate\Http\Request;
 
 class SizeController extends Controller
 {
@@ -14,7 +14,7 @@ class SizeController extends Controller
         $query = Size::with(['brand', 'group'])->orderBy('id', 'desc');
 
         if ($request->filled('search')) {
-            $query->where('size', 'like', '%' . $request->search . '%');
+            $query->where('size', 'like', '%'.$request->search.'%');
         }
 
         if ($request->filled('brand')) {
@@ -25,7 +25,7 @@ class SizeController extends Controller
             $query->where('group_id', $request->group);
         }
 
-        $sizes  = $query->get();
+        $sizes = $query->get();
         $brands = Brand::all();
         $groups = Group::all();
 
@@ -36,32 +36,33 @@ class SizeController extends Controller
     {
         $brands = Brand::all();
         $groups = Group::all();
+
         return view('size.create', compact('brands', 'groups'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'brand'      => 'required|exists:brands,id',
-            'group'      => 'required|exists:groups,id',
-            'size'       => 'required|string|max:255',
-            'cost_rate'  => 'required|numeric',
+            'brand' => 'required|exists:brands,id',
+            'group' => 'required|exists:groups,id',
+            'size' => 'required|string|max:255',
+            'cost_rate' => 'required|numeric',
             'sales_rate' => 'required|numeric',
-            'rate_type'  => 'required|in:inch,pieces',
+            'rate_type' => 'required|in:inch,pieces',
         ], [
-            'brand.required'     => 'ব্র্যান্ড নির্বাচন করা বাধ্যতামূলক।',
-            'brand.exists'       => 'বৈধ ব্র্যান্ড নির্বাচন করুন।',
-            'group.required'     => 'গ্রুপ নির্বাচন করা বাধ্যতামূলক।',
-            'group.exists'       => 'বৈধ গ্রুপ নির্বাচন করুন।',
-            'size.required'      => 'সাইজের নাম দিতে হবে।',
-            'size.string'        => 'সাইজের নাম অবশ্যই টেক্সট হতে হবে।',
-            'size.max'           => 'সাইজের নাম খুব বড়।',
+            'brand.required' => 'ব্র্যান্ড নির্বাচন করা বাধ্যতামূলক।',
+            'brand.exists' => 'বৈধ ব্র্যান্ড নির্বাচন করুন।',
+            'group.required' => 'গ্রুপ নির্বাচন করা বাধ্যতামূলক।',
+            'group.exists' => 'বৈধ গ্রুপ নির্বাচন করুন।',
+            'size.required' => 'সাইজের নাম দিতে হবে।',
+            'size.string' => 'সাইজের নাম অবশ্যই টেক্সট হতে হবে।',
+            'size.max' => 'সাইজের নাম খুব বড়।',
             'cost_rate.required' => 'কস্ট রেট দিতে হবে।',
-            'cost_rate.numeric'  => 'কস্ট রেট অবশ্যই সংখ্যা হতে হবে।',
-            'sales_rate.required'=> 'সেলস রেট দিতে হবে।',
+            'cost_rate.numeric' => 'কস্ট রেট অবশ্যই সংখ্যা হতে হবে।',
+            'sales_rate.required' => 'সেলস রেট দিতে হবে।',
             'sales_rate.numeric' => 'সেলস রেট অবশ্যই সংখ্যা হতে হবে।',
             'rate_type.required' => 'রেট টাইপ নির্বাচন করতে হবে।',
-            'rate_type.in'       => 'রেট টাইপ অবশ্যই "inch" বা "pieces" হতে হবে।',
+            'rate_type.in' => 'রেট টাইপ অবশ্যই "inch" বা "pieces" হতে হবে।',
         ]);
 
         try {
@@ -76,18 +77,19 @@ class SizeController extends Controller
             }
 
             Size::create([
-                'brand_id'   => $request->brand,
-                'group_id'   => $request->group,
-                'size'       => $request->size,
-                'cost_rate'  => $request->cost_rate,
+                'brand_id' => $request->brand,
+                'group_id' => $request->group,
+                'size' => $request->size,
+                'cost_rate' => $request->cost_rate,
                 'sales_rate' => $request->sales_rate,
-                'rate_type'  => $request->rate_type,
+                'rate_type' => $request->rate_type,
             ]);
 
             return redirect()->route('sizes.index')
                 ->with('success', 'সাইজ সফলভাবে তৈরি হয়েছে!');
         } catch (\Exception $e) {
-            \Log::error('Size Store Error: ' . $e->getMessage());
+            \Log::error('Size Store Error: '.$e->getMessage());
+
             return back()->withInput()
                 ->with('error', 'কোনো সমস্যা হয়েছে! দয়া করে আবার চেষ্টা করুন।');
         }
@@ -95,7 +97,7 @@ class SizeController extends Controller
 
     public function edit($id)
     {
-        $size   = Size::with(['brand', 'group'])->findOrFail($id);
+        $size = Size::with(['brand', 'group'])->findOrFail($id);
         $brands = Brand::all();
         $groups = Group::where('brand_id', $size->brand_id)->get();
 
@@ -105,29 +107,29 @@ class SizeController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'id'         => 'required|exists:sizes,id',
-            'brand'      => 'required|exists:brands,id',
-            'group'      => 'required|exists:groups,id',
-            'size'       => 'required|string|max:255',
-            'cost_rate'  => 'required|numeric',
+            'id' => 'required|exists:sizes,id',
+            'brand' => 'required|exists:brands,id',
+            'group' => 'required|exists:groups,id',
+            'size' => 'required|string|max:255',
+            'cost_rate' => 'required|numeric',
             'sales_rate' => 'required|numeric',
-            'rate_type'  => 'required|in:inch,pieces',
+            'rate_type' => 'required|in:inch,pieces',
         ], [
-            'id.required'        => 'সাইজ আইডি প্রয়োজন।',
-            'id.exists'          => 'সাইজ পাওয়া যায়নি।',
-            'brand.required'     => 'ব্র্যান্ড নির্বাচন করা বাধ্যতামূলক।',
-            'brand.exists'       => 'বৈধ ব্র্যান্ড নির্বাচন করুন।',
-            'group.required'     => 'গ্রুপ নির্বাচন করা বাধ্যতামূলক।',
-            'group.exists'       => 'বৈধ গ্রুপ নির্বাচন করুন।',
-            'size.required'      => 'সাইজের নাম দিতে হবে।',
-            'size.string'        => 'সাইজের নাম অবশ্যই টেক্সট হতে হবে।',
-            'size.max'           => 'সাইজের নাম খুব বড়।',
+            'id.required' => 'সাইজ আইডি প্রয়োজন।',
+            'id.exists' => 'সাইজ পাওয়া যায়নি।',
+            'brand.required' => 'ব্র্যান্ড নির্বাচন করা বাধ্যতামূলক।',
+            'brand.exists' => 'বৈধ ব্র্যান্ড নির্বাচন করুন।',
+            'group.required' => 'গ্রুপ নির্বাচন করা বাধ্যতামূলক।',
+            'group.exists' => 'বৈধ গ্রুপ নির্বাচন করুন।',
+            'size.required' => 'সাইজের নাম দিতে হবে।',
+            'size.string' => 'সাইজের নাম অবশ্যই টেক্সট হতে হবে।',
+            'size.max' => 'সাইজের নাম খুব বড়।',
             'cost_rate.required' => 'কস্ট রেট দিতে হবে।',
-            'cost_rate.numeric'  => 'কস্ট রেট অবশ্যই সংখ্যা হতে হবে।',
-            'sales_rate.required'=> 'সেলস রেট দিতে হবে।',
+            'cost_rate.numeric' => 'কস্ট রেট অবশ্যই সংখ্যা হতে হবে।',
+            'sales_rate.required' => 'সেলস রেট দিতে হবে।',
             'sales_rate.numeric' => 'সেলস রেট অবশ্যই সংখ্যা হতে হবে।',
             'rate_type.required' => 'রেট টাইপ নির্বাচন করতে হবে।',
-            'rate_type.in'       => 'রেট টাইপ অবশ্যই "inch" বা "pieces" হতে হবে।',
+            'rate_type.in' => 'রেট টাইপ অবশ্যই "inch" বা "pieces" হতে হবে।',
         ]);
 
         try {
@@ -147,18 +149,19 @@ class SizeController extends Controller
 
             // Update
             $size->update([
-                'brand_id'   => $request->brand,
-                'group_id'   => $request->group,
-                'size'       => $request->size,
-                'cost_rate'  => $request->cost_rate,
+                'brand_id' => $request->brand,
+                'group_id' => $request->group,
+                'size' => $request->size,
+                'cost_rate' => $request->cost_rate,
                 'sales_rate' => $request->sales_rate,
-                'rate_type'  => $request->rate_type,
+                'rate_type' => $request->rate_type,
             ]);
 
             return redirect()->route('sizes.index')
                 ->with('success', 'সাইজ সফলভাবে আপডেট হয়েছে!');
         } catch (\Exception $e) {
-            \Log::error('Size Update Error: ' . $e->getMessage());
+            \Log::error('Size Update Error: '.$e->getMessage());
+
             return back()->withInput()
                 ->with('error', 'কোনো সমস্যা হয়েছে! দয়া করে আবার চেষ্টা করুন।');
         }
@@ -181,12 +184,14 @@ class SizeController extends Controller
     public function getGroups($brand_id)
     {
         $groups = Group::where('brand_id', $brand_id)->get();
+
         return response()->json($groups);
     }
 
     public function getGroupsByBrand(Request $request)
     {
         $groups = Group::where('brand_id', $request->brand_id)->get();
+
         return response()->json($groups);
     }
 
@@ -195,7 +200,7 @@ class SizeController extends Controller
         $group = Group::find($request->group_id);
 
         return response()->json([
-            'cost_rate'  => $group->cost_rate ?? '',
+            'cost_rate' => $group->cost_rate ?? '',
             'sales_rate' => $group->sales_rate ?? '',
         ]);
     }
@@ -203,6 +208,7 @@ class SizeController extends Controller
     public function getSizesByGroup(Request $request)
     {
         $sizes = Size::where('group_id', $request->group_id)->get();
+
         return response()->json($sizes);
     }
 

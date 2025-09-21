@@ -2,25 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
 use App\Models\Vendor;
 use App\Models\VendorTrx;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class VendorTrxController extends Controller
 {
     public function payment()
     {
         $vendors = Vendor::all();
+
         return view('vendor.payment', compact('vendors'));
     }
 
     public function invoice()
     {
         $vendors = Vendor::all();
+
         return view('vendor.invoice', compact('vendors'));
     }
 
@@ -62,7 +64,7 @@ class VendorTrxController extends Controller
     {
         $trx = VendorTrx::find($id);
 
-        if (!$trx) {
+        if (! $trx) {
             return back()->with('error', 'লেনদেন খুঁজে পাওয়া যায়নি।');
         }
 
@@ -76,7 +78,7 @@ class VendorTrxController extends Controller
 
         $vendor = Vendor::find($trx->vendor_id);
 
-        if (!$vendor) {
+        if (! $vendor) {
             return back()->with('error', 'গ্রাহক খুঁজে পাওয়া যায়নি।');
         }
 
@@ -92,27 +94,27 @@ class VendorTrxController extends Controller
 
         try {
             $validatedData = $request->validate([
-                'vendor_id'    => ['required', 'exists:vendors,id'],
+                'vendor_id' => ['required', 'exists:vendors,id'],
                 'invoice_type' => ['required', 'string', 'max:255'],
-                'amount'       => ['required', 'numeric', 'min:0'],
-                'created_at'   => ['required', 'date_format:d/m/Y'],
+                'amount' => ['required', 'numeric', 'min:0'],
+                'created_at' => ['required', 'date_format:d/m/Y'],
             ], [
-                'vendor_id.required'   => 'Vendor select করা বাধ্যতামূলক।',
-                'vendor_id.exists'     => 'বৈধ Vendor নির্বাচন করুন।',
-                'invoice_type.required'=> 'Invoice type বাধ্যতামূলক।',
-                'amount.required'      => 'Amount বাধ্যতামূলক।',
-                'amount.numeric'       => 'Amount অবশ্যই সংখ্যায় দিন।',
-                'created_at.required'  => 'তারিখ নির্বাচন করুন।',
-                'created_at.date_format'=> 'তারিখ ফরম্যাট dd/mm/yyyy হতে হবে।',
+                'vendor_id.required' => 'Vendor select করা বাধ্যতামূলক।',
+                'vendor_id.exists' => 'বৈধ Vendor নির্বাচন করুন।',
+                'invoice_type.required' => 'Invoice type বাধ্যতামূলক।',
+                'amount.required' => 'Amount বাধ্যতামূলক।',
+                'amount.numeric' => 'Amount অবশ্যই সংখ্যায় দিন।',
+                'created_at.required' => 'তারিখ নির্বাচন করুন।',
+                'created_at.date_format' => 'তারিখ ফরম্যাট dd/mm/yyyy হতে হবে।',
             ]);
 
             $vendor = Vendor::findOrFail($request->vendor_id);
 
-            if (!in_array($vendor->status, ['credit', 'debit'])) {
+            if (! in_array($vendor->status, ['credit', 'debit'])) {
                 $vendor->status = 'credit';
             }
 
-            $vendorAmount  = (float) $vendor->amount;
+            $vendorAmount = (float) $vendor->amount;
             $requestAmount = (float) $request->amount;
 
             if ($type === 'invoice') {
@@ -152,17 +154,17 @@ class VendorTrxController extends Controller
             $vendor->save();
 
             $trxData = [
-                'vendor_id'      => $request->vendor_id,
-                'invoice_type'   => $request->invoice_type,
-                'debit_credit'   => $vendor->amount,
-                'status'         => $vendor->status,
+                'vendor_id' => $request->vendor_id,
+                'invoice_type' => $request->invoice_type,
+                'debit_credit' => $vendor->amount,
+                'status' => $vendor->status,
             ];
 
             if ($type === 'invoice') {
-                $trxData['invoice']        = $request->amount;
+                $trxData['invoice'] = $request->amount;
                 $trxData['invoice_status'] = 'Invoice';
             } else {
-                $trxData['payment']        = $request->amount;
+                $trxData['payment'] = $request->amount;
                 $trxData['invoice_status'] = 'Payment';
             }
 
@@ -179,10 +181,11 @@ class VendorTrxController extends Controller
             DB::rollBack();
             Log::error('Transaction store failed', [
                 'error' => $e->getMessage(),
-                'line'  => $e->getLine(),
-                'file'  => $e->getFile(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
                 'trace' => $e->getTraceAsString(),
             ]);
+
             return back()->with('error', 'কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।')->withInput();
         }
     }
@@ -212,6 +215,7 @@ class VendorTrxController extends Controller
         }
 
         $transactions = $query->orderBy('id', 'desc')->paginate(100);
+
         return view('vendor.transaction', compact('transactions'));
     }
 
@@ -224,8 +228,8 @@ class VendorTrxController extends Controller
         if ($search = request('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('invoice_type', 'like', "%{$search}%")
-                  ->orWhere('payment', 'like', "%{$search}%")
-                  ->orWhere('invoice', 'like', "%{$search}%");
+                    ->orWhere('payment', 'like', "%{$search}%")
+                    ->orWhere('invoice', 'like', "%{$search}%");
             });
         }
 

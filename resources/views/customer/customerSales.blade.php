@@ -2,15 +2,26 @@
 @section('title', 'Customer Sales')
 @section('content')
     <div class="bg-white w-full mb-6 flex flex-col">
-        <div
-            class="py-6 bg-white rounded flex flex-col md:flex-row justify-between items-center md:items-start gap-6 border-b border-gray-200">
-            <div class="flex flex-col items-center md:items-start gap-1 w-full md:w-1/2">
-                <span class="text-3xl font-extrabold text-green-700">Md Mojibor Rahman</span>
-                <span class="text-gray-600 text-base">Phone: <span class="font-medium">01311890283</span></span>
-            </div>
-            <div class="flex flex-col items-center md:items-end gap-2 w-full md:w-1/2 text-gray-700">
-                <p class="font-medium text-sm">Dhaka Nawabpur</p>
-                <p class="font-medium text-sm">mojibor@gmail.com</p>
+        <div class="py-6 px-4 mb-4 bg-gradient-to-r from-indigo-50 via-white to-emerald-50 rounded">
+            <div class="grid grid-cols-1 md:grid-cols-3 items-center text-center md:text-left gap-4">
+                <div class="flex flex-col items-center md:items-start gap-2">
+                    <span class="text-gray-700 text-md">
+                        Phone: <span class="font-medium">{{ $customer->phone }}</span>
+                    </span>
+                    <p class="font-medium text-md text-gray-700">Address: {{ $customer->address }}</p>
+                    <p class="font-medium text-md text-gray-700">Subject: Sales Items</p>
+                </div>
+
+                <div class="flex flex-col items-center gap-2">
+                    <span class="text-2xl font-extrabold text-green-700">{{ $customer->name }}</span>
+                    <img src="{{ asset($setting->site_logo) }}" alt="Logo" class="w-44 h-auto" />
+                </div>
+
+                <div class="flex flex-col items-center md:items-end gap-2 text-gray-700">
+                    <p class="font-medium text-md">Email: {{ $customer->email }}</p>
+                    <p class="font-medium text-md text-gray-700">Transport: {{ $customer->transport }}</p>
+                    <p class="font-medium text-MD">Customer ID: #1023</p>
+                </div>
             </div>
         </div>
 
@@ -32,54 +43,53 @@
         <div class="bg-white rounded shadow">
             <div class="overflow-x-auto">
                 <div class="overflow-x-auto rounded">
-                    <table class="min-w-full table-auto">
-                        <thead class="bg-blue-600 text-white text-sm font-semibold">
-                            <tr>
-                                <th class="px-4 py-3 text-left">#</th>
-                                <th class="px-4 py-3 text-left">Group</th>
-                                <th class="px-4 py-3 text-left">Sizes</th>
-                                <th class="px-4 py-3 text-left">Brand</th>
-                                <th class="px-4 py-3 text-center">Quantity</th>
-                                <th class="px-4 py-3 text-center">Update Date</th>
-                                <th class="px-4 py-3 text-right pr-8">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-sm text-gray-700 divide-y divide-gray-200">
-                            @php
-                                $brands = [
-                                    ['size' => 40, 'brand' => 'Samsung', 'group' => 'A'],
-                                    ['size' => 50, 'brand' => 'Apple', 'group' => 'B'],
-                                    ['size' => 60, 'brand' => 'Sony', 'group' => 'C'],
-                                    ['size' => 70, 'brand' => 'LG', 'group' => 'D'],
-                                    ['size' => 40, 'brand' => 'Nokia', 'group' => 'E'],
-                                    ['size' => 50, 'brand' => 'OnePlus', 'group' => 'HM'],
-                                    ['size' => 60, 'brand' => 'Huawei', 'group' => 'AX'],
-                                    ['size' => 70, 'brand' => 'Dell', 'group' => 'A'],
-                                    ['size' => 40, 'brand' => 'HP', 'group' => 'B'],
-                                    ['size' => 50, 'brand' => 'Xiaomi', 'group' => 'C'],
-                                ];
-                            @endphp
-
-                            @foreach ($brands as $index => $brand)
+                               <table class="min-w-full table-auto">
+                <thead class="bg-blue-600 text-white text-sm font-semibold">
+                    <tr>
+                        <th class="px-4 py-3 text-left">#</th>
+                        <th class="px-4 py-3 text-left">Memo No</th>
+                        <th class="px-4 py-3 text-left">Brand</th>
+                        <th class="px-4 py-3 text-center">Group</th>
+                        <th class="px-4 py-3 text-center">Size</th>
+                        <th class="px-4 py-3 text-center">Quantity</th>
+                        <th class="px-4 py-3 text-center">Sales Date</th>
+                        <th class="px-4 py-3 text-center">Action</th>
+                    </tr>
+                </thead>
+                @php $serial = 1; @endphp
+                <tbody class="text-sm text-gray-700 divide-y divide-gray-200">
+                    @forelse ($memos as $index => $memo)
+                        @foreach ($memo->items as $item)
+                            @foreach ($item->sizes as $size)
                                 <tr class="hover:bg-gray-100 transition-colors cursor-pointer">
-                                    <td class="px-4 py-3">{{ $index + 1 }}</td>
-                                    <td class="px-4 py-3 text-left">{{ $brand['group'] }}</td>
-                                    <td class="px-4 py-3">{{ $brand['size'] }}</td>
-                                    <td class="px-4 py-3 capitalize">{{ $brand['brand'] }}</td>
-                                    <td class="px-4 py-3 text-center">120</td>
-                                    <td class="px-4 py-3 text-center">{{ now()->format('d M, Y') }}</td>
-                                    <td class="px-4 py-3 text-right">
-                                        <div class="flex justify-end items-center">
-                                            <a href="#"
-                                                class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded shadow transition">
-                                                Return
-                                            </a>
-                                        </div>
+                                    <td class="px-4 py-3">
+                                        {{ $serial++ }}
+                                    </td>
+                                    <td class="px-4 py-3">{{ $memo->memo_no }}</td>
+                                    <td class="px-4 py-3">{{ $item->brand->brand ?? '-' }}</td>
+                                    <td class="px-4 py-3 text-center">{{ $item->group->group ?? '-' }}</td>
+                                    <td class="px-4 py-3 text-center">{{ $size->size }}</td>
+                                    <td class="px-4 py-3 text-center font-semibold">{{ $size->quantity }}</td>
+                                    <td class="px-4 py-3 text-center text-gray-600">
+                                        {{ $memo->created_at->format('d/m/Y') }}</td>
+                                    <td class="px-4 py-3 text-center space-x-2">
+                                        <span onclick="window.location='{{ route('memo.show', $size->id) }}'"
+                                            class="px-3 py-2 rounded text-white capitalize text-sm font-medium bg-red-600 cursor-pointer hover:bg-red-700">
+                                            Return
+                                        </span>
                                     </td>
                                 </tr>
                             @endforeach
-                        </tbody>
-                    </table>
+                        @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="8" class="px-4 py-3 text-center text-gray-500">
+                                কোনো ডাটা পাওয়া যায়নি।
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
                 </div>
             </div>
         </div>
@@ -88,20 +98,11 @@
 
 @push('scripts')
     <script>
-        document.getElementById('searchBtn').addEventListener('click', filterTable);
-        document.getElementById('clearBtn').addEventListener('click', () => {
-            document.getElementById('searchInput').value = '';
-            filterTable();
-        });
-
-        function filterTable() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const rows = document.querySelectorAll('#transactionsTable tbody tr');
-
-            rows.forEach(row => {
-                const rowText = row.textContent.toLowerCase();
-                row.style.display = rowText.includes(query) ? '' : 'none';
+        $(document).ready(function() {
+            flatpickr("#created_at", {
+                dateFormat: "d/m/Y",
+                defaultDate: null
             });
-        }
+        });
     </script>
 @endpush

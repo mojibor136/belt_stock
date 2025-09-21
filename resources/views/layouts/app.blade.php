@@ -209,7 +209,7 @@
                                 <li>
                                     <a href="{{ route('sales.index') }}"
                                         class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
-                                        <i class="ri-file-list-2-line mr-2"></i>All Sales
+                                        <i class="ri-file-list-2-line mr-2"></i>All Sales Items
                                     </a>
                                 </li>
                             </ul>

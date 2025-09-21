@@ -149,9 +149,38 @@ class CustomerController extends Controller
         }
     }
 
-    public function customerSales()
+    public function customerSales(Request $request, $id)
     {
-        return view('customer.customerSales');
+        $customer = Customer::find($id);
+
+        $query = Memo::with(['customer', 'items.brand', 'items.group', 'items.sizes'])->where('customer_id', $id);
+
+        if ($request->filled('search')) {
+            $search = strtolower($request->search);
+
+            $query->where(function ($q) use ($search) {
+                $q->whereRaw('LOWER(memo_no) LIKE ?', ["%{$search}%"])
+                    ->orWhereHas('customer', function ($q2) use ($search) {
+                        $q2->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
+                    });
+            });
+        }
+
+        if ($request->filled('created_at')) {
+            try {
+                $date = Carbon::createFromFormat('d/m/Y', $request->created_at)->format('Y-m-d');
+                $query->whereDate('created_at', $date);
+            } catch (\Exception $e) {
+                \Log::error('Sales memo invalid date', [
+                    'input' => $request->created_at,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        $memos = $query->latest()->get();
+
+        return view('customer.customerSales', compact('customer', 'memos'));
     }
 
     public function customerMemo(Request $request, $id)

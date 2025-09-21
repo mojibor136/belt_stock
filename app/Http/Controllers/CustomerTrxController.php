@@ -2,26 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
-use App\Models\Memo;
 use App\Models\Customer;
 use App\Models\CustomerTrx;
+use App\Models\Memo;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CustomerTrxController extends Controller
 {
     public function payment()
     {
         $customers = Customer::all();
+
         return view('customer.payment', compact('customers'));
     }
 
     public function invoice()
     {
         $customers = Customer::all();
+
         return view('customer.invoice', compact('customers'));
     }
 
@@ -30,10 +32,10 @@ class CustomerTrxController extends Controller
         $customerAmount = (float) $customer->amount;
         $trxAmount = 0;
 
-        if (!empty($trx->invoice)) {
+        if (! empty($trx->invoice)) {
             $trxAmount = (float) $trx->invoice;
             $type = 'invoice';
-        } elseif (!empty($trx->payment)) {
+        } elseif (! empty($trx->payment)) {
             $trxAmount = (float) $trx->payment;
             $type = 'payment';
         } else {
@@ -73,7 +75,7 @@ class CustomerTrxController extends Controller
     {
         $trx = CustomerTrx::find($id);
 
-        if (!$trx) {
+        if (! $trx) {
             return back()->with('error', 'লেনদেন খুঁজে পাওয়া যায়নি।');
         }
 
@@ -87,18 +89,18 @@ class CustomerTrxController extends Controller
 
         $customer = Customer::find($trx->customer_id);
 
-        if (!$customer) {
+        if (! $customer) {
             return back()->with('error', 'গ্রাহক খুঁজে পাওয়া যায়নি।');
         }
 
         $this->reverseTransaction($customer, $trx);
 
-$memoNo = $trx->invoice_type;
+        $memoNo = $trx->invoice_type;
 
-if (!empty($memoNo)) {
-    $memo = Memo::where('memo_no', $memoNo)->first();
-    $memo->delete();
-}
+        if (! empty($memoNo)) {
+            $memo = Memo::where('memo_no', $memoNo)->first();
+            $memo->delete();
+        }
         $trx->delete();
 
         return back()->with('success', 'লেনদেন সফলভাবে মুছে ফেলা হয়েছে এবং গ্রাহকের ব্যালেন্স আপডেট হয়েছে।');
@@ -142,8 +144,8 @@ if (!empty($memoNo)) {
         if ($search = request('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('invoice_type', 'like', "%{$search}%")
-                  ->orWhere('payment', 'like', "%{$search}%")
-                  ->orWhere('invoice', 'like', "%{$search}%");
+                    ->orWhere('payment', 'like', "%{$search}%")
+                    ->orWhere('invoice', 'like', "%{$search}%");
             });
         }
 
@@ -167,28 +169,28 @@ if (!empty($memoNo)) {
 
         try {
             $validatedData = $request->validate([
-                'customer_id'  => ['required', 'exists:customers,id'],
+                'customer_id' => ['required', 'exists:customers,id'],
                 'invoice_type' => ['required', 'string', 'max:255'],
-                'amount'       => ['required', 'numeric', 'min:0'],
-                'created_at'   => ['required', 'date_format:d/m/Y'],
+                'amount' => ['required', 'numeric', 'min:0'],
+                'created_at' => ['required', 'date_format:d/m/Y'],
             ], [
-                'customer_id.required'   => 'Customer select করা বাধ্যতামূলক।',
-                'customer_id.exists'     => 'বৈধ Customer নির্বাচন করুন।',
-                'invoice_type.required'  => 'Invoice type বাধ্যতামূলক।',
-                'amount.required'        => 'Amount বাধ্যতামূলক।',
-                'amount.numeric'         => 'Amount অবশ্যই সংখ্যায় দিন।',
-                'created_at.required'    => 'তারিখ নির্বাচন করুন।',
+                'customer_id.required' => 'Customer select করা বাধ্যতামূলক।',
+                'customer_id.exists' => 'বৈধ Customer নির্বাচন করুন।',
+                'invoice_type.required' => 'Invoice type বাধ্যতামূলক।',
+                'amount.required' => 'Amount বাধ্যতামূলক।',
+                'amount.numeric' => 'Amount অবশ্যই সংখ্যায় দিন।',
+                'created_at.required' => 'তারিখ নির্বাচন করুন।',
                 'created_at.date_format' => 'তারিখ ফরম্যাট dd/mm/yyyy হতে হবে।',
             ]);
 
             $customer = Customer::findOrFail($request->customer_id);
 
-            if (!in_array($customer->status, ['debit', 'credit'])) {
+            if (! in_array($customer->status, ['debit', 'credit'])) {
                 $customer->status = 'debit';
             }
 
             $customerAmount = (float) $customer->amount;
-            $requestAmount  = (float) $request->amount;
+            $requestAmount = (float) $request->amount;
 
             if ($type === 'invoice') {
                 if ($customer->status === 'debit') {
@@ -223,17 +225,17 @@ if (!empty($memoNo)) {
             $customer->save();
 
             $trxData = [
-                'customer_id'    => $request->customer_id,
-                'invoice_type'   => $request->invoice_type,
-                'debit_credit'   => $customer->amount,
-                'status'         => $customer->status,
+                'customer_id' => $request->customer_id,
+                'invoice_type' => $request->invoice_type,
+                'debit_credit' => $customer->amount,
+                'status' => $customer->status,
             ];
 
             if ($type === 'invoice') {
-                $trxData['invoice']        = $request->amount;
+                $trxData['invoice'] = $request->amount;
                 $trxData['invoice_status'] = 'Invoice';
             } else {
-                $trxData['payment']        = $request->amount;
+                $trxData['payment'] = $request->amount;
                 $trxData['invoice_status'] = 'Payment';
             }
 
@@ -251,8 +253,8 @@ if (!empty($memoNo)) {
 
             Log::error('Transaction store failed', [
                 'error' => $e->getMessage(),
-                'line'  => $e->getLine(),
-                'file'  => $e->getFile(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
                 'trace' => $e->getTraceAsString(),
             ]);
 

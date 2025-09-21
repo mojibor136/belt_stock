@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Vendor;
 use App\Models\VendorTrx;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class VendorController extends Controller
 {
@@ -16,11 +16,11 @@ class VendorController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('address', 'like', "%{$search}%");
+                    ->orWhere('phone', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('address', 'like', "%{$search}%");
             });
         }
 
@@ -29,6 +29,7 @@ class VendorController extends Controller
         }
 
         $vendors = $query->orderBy('id', 'desc')->get();
+
         return view('vendor.index', compact('vendors'));
     }
 
@@ -40,17 +41,17 @@ class VendorController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'    => 'required|string|max:255',
-            'phone'   => 'required|string|max:20',
-            'amount'  => 'required|numeric|min:0',
-            'email'   => 'nullable|email|max:255',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'amount' => 'required|numeric|min:0',
+            'email' => 'nullable|email|max:255',
             'address' => 'required|string|max:500',
         ]);
 
         $exists = Vendor::where('name', $request->name)
-                        ->where('phone', $request->phone)
-                        ->where('address', $request->address)
-                        ->first();
+            ->where('phone', $request->phone)
+            ->where('address', $request->address)
+            ->first();
 
         if ($exists) {
             return back()->withInput()->with('error', 'একই নাম, ফোন ও ঠিকানার সাথে আরেকজন গ্রাহক ইতিমধ্যেই আছে!');
@@ -58,12 +59,12 @@ class VendorController extends Controller
 
         try {
             Vendor::create([
-                'name'    => $request->name,
-                'phone'   => $request->phone,
-                'amount'  => $request->amount,
-                'email'   => $request->email,
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'amount' => $request->amount,
+                'email' => $request->email,
                 'address' => $request->address,
-                'status'  => 'Credit',
+                'status' => 'Credit',
             ]);
 
             return redirect()->route('vendor.index')->with('success', 'গ্রাহক সফলভাবে তৈরি হয়েছে!');
@@ -75,25 +76,26 @@ class VendorController extends Controller
     public function edit($id)
     {
         $vendor = Vendor::findOrFail($id);
+
         return view('vendor.edit', compact('vendor'));
     }
 
     public function update(Request $request)
     {
         $request->validate([
-            'id'      => 'required|exists:vendors,id',
-            'name'    => 'required|string|max:255',
-            'phone'   => 'required|string|max:20',
-            'amount'  => 'required|numeric|min:0',
-            'email'   => 'nullable|email|max:255',
+            'id' => 'required|exists:vendors,id',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'amount' => 'required|numeric|min:0',
+            'email' => 'nullable|email|max:255',
             'address' => 'required|string|max:500',
         ]);
 
         $exists = Vendor::where('name', $request->name)
-                        ->where('phone', $request->phone)
-                        ->where('address', $request->address)
-                        ->where('id', '!=', $request->id)
-                        ->first();
+            ->where('phone', $request->phone)
+            ->where('address', $request->address)
+            ->where('id', '!=', $request->id)
+            ->first();
 
         if ($exists) {
             return back()->withInput()->with('error', 'একই নাম, ফোন ও ঠিকানার সাথে আরেকজন গ্রাহক ইতিমধ্যেই আছে!');
@@ -103,10 +105,10 @@ class VendorController extends Controller
             $vendor = Vendor::findOrFail($request->id);
 
             $vendor->update([
-                'name'    => $request->name,
-                'phone'   => $request->phone,
-                'amount'  => $request->amount,
-                'email'   => $request->email,
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'amount' => $request->amount,
+                'email' => $request->email,
                 'address' => $request->address,
             ]);
 
@@ -121,6 +123,7 @@ class VendorController extends Controller
         try {
             $vendor = Vendor::findOrFail($id);
             $vendor->delete();
+
             return redirect()->route('vendor.index')->with('success', 'গ্রাহক সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -131,11 +134,11 @@ class VendorController extends Controller
     {
         $vendor = Vendor::findOrFail($id);
 
-        $startDate = $request->start_date 
-            ? Carbon::createFromFormat('d/m/Y', $request->start_date)->startOfDay() 
+        $startDate = $request->start_date
+            ? Carbon::createFromFormat('d/m/Y', $request->start_date)->startOfDay()
             : null;
-        $endDate = $request->end_date 
-            ? Carbon::createFromFormat('d/m/Y', $request->end_date)->endOfDay() 
+        $endDate = $request->end_date
+            ? Carbon::createFromFormat('d/m/Y', $request->end_date)->endOfDay()
             : null;
 
         $query = VendorTrx::where('vendor_id', $id);

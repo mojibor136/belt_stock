@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Memo;
-use App\Models\Customer;
-use App\Models\Vendor;
 use App\Models\Brand;
+use App\Models\Customer;
 use App\Models\Group;
+use App\Models\Memo;
 use App\Models\Size;
 use App\Models\Stock;
+use App\Models\Vendor;
 
 class HomeController extends Controller
 {
@@ -30,11 +29,11 @@ class HomeController extends Controller
 
         $stockValue = Size::with('stocks')->get()->sum(function ($size) {
             return $size->stocks->sum(function ($stock) use ($size) {
-               return $size->size * $size->cost_rate * $stock->quantity;
+                return $size->size * $size->cost_rate * $stock->quantity;
             });
         });
 
-        return view('dashboard', compact('data' , 'exhaustedStock' , 'stockValue' , 'totalStock' , 'totalSize' , 'totalGroup' , 'totalBrand' , 'vendorCredit' , 'vendorDebit' , 'totalVendor' , 'customerDebit' , 'customerCredit' , 'totalCustomer'));
+        return view('dashboard', compact('data', 'exhaustedStock', 'stockValue', 'totalStock', 'totalSize', 'totalGroup', 'totalBrand', 'vendorCredit', 'vendorDebit', 'totalVendor', 'customerDebit', 'customerCredit', 'totalCustomer'));
     }
 
     private function completeMemosSalesProfit()
@@ -83,16 +82,16 @@ class HomeController extends Controller
 
         return [
             'daily' => [
-                'sales' => array_map(fn($v) => array_sum($v), $dailySales),
-                'profit' => array_map(fn($v) => array_sum($v), $dailyProfit),
+                'sales' => array_map(fn ($v) => array_sum($v), $dailySales),
+                'profit' => array_map(fn ($v) => array_sum($v), $dailyProfit),
             ],
             'monthly' => [
-                'sales' => array_map(fn($v) => array_sum($v), $monthlySales),
-                'profit' => array_map(fn($v) => array_sum($v), $monthlyProfit),
+                'sales' => array_map(fn ($v) => array_sum($v), $monthlySales),
+                'profit' => array_map(fn ($v) => array_sum($v), $monthlyProfit),
             ],
             'yearly' => [
-                'sales' => array_map(fn($v) => array_sum($v), $yearlySales),
-                'profit' => array_map(fn($v) => array_sum($v), $yearlyProfit),
+                'sales' => array_map(fn ($v) => array_sum($v), $yearlySales),
+                'profit' => array_map(fn ($v) => array_sum($v), $yearlyProfit),
             ],
         ];
     }

@@ -53,7 +53,7 @@
                         <th class="px-4 py-3 text-left">Phone</th>
                         <th class="px-4 py-3 text-center">Amount</th>
                         <th class="px-4 py-3 text-center">Credit / Debit</th>
-                        <th class="px-4 py-3 text-center">Memo/Sales</th>
+                        <th class="px-4 py-3 text-center">Memo/Items</th>
                         <th class="px-4 py-3 text-right pr-8">Actions</th>
                     </tr>
                 </thead>
@@ -113,10 +113,10 @@
                                         </a>
                                     </div>
                                     <div class="flex justify-center items-center gap-1">
-                                        <a href="{{ route('customer.sales', [$customer->id, Str::slug($customer->name)]) }}"
+                                        <a href="{{ route('customer.sales.items', [$customer->id, Str::slug($customer->name)]) }}"
                                             class="inline-flex items-center justify-center w-14 h-8 bg-orange-600 hover:bg-orange-700 text-white rounded shadow"
                                             title="View">
-                                            <span>Sales</span>
+                                            <span>Items</span>
                                         </a>
                                     </div>
                                 </div>
