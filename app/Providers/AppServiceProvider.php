@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use App\Models\Setting;
+use App\Models\User;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,7 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Global share Setting data with all views
-        view()->share('setting', Setting::first());
+        view()->share([
+            'user' => User::first(),
+            'setting' => Setting::first(),
+        ]);
     }
 }

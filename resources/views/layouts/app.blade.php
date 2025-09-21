@@ -81,9 +81,9 @@
                         </div>
                         <i class="ri-moon-line text-white/80 cursor-pointer hover:text-white text-[21px]"></i>
                         <div id="profile_menu_btn" class="flex items-center flex-row gap-2 cursor-pointer">
-                            <img src="{{ asset(auth()->user()->image) }}" alt="{{ auth()->user()->name }}"
+                            <img src="{{ asset($user->image) }}" alt="{{ $user->name }}"
                                 class="w-10 h-10 rounded-full">
-                            <span class="text-white/80 text-[15px]">{{ auth()->user()->name }}</span>
+                            <span class="text-white/80 text-[15px]">{{ $user->name }}</span>
                             <i class="ri-arrow-down-s-line text-white/80"></i>
                         </div>
                         <i class="ri-settings-2-line cursor-pointer text-white/80 hover:text-white text-[21px]"></i>
