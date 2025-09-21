@@ -4,9 +4,9 @@
     @include('components.toast')
     <div class="w-full mb-4">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b rounded-md mb-4">
-            <div class="flex flex-col gap-1 w-full md:w-2/3">
+            <div class="flex flex-col gap-2 w-full md:w-2/3">
                 <h1 class="text-2xl font-bold text-gray-800">Size Management</h1>
-                <p class="text-sm text-gray-500">Manage your sizes and their transactions efficiently</p>
+                <p class="text-sm text-gray-500 ml-1">Manage your sizes and their transactions efficiently</p>
             </div>
 
             <div class="flex flex-row gap-2 mt-3 md:mt-0 w-full md:w-auto items-start sm:items-center">
@@ -73,26 +73,26 @@
                 <thead class="bg-blue-600 text-white text-sm font-semibold">
                     <tr>
                         <th class="px-4 py-3 text-left">#</th>
-                        <th class="px-4 py-3 text-left">Sizes</th>
-                        <th class="px-4 py-3 text-left">Brand</th>
-                        <th class="px-4 py-3 text-center">Group</th>
-                        <th class="px-4 py-3 text-center">Cost Rate</th>
-                        <th class="px-4 py-3 text-center">Sales Rate</th>
-                        <th class="px-4 py-3 text-center">Stock</th>
-                        <th class="px-4 py-3 text-center">Inchi</th>
-                        <th class="px-4 py-3 text-center">Value</th>
-                        <th class="px-4 py-3 text-center">Created At</th>
-                        <th class="px-4 py-3 text-right pr-8">Actions</th>
+                        <th class="px-4 py-3 text-left whitespace-nowrap">Sizes</th>
+                        <th class="px-4 py-3 text-left whitespace-nowrap">Brand</th>
+                        <th class="px-4 py-3 text-center whitespace-nowrap">Group</th>
+                        <th class="px-4 py-3 text-center whitespace-nowrap">Cost Rate</th>
+                        <th class="px-4 py-3 text-center whitespace-nowrap">Sales Rate</th>
+                        <th class="px-4 py-3 text-center whitespace-nowrap">Stock</th>
+                        <th class="px-4 py-3 text-center whitespace-nowrap">Inchi</th>
+                        <th class="px-4 py-3 text-center whitespace-nowrap">Value</th>
+                        <th class="px-4 py-3 text-center whitespace-nowrap">Created At</th>
+                        <th class="px-4 py-3 text-right pr-8 whitespace-nowrap">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="text-sm text-gray-700 divide-y divide-gray-200">
                     @forelse ($sizes as $index => $size)
                         <tr class="hover:bg-gray-100 transition-colors cursor-pointer">
-                            <td class="px-4 py-3">{{ $index + 1 }}</td>
-                            <td class="px-4 py-3">{{ $size->size }}</td>
-                            <td class="px-4 py-3 capitalize">{{ $size->brand->brand }}</td>
-                            <td class="px-4 py-3 text-center">{{ $size->group->group }}</td>
-                            <td class="px-4 py-3 text-center">
+                            <td class="px-4 py-3 whitespace-nowrap">{{ $index + 1 }}</td>
+                            <td class="px-4 py-3 whitespace-nowrap">{{ $size->size }}</td>
+                            <td class="px-4 py-3 capitalize whitespace-nowrap">{{ $size->brand->brand }}</td>
+                            <td class="px-4 py-3 text-center whitespace-nowrap">{{ $size->group->group }}</td>
+                            <td class="px-4 py-3 text-center whitespace-nowrap">
                                 {{ $size->cost_rate }}
                                 @if ($size->rate_type == 'pieces')
                                     Ps
@@ -100,7 +100,7 @@
                                     Inch
                                 @endif
                             </td>
-                            <td class="px-4 py-3 text-center">
+                            <td class="px-4 py-3 text-center whitespace-nowrap">
                                 {{ $size->sales_rate }}
                                 @if ($size->rate_type == 'pieces')
                                     Ps
@@ -108,21 +108,21 @@
                                     Inch
                                 @endif
                             </td>
-                            <td class="px-4 py-3 text-center">
+                            <td class="px-4 py-3 text-center whitespace-nowrap">
                                 {{ $size->stocks->sum('quantity') }}
                             </td>
-                            <td class="px-4 py-3 text-center">
+                            <td class="px-4 py-3 text-center whitespace-nowrap">
                                 @if ($size->rate_type == 'inch')
                                     {{ number_format($size->size * $size->stocks->sum('quantity'), 2) }}
                                 @else
                                     0
                                 @endif
                             </td>
-                            <td class="px-4 py-3 text-center">
+                            <td class="px-4 py-3 text-center whitespace-nowrap">
                                 {{ number_format($size->size * $size->cost_rate * $size->stocks->sum('quantity'), 2) }}
                             </td>
-                            <td class="px-4 py-3 text-center">{{ $size->created_at->format('d M, Y') }}</td>
-                            <td class="px-4 py-3 text-right">
+                            <td class="px-4 py-3 text-center whitespace-nowrap">{{ $size->created_at->format('d M, Y') }}</td>
+                            <td class="px-4 py-3 text-right whitespace-nowrap">
                                 <div class="flex justify-end items-center gap-1">
                                     <a href="{{ route('sizes.edit', $size->id) }}"
                                         class="inline-flex items-center justify-center w-10 h-8 bg-yellow-500 hover:bg-yellow-600 text-white rounded shadow"

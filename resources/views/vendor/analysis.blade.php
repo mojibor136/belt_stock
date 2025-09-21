@@ -175,9 +175,9 @@
 
         <div class="mt-6 mb-6">
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <div class="px-6 py-4 border-b bg-gradient-to-r from-blue-600 to-indigo-700">
-                    <h2 class="text-xl font-semibold text-white flex items-center gap-2">
-                        <i class="ri-user-3-fill text-2xl"></i>
+                <div class="px-6 py-3 border-b bg-gradient-to-r from-blue-600 to-indigo-700">
+                    <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+                        <i class="ri-user-3-fill text-xl"></i>
                         Vendor Details
                     </h2>
                 </div>

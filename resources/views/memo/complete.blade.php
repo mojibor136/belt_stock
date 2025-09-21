@@ -18,9 +18,9 @@
 
     <div class="w-full mb-4">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b rounded-md mb-4">
-            <div class="flex flex-col gap-1 w-full md:w-2/3">
+            <div class="flex flex-col gap-2 w-full md:w-2/3">
                 <h1 class="text-2xl font-bold text-gray-800">Complete Memo</h1>
-                <p class="text-sm text-gray-500">Manage your complete and their transactions efficiently</p>
+                <p class="text-sm text-gray-500 ml-1">Manage your complete and their transactions efficiently</p>
             </div>
 
             <div class="flex flex-row gap-2 mt-3 md:mt-0 w-full md:w-auto items-start sm:items-center">
@@ -72,12 +72,12 @@
                     <tr>
                         <th class="px-4 py-3 text-left">#</th>
                         <th class="px-4 py-3 text-left">Customer</th>
-                        <th class="px-4 py-3 text-left">Memo No</th>
-                        <th class="px-4 py-3 text-left">Debit/Credit</th>
-                        <th class="px-4 py-3 text-left">Bill Amount</th>
-                        <th class="px-4 py-3 text-left">Final Amount</th>
-                        <th class="px-4 py-3 text-center">Memo Date</th>
-                        <th class="px-4 py-3 text-center">Action/Status</th>
+                        <th class="px-4 py-3 text-left whitespace-nowrap">Memo No</th>
+                        <th class="px-4 py-3 text-left whitespace-nowrap">Debit/Credit</th>
+                        <th class="px-4 py-3 text-left whitespace-nowrap">Bill Amount</th>
+                        <th class="px-4 py-3 text-left whitespace-nowrap">Final Amount</th>
+                        <th class="px-4 py-3 text-center whitespace-nowrap">Memo Date</th>
+                        <th class="px-4 py-3 text-center whitespace-nowrap">Action/Status</th>
                     </tr>
                 </thead>
                 @php
@@ -112,23 +112,25 @@
                         @endphp
                         <tr class="hover:bg-gray-100 transition-colors cursor-pointer">
                             <td class="px-4 py-3">{{ $index + 1 }}</td>
-                            <td class="px-4 py-3 font-bold">{{ $m->customer->name }}</td>
-                            <td class="px-4 py-3">{{ $m->memo_no }}</td>
-                            <td class="px-4 py-3 text-left">
-                                <div class="inline-flex items-center space-x-2">
+                            <td class="px-4 py-3 whitespace-nowrap">{{ $m->customer->name }}</td>
+                            <td class="px-4 py-3 whitespace-nowrap">{{ $m->memo_no }}</td>
+                            <td class="px-4 py-3 text-left whitespace-nowrap">
+                                <div class="inline-flex items-center space-x-2 whitespace-nowrap">
                                     <span
-                                        class="px-3 py-1 rounded-full text-sm font-semibold capitalize
+                                        class="px-3 py-1 rounded-full text-xs font-semibold capitalize
                                         {{ $m->debit_credit_status == 'debit' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
                                         {{ $m->debit_credit_status }} &#2547; {{ bd_format($m->debit_credit) }}
                                     </span>
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-left font-semibold">&#2547; {{ bd_format($m->grand_total) }}.00</td>
-                            <td class="px-4 py-3 text-left font-semibold">
+                            <td class="px-4 py-3 text-left whitespace-nowrap">&#2547;
+                                {{ bd_format($m->grand_total) }}.00</td>
+                            <td class="px-4 py-3 text-left whitespace-nowrap">
                                 &#2547; {{ bd_format($total) }} .00
                             </td>
-                            <td class="px-4 py-3 text-center text-gray-600">{{ $m->created_at->format('d/m/Y') }}</td>
-                            <td class="px-4 py-3 text-center space-x-2">
+                            <td class="px-4 py-3 text-center text-gray-600 whitespace-nowrap">
+                                {{ $m->created_at->format('d/m/Y') }}</td>
+                            <td class="px-4 py-3 text-center whitespace-nowrap">
                                 <span
                                     class="inline-flex items-center justify-center h-8 px-3 rounded text-white capitalize text-sm font-medium
                                     {{ $m->memo_status == 'pending' ? 'bg-yellow-500' : 'bg-green-600' }}">

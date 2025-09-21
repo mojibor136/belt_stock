@@ -70,24 +70,24 @@
                     <table id="transactionsTable" class="w-full border-collapse table-auto rounded">
                         <thead>
                             <tr class="bg-blue-600 text-white text-sm font-semibold">
-                                <th class="px-4 py-4 text-left text-xs uppercase">Date</th>
-                                <th class="px-4 py-4 text-left text-xs uppercase">Type</th>
-                                <th class="px-4 py-4 text-left text-xs uppercase">Payment</th>
-                                <th class="px-4 py-4 text-left text-xs uppercase">Invoice</th>
-                                <th class="px-4 py-4 text-left text-xs uppercase">Credit / Debit</th>
-                                <th class="px-4 py-4 text-left text-xs uppercase">Amount</th>
-                                <th class="px-4 py-4 text-center text-xs uppercase">Action</th>
+                                <th class="px-4 py-4 text-left text-xs uppercase whitespace-nowrap">Date</th>
+                                <th class="px-4 py-4 text-left text-xs uppercase whitespace-nowrap">Type</th>
+                                <th class="px-4 py-4 text-left text-xs uppercase whitespace-nowrap">Payment</th>
+                                <th class="px-4 py-4 text-left text-xs uppercase whitespace-nowrap">Invoice</th>
+                                <th class="px-4 py-4 text-left text-xs uppercase whitespace-nowrap">Credit / Debit</th>
+                                <th class="px-4 py-4 text-left text-xs uppercase whitespace-nowrap">Amount</th>
+                                <th class="px-4 py-4 text-center text-xs uppercase whitespace-nowrap">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($transactions as $trx)
                                 <tr
                                     class="border-b hover:bg-gray-50 text-gray-700 text-sm cursor-pointer {{ $trx->invoice_status === 'invoice' ? 'bg-green-100' : 'bg-red-100' }}">
-                                    <td class="px-4 py-3">{{ $trx->created_at->format('Y-m-d') }}</td>
-                                    <td class="px-4 py-3">{{ $trx->invoice_type }}</td>
-                                    <td class="px-4 py-3"> ৳ {{ number_format($trx->payment) }} .00</td>
-                                    <td class="px-4 py-3"> ৳ {{ number_format($trx->invoice) }} .00</td>
-                                    <td class="px-4 py-3">
+                                    <td class="px-4 py-3 whitespace-nowrap">{{ $trx->created_at->format('Y-m-d') }}</td>
+                                    <td class="px-4 py-3 whitespace-nowrap">{{ $trx->invoice_type }}</td>
+                                    <td class="px-4 py-3 whitespace-nowrap"> ৳ {{ number_format($trx->payment) }} .00</td>
+                                    <td class="px-4 py-3 whitespace-nowrap"> ৳ {{ number_format($trx->invoice) }} .00</td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
                                         @if ($trx->status === 'credit')
                                             <span
                                                 class="px-8 py-1 text-xs rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white shadow">
@@ -101,10 +101,10 @@
                                         @endif
                                     </td>
                                     <td
-                                        class="px-4 py-3 {{ $trx->status == 'credit' ? 'text-green-600' : 'text-red-600' }}">
+                                        class="px-4 py-3 whitespace-nowrap {{ $trx->status == 'credit' ? 'text-green-600' : 'text-red-600' }}">
                                         ৳ {{ number_format($trx->debit_credit) }} .00
                                     </td>
-                                    <td class="px-4 py-3 text-center">
+                                    <td class="px-4 py-3 text-center whitespace-nowrap">
                                         <form action="{{ route('vendor.transactions.destroy', $trx->id) }}" method="POST"
                                             onsubmit="return confirm('আপনি কি এই লেনদেনটি মুছে ফেলতে চান?');">
                                             @csrf

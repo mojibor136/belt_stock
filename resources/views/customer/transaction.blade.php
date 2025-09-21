@@ -20,7 +20,7 @@
     <div class="w-full mb-4">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b rounded-md mb-4">
             <div class="flex flex-col gap-2 w-full md:w-2/3">
-                <h1 class="text-xl font-bold text-gray-800">Transaction</h1>
+                <h1 class="text-2xl font-bold text-gray-800">Transaction</h1>
                 <p class="text-sm text-gray-500 ml-1">Manage your customers and their transactions efficiently</p>
             </div>
         </div>
@@ -69,33 +69,33 @@
                 <thead class="bg-blue-600 text-white text-sm font-semibold">
                     <tr>
                         <th class="px-4 py-3 text-left">#</th>
-                        <th class="px-4 py-3 text-left">Name</th>
-                        <th class="px-4 py-3 text-left">Type</th>
-                        <th class="px-4 py-3 text-left">Payment</th>
-                        <th class="px-4 py-3 text-left">Invoice</th>
-                        <th class="px-4 py-3 text-left">Final Amount</th>
-                        <th class="px-4 py-3 text-left">Credit / Debit</th>
-                        <th class="px-4 py-3 text-center">Created At</th>
+                        <th class="px-4 py-3 text-left whitespace-nowrap">Name</th>
+                        <th class="px-4 py-3 text-left whitespace-nowrap">Type</th>
+                        <th class="px-4 py-3 text-left whitespace-nowrap">Payment</th>
+                        <th class="px-4 py-3 text-left whitespace-nowrap">Invoice</th>
+                        <th class="px-4 py-3 text-left whitespace-nowrap">Final Amount</th>
+                        <th class="px-4 py-3 text-left whitespace-nowrap">Credit / Debit</th>
+                        <th class="px-4 py-3 text-center whitespace-nowrap">Created At</th>
                     </tr>
                 </thead>
                 <tbody class="text-sm text-gray-700 divide-y divide-gray-200">
                     @foreach ($transactions as $index => $trx)
                         <tr class="hover:bg-gray-100 transition-colors">
-                            <td class="px-4 py-3">{{ $index + $transactions->firstItem() }}</td>
-                            <td class="px-4 py-3 text-[13px]">
+                            <td class="px-4 py-3 whitespace-nowrap">{{ $index + $transactions->firstItem() }}</td>
+                            <td class="px-4 py-3 text-[13px] whitespace-nowrap">
                                 {{ $trx->customer ? $trx->customer->name : 'N/A' }}
                             </td>
-                            <td class="px-4 py-3">{{ $trx->invoice_type }}</td>
-                            <td class="px-4 py-3">
+                            <td class="px-4 py-3 whitespace-nowrap">{{ $trx->invoice_type }}</td>
+                            <td class="px-4 py-3 whitespace-nowrap">
                                 ৳ {{ number_format($trx->payment) }} .00
                             </td>
-                            <td class="px-4 py-3">
+                            <td class="px-4 py-3 whitespace-nowrap">
                                 ৳ {{ number_format($trx->invoice) }} .00
                             </td>
-                            <td class="px-4 py-3">
+                            <td class="px-4 py-3 whitespace-nowrap">
                                 ৳ {{ number_format($trx->debit_credit) }} .00
                             </td>
-                            <td class="px-4 py-3">
+                            <td class="px-4 py-3 whitespace-nowrap">
                                 @if ($trx->status === 'credit')
                                     <span
                                         class="px-8 py-1 text-xs rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white shadow">
@@ -108,7 +108,7 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="px-4 py-3 text-right">{{ $trx->created_at->format('d/m/Y H:i') }}</td>
+                            <td class="px-4 py-3 text-right whitespace-nowrap">{{ $trx->created_at->format('d/m/Y H:i') }}</td>
                         </tr>
                     @endforeach
                 </tbody>

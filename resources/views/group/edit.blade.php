@@ -59,7 +59,7 @@
     <div class="w-full flex flex-col gap-4 mb-20">
         <div class="flex flex-col bg-white shadow rounded md:p-6 p-4 md:gap-1 gap-3">
             <div class="flex justify-between items-center">
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">Group</h2>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Group Management</h2>
                 <a href="{{ route('groups.index') }}"
                     class="block md:hidden bg-teal-500 text-white px-4 md:py-2 py-2.5 rounded text-sm font-medium hover:bg-teal-600 transition">
                     All Group

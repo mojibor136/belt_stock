@@ -4,9 +4,9 @@
     @include('components.toast')
     <div class="w-full mb-4">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b rounded-md mb-4">
-            <div class="flex flex-col gap-1 w-full md:w-2/3">
+            <div class="flex flex-col gap-2 w-full md:w-2/3">
                 <h1 class="text-2xl font-bold text-gray-800">Stock Management</h1>
-                <p class="text-sm text-gray-500">Manage your stocks and their transactions efficiently</p>
+                <p class="text-sm text-gray-500 ml-1">Manage your stocks and their transactions efficiently</p>
             </div>
 
             <div class="flex flex-row gap-2 mt-3 md:mt-0 w-full md:w-auto items-start sm:items-center">
