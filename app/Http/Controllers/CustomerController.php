@@ -153,7 +153,7 @@ class CustomerController extends Controller
     {
         $customer = Customer::find($id);
 
-        $query = Memo::with(['customer', 'items.brand', 'items.group', 'items.sizes'])->where('customer_id', $id);
+        $query = Memo::with(['customer', 'items.brand', 'items.group', 'items.sizes'])->where('customer_id', $id)->where('memo_status', 'complete');
 
         if ($request->filled('search')) {
             $search = strtolower($request->search);

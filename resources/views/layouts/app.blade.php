@@ -137,19 +137,24 @@
                             <ul class="submenu pl-2 bg-[#2a2f45]">
                                 <li>
                                     <a href="{{ route('brands.index') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('brands.*') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-briefcase-4-line mr-2"></i>Brands
                                     </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('groups.index') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('groups.*') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-shirt-line mr-2"></i>Brand by Group
                                     </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('sizes.index') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('sizes.*') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-font-size-2 mr-2"></i>Group by Sizes
                                     </a>
                                 </li>
@@ -166,30 +171,42 @@
                                 <i class="ri-arrow-down-s-line ml-auto mr-4"></i>
                             </a>
                             <ul class="submenu pl-2 bg-[#2a2f45]">
-                                <li><a href="{{ route('stocks.index') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]"><i
-                                            class="ri-list-check mr-2"></i>All Stock</a>
+                                <li>
+                                    <a href="{{ route('stocks.index') }}"
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('stocks.index') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
+                                        <i class="ri-list-check mr-2"></i>All Stock
+                                    </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('stocks.create') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]"><i
-                                            class="ri-upload-line mr-2"></i>Add Stock</a>
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('stocks.create') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
+                                        <i class="ri-upload-line mr-2"></i>Add Stock
+                                    </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('stocks.history') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('stocks.history') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-time-line mr-2"></i>Stock History
                                     </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('stocks.warnings') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c']">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('stocks.warnings') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-alert-line mr-2"></i>Inventory Warnings
                                     </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('stocks.exhausted') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c']">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                       {{ request()->routeIs('stocks.exhausted') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-close-circle-line mr-2"></i>Inventory Exhausted
                                     </a>
                                 </li>
@@ -208,7 +225,10 @@
                             <ul class="submenu pl-2 bg-[#2a2f45]">
                                 <li>
                                     <a href="{{ route('sales.index') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('sales.*')
+                                            ? 'bg-[#3b3f5c] text-white'
+                                            : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-file-list-2-line mr-2"></i>All Sales Items
                                     </a>
                                 </li>
@@ -227,19 +247,26 @@
                             <ul class="submenu pl-2 bg-[#2a2f45]">
                                 <li>
                                     <a href="{{ route('memo.create') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c']">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded 
+                                        {{ request()->routeIs('memo.create', 'memo.edit') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-add-box-line mr-2"></i>Create Memo
                                     </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('memo.pending') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c']">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('memo.pending') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-time-line mr-2"></i>Pending Memo
                                     </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('memo.complete') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c']">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                       {{ request()->routeIs('memo.complete')
+                                           ? 'bg-[#3b3f5c] text-white'
+                                           : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-file-list-2-line mr-2"></i>Completed Memo
                                     </a>
                                 </li>
@@ -259,29 +286,42 @@
                             <ul class="submenu pl-2 bg-[#2a2f45]">
                                 <li>
                                     <a href="{{ route('customer.index') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]"><i
-                                            class="ri-user-smile-line mr-2"></i>All Customers</a>
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+           {{ request()->routeIs('customer.index')
+               ? 'bg-[#3b3f5c] text-white'
+               : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
+                                        <i class="ri-user-smile-line mr-2"></i>All Customers
+                                    </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('customer.create') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]"><i
-                                            class="ri-user-add-line mr-2"></i>Add Customer</a>
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('customer.create') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
+                                        <i class="ri-user-add-line mr-2"></i>Add Customer
+                                    </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('customer.transaction') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('customer.transaction') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-history-line mr-2"></i>Daily Transaction
                                     </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('customer.invoice') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('customer.invoice') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-bill-line mr-2"></i>Billing & Invoicing
                                     </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('customer.payment') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('customer.payment') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-bank-card-line mr-2"></i>Payment Management
                                     </a>
                                 </li>
@@ -300,31 +340,38 @@
                             <ul class="submenu pl-2 bg-[#2a2f45]">
                                 <li>
                                     <a href="{{ route('vendor.index') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                       {{ request()->routeIs('vendor.index') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-user-smile-line mr-2"></i>All Vendors
                                     </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('vendor.create') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded {{ request()->routeIs('vendor.create') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-user-add-line mr-2"></i>Add Vendor
                                     </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('vendor.transaction') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('vendor.transaction') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-history-line mr-2"></i>Daily Transaction
                                     </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('vendor.invoice') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('vendor.invoice') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-bill-line mr-2"></i>Billing & Invoicing
                                     </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('vendor.payment') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded {{ request()->routeIs('vendor.payment') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-bank-card-line mr-2"></i>Payment Management
                                     </a>
                                 </li>
@@ -343,19 +390,23 @@
                             <ul class="submenu pl-2 bg-[#2a2f45]">
                                 <li>
                                     <a href="{{ route('account.setting') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('account.setting') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-user-smile-line mr-2"></i>Account Setting
                                     </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('general.setting') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('general.setting') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-user-add-line mr-2"></i>General Setting
                                     </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('system.setting') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] text-gray-300 rounded hover:text-white hover:bg-[#3b3f5c]">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded {{ request()->routeIs('system.setting') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-history-line mr-2"></i>System Setting
                                     </a>
                                 </li>

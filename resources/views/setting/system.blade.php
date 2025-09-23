@@ -19,7 +19,7 @@
                     <input type="checkbox" id="invoice" name="invoice" value="1"
                         {{ $setting && $setting->invoice ? 'checked' : '' }}
                         class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                    <label for="invoice" class="text-md font-medium text-gray-700">Invoice</label>
+                    <label for="invoice" class="text-md font-medium text-gray-700">Default Invoice</label>
                 </div>
 
                 <!-- Vendor Stock Permission -->
@@ -27,7 +27,15 @@
                     <input type="checkbox" id="vendor_stock" name="vendor_stock" value="1"
                         {{ $setting && $setting->vendor_stock ? 'checked' : '' }}
                         class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                    <label for="vendor_stock" class="text-md font-medium text-gray-700">Vendor Stock</label>
+                    <label for="vendor_stock" class="text-md font-medium text-gray-700">Vendor of Stock</label>
+                </div>
+
+                <!-- Memo Status Default-->
+                <div class="mt-4 flex items-center gap-3">
+                    <input type="checkbox" id="memo_status" name="memo_status" value="1"
+                        {{ $setting && $setting->memo_status ? 'checked' : '' }}
+                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                    <label for="memo_status" class="text-md font-medium text-gray-700">Memo Status Default</label>
                 </div>
 
                 <!-- Submit Button -->

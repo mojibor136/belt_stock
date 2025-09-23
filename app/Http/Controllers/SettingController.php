@@ -130,6 +130,7 @@ class SettingController extends Controller
 
         $settings->invoice = $request->has('invoice') ? 1 : 0;
         $settings->vendor_stock = $request->has('vendor_stock') ? 1 : 0;
+        $settings->memo_status = $request->has('memo_status') ? 1 : 0;
 
         $settings->save();
 
