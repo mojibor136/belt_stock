@@ -8,6 +8,7 @@ use App\Models\CustomerTrx;
 use App\Models\Memo;
 use App\Models\Size;
 use App\Models\Stock;
+use App\Models\Setting;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -27,6 +28,8 @@ class MemoController extends Controller
 
     public function show($id)
     {
+        $setting = Setting::first();
+
         $memo = Memo::with(['customer', 'items.sizes'])->findOrFail($id);
         $data = [
             'customer_name' => $memo->customer->name,
@@ -51,7 +54,11 @@ class MemoController extends Controller
             })->toArray(),
         ];
 
-        return view('memo.show', compact('data'));
+        if ($setting->memo_status == 1) {
+            return view('memo.default', compact('data'));
+        } else {
+            return view('memo.memo', compact('data'));
+        }
     }
 
     public function store(Request $request)
