@@ -18,6 +18,7 @@ return new class extends Migration
             $table->boolean('invoice')->default(0);
             $table->boolean('vendor_stock')->default(0);
             $table->boolean('memo_status')->default(0);
+            $table->string('description')->nullable();
             $table->json('shop_name')->nullable();
             $table->json('shop_address')->nullable();
             $table->json('shop_phone')->nullable();

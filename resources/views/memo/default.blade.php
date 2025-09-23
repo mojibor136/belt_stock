@@ -20,44 +20,40 @@
             }
         }
     </style>
-    <div class="memo-container w-full bg-white shadow-lg print:w-full print:h-full mb-4 print:mb-0">
-        <!-- Header -->
-        <div class="flex justify-between items-start p-6 border-b border-gray-300 bg-gray-50">
-            <!-- Brand Name with Remixicon -->
-            <div class="flex flex-col gap-1 items-start">
-                <span class="text-2xl font-medium text-gray-600">ইসমাইল & ব্রাদার্স</span>
-                <span class="text-2xl font-bold text-gray-600">Ismail & Brothers</span>
+    <div class="memo-container w-full bg-white shadow-lg print:w-full print:h-full print:mb-0">
+        <div class="flex flex-col items-center px-6 py-2 border-b border-gray-300 bg-gray-50 text-center">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl font-bold text-gray-800">ইসমাইল & ব্রাদার্স</span>
+                |
+                <span class="text-2xl font-bold text-gray-800">Ismail & Brothers</span>
             </div>
 
-            <!-- Invoice Info -->
-            <div class="text-md flex space-x-6">
-                <div class="flex flex-col text-right gap-1">
-                    <p class="text-gray-500 font-medium">Invoice Date</p>
-                    <p class="text-gray-800 font-semibold">April 26, 2023</p>
-                </div>
-                <div class="flex flex-col text-right gap-1">
-                    <p class="text-gray-500 font-medium">Invoice ID</p>
-                    <p class="text-gray-800 font-semibold">BRA-00335</p>
-                </div>
-            </div>
+            <!-- Address & Phone -->
+            <p class="text-gray-600">123 Street Name, City, Country</p>
+            <p class="text-gray-600">Phone: +880 1234 567890</p>
+
+            <!-- Company Description -->
+            <p class="text-gray-500 text-sm max-w-2xl">
+                আমাদের কোম্পানি বিভিন্ন ধরনের মানসম্পন্ন প্রোডাক্ট সরবরাহ করে।
+                আমরা গ্রাহকের চাহিদা অনুযায়ী সেরা পরিষেবা প্রদান করি এবং সর্বদা
+            </p>
         </div>
 
         <!-- Supplier & Customer -->
-        <div class="bg-gray-50 px-4 py-3 text-md">
+        <div class="bg-gray-50 px-4 py-2 text-md">
             <div class="flex justify-between">
-                <div class="text-neutral-600 flex flex-col gap-1">
-                    <p class="font-bold">Supplier Company INC</p>
-                    <p>Number: 23456789</p>
-                    <p>United States</p>
+                <div class="text-left text-neutral-600 flex flex-col gap-0.5">
+                    <p>Name: {{ $data['customer_name'] }}</p>
+                    <p>Address: {{ $data['customer_address'] }}</p>
                 </div>
-                <div class="text-right text-neutral-600 flex flex-col gap-1">
-                    <p class="font-bold">Customer Company</p>
-                    <p>Number: 123456789</p>
-                    <p>9552 Vandervort Spurs</p>
+                <div class="text-left text-neutral-600 flex flex-col gap-1">
+                    <p>Date: {{ date('d m Y', strtotime($memo->updated_at)) }}
+                    </p>
+                    <p>Invoice ID: {{ $memo->memo_no }}</p>
                 </div>
             </div>
         </div>
-        <div class="px-2 py-2 flex flex-col">
+        <div class="px-2 py-0 flex flex-col">
             <div class="mt-1 overflow-x-auto text-neutral-700">
                 <table class="w-full border-collapse">
                     <thead class="bg-blue-400 border border-blue-400">

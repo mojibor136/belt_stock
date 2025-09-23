@@ -80,6 +80,20 @@
                     @enderror
                 </div>
 
+                <!-- Shop Description -->
+                <div class="mt-4">
+                    <label for="description" class="block text-md font-medium text-gray-700 mb-1.5">
+                        Shop Description <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="description" name="description"
+                        placeholder='Enter description'
+                        class="w-full border border-gray-300 rounded-md px-3 py-2 text-md focus:ring-1 focus:ring-blue-600 focus:outline-none text-gray-700"
+                        value="{{ $setting->description }}">
+                    @error('description')
+                        <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 <!-- Shop Phone -->
                 <div class="mt-4">
                     <label for="shop_phone" class="block text-md font-medium text-gray-700 mb-1.5">

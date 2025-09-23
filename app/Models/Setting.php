@@ -12,6 +12,7 @@ class Setting extends Model
         'invoice',
         'vendor_stock',
         'memo_status',
+        'description',
         'shop_name',
         'shop_address',
         'shop_phone',

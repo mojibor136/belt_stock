@@ -55,9 +55,9 @@ class MemoController extends Controller
         ];
 
         if ($setting->memo_status == 1) {
-            return view('memo.default', compact('data'));
+            return view('memo.default', compact('data' , 'memo'));
         } else {
-            return view('memo.memo', compact('data'));
+            return view('memo.memo', compact('data' , 'memo'));
         }
     }
 

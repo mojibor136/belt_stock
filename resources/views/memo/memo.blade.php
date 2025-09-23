@@ -65,7 +65,7 @@
             <div class="flex justify-between items-center">
                 <div class="w-full flex items-center gap-1">
                     <span class="text-md font-semibold text-gray-800">Bill No.B:</span>
-                    <span class="text-gray-800 font-bold text-md">520</span>
+                    <span class="text-gray-800 font-bold text-md">{{ $memo->memo_no }}</span>
                 </div>
                 <div class="w-full flex items-center justify-center">
                     <div class="bg-yellow-200 text-blue-900 px-4 py-1 font-semibold rounded-3xl text-sm">
@@ -73,7 +73,8 @@
                     </div>
                 </div>
                 <div class="w-full flex justify-end items-center">
-                    <span class="text-md font-medium text-gray-700">Date: 20-08-2025</span>
+                    <span class="text-md font-medium text-gray-700">Date:
+                        {{ date('d m Y', strtotime($memo->updated_at)) }}</span>
                 </div>
             </div>
 

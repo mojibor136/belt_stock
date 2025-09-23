@@ -63,6 +63,7 @@ class SettingController extends Controller
             'shop_name' => 'required|string',
             'shop_address' => 'required|string',
             'shop_phone' => 'required|string',
+            'description' => 'required',
         ]);
 
         $shopNameArray = array_map('trim', explode(',', $request->shop_name));
@@ -100,6 +101,7 @@ class SettingController extends Controller
             'shop_name' => $shopNameArray,
             'shop_address' => $shopAddressArray,
             'shop_phone' => $shopPhoneArray,
+            'description' => $request->description,
         ];
 
         if ($favIconPath) {
