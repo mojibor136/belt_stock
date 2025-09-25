@@ -24,6 +24,18 @@
             font-family: 'Roboto', sans-serif;
         }
 
+        .scrollhidden::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollhidden {
+            scrollbar-width: none;
+        }
+
+        .scrollhidden {
+            -ms-overflow-style: none;
+        }
+
         .submenu {
             max-height: 0;
             overflow: hidden;
@@ -419,7 +431,7 @@
         </div>
 
         <!-- Main Content -->
-        <div class="flex-1 md:ml-[210px] lg:ml-[240px] md:px-4 px-2 md:pt-4 overflow-y-auto print:p-0 print:m-0">
+        <div class="scrollhidden flex-1 md:ml-[210px] lg:ml-[240px] md:px-4 px-2 md:pt-4 overflow-y-auto print:p-0 print:m-0">
             @yield('content')
         </div>
     </div>

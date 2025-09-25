@@ -18,31 +18,82 @@
             .memo-container {
                 box-shadow: none;
             }
+
+            .print-btn {
+                display: none !important;
+            }
+        }
+
+        .print-btn {
+            position: fixed;
+            right: 32px;
+            bottom: 32px;
+            z-index: 50;
+            background: #2563eb;
+            color: #fff;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .print-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .print-btn svg {
+            width: 28px;
+            height: 28px;
         }
     </style>
-    <div class="memo-container w-full bg-white shadow-lg print:w-full print:h-full print:mb-0">
+    <button class="print-btn" onclick="window.print()" title="Print">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M7 17v2a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2" />
+            <rect x="3" y="7" width="18" height="8" rx="2" stroke="currentColor" stroke-width="2" />
+            <path d="M7 7V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="2" />
+            <circle cx="17" cy="12" r="1" fill="currentColor" />
+        </svg>
+    </button>
+    @php
+        $shopNames = is_array($setting->shop_name) ? $setting->shop_name : [];
+        $firstThree = array_slice($shopNames, 0, 2);
+
+        $shopName = old('shop_name', implode(', ', $firstThree));
+
+        $shopAddress = old('shop_address', isset($setting->shop_address) ? implode(', ', $setting->shop_address) : '');
+
+        $shopPhone = old('shop_phone', isset($setting->shop_phone) ? implode(', ', $setting->shop_phone) : '');
+    @endphp
+    <div class="memo-container mb-6 pb-2 w-full bg-white shadow-lg print:w-full print:h-full print:mb-0">
         <div class="flex flex-col items-center px-6 py-2 border-b border-gray-300 bg-gray-50 text-center">
             <div class="flex items-center gap-2">
-                <span class="text-2xl font-bold text-gray-800">ইসমাইল & ব্রাদার্স</span>
-                |
-                <span class="text-2xl font-bold text-gray-800">Ismail & Brothers</span>
+                @if (isset($firstThree[0]))
+                    <span class="text-2xl font-bold text-gray-800">{{ $firstThree[0] }}</span>
+                @endif
+                @if (isset($firstThree[1]))
+                    <span class="text-2xl font-bold text-gray-800">{{ $firstThree[1] }}</span>
+                @endif
             </div>
 
             <!-- Address & Phone -->
-            <p class="text-gray-600">123 Street Name, City, Country</p>
-            <p class="text-gray-600">Phone: +880 1234 567890</p>
+            <p class="text-gray-600 mb-1">{{ $shopAddress }}</p>
+            <p class="text-gray-600 mb-1">Phone: {{ $shopPhone }}</p>
 
             <!-- Company Description -->
             <p class="text-gray-500 text-sm max-w-2xl">
-                আমাদের কোম্পানি বিভিন্ন ধরনের মানসম্পন্ন প্রোডাক্ট সরবরাহ করে।
-                আমরা গ্রাহকের চাহিদা অনুযায়ী সেরা পরিষেবা প্রদান করি এবং সর্বদা
+                {{ $setting->description }}
             </p>
         </div>
 
         <!-- Supplier & Customer -->
         <div class="bg-gray-50 px-4 py-2 text-md">
             <div class="flex justify-between">
-                <div class="text-left text-neutral-600 flex flex-col gap-0.5">
+                <div class="text-left text-neutral-600 flex flex-col gap-1.5">
                     <p>Name: {{ $data['customer_name'] }}</p>
                     <p>Address: {{ $data['customer_address'] }}</p>
                 </div>
@@ -58,7 +109,7 @@
                 <table class="w-full border-collapse">
                     <thead class="bg-blue-400 border border-blue-400">
                         <tr class="text-white text-sm">
-                            <th class="px-2 py-2.5 text-left border border-gray-300">Group</th>
+                            <th class="px-2 py-2 text-left border border-gray-300">Group</th>
                             <th class="px-2 py-2 text-center border border-gray-300">Description</th>
                             <th class="px-2 py-2 text-center border border-gray-300">Brand</th>
                             <th class="px-2 py-2 text-center border border-gray-300">Rate</th>
@@ -139,19 +190,65 @@
                         @endfor
 
                         @php
+                            $statusRaw = $data['debit_credit_status'] ?? '';
+                            $s = strtolower(trim($statusRaw));
+                            if (in_array($s, ['debit', 'dr', 'd'])) {
+                                $short = 'Customer Dr.';
+                                $colorClass = 'text-red-600';
+                            } elseif (in_array($s, ['credit', 'cr', 'c'])) {
+                                $short = 'Customer Cr.';
+                                $colorClass = 'text-green-600';
+                            } else {
+                                $short = '';
+                                $colorClass = 'text-gray-600';
+                            }
+                            $amount = $data['amount'] ?? null;
+                        @endphp
+
+                        <tr class="text-gray-800">
+                            <td class="border border-gray-300 px-2 py-0.5 text-center" colspan="1"></td>
+                            <td class="border border-gray-300 px-2 py-0.5 text-center" colspan="1"></td>
+                            <td class="border border-gray-500 capitalize border-dotted px-1 py-0.5 text-left"
+                                colspan="2">
+                                <span class="font-medium {{ $colorClass }}">
+                                    {{ $short }}
+                                    @if (!is_null($amount))
+                                        ৳{{ number_format((float) $amount, 2) }}
+                                    @endif
+                                </span>
+                            </td>
+                            <td class="border border-gray-300 px-2 py-0.5 text-left" colspan="2">
+                                &#2547;{{ number_format($data['debit_credit'], 2) }}
+                            </td>
+                        </tr>
+
+                        @php
                             $grandTotal = 0;
+
                             foreach ($data['items'] as $item) {
-                                $grandTotal += $item['item_total'] ?? 0;
+                                $grandTotal += (float) ($item['item_total'] ?? 0);
                             }
 
-                            if (isset($data['debit_credit_status']) && isset($data['debit_credit'])) {
-                                if ($data['debit_credit_status'] === 'debit') {
-                                    $grandTotal += $data['debit_credit'];
-                                } elseif ($data['debit_credit_status'] === 'credit') {
-                                    $grandTotal -= $data['debit_credit'];
+                            if (!empty($data['debit_credit_status']) && isset($data['debit_credit'])) {
+                                $debitCredit = (float) $data['debit_credit'];
+
+                                if (strtolower($data['debit_credit_status']) === 'debit') {
+                                    $grandTotal += $debitCredit;
+                                } elseif (strtolower($data['debit_credit_status']) === 'credit') {
+                                    $grandTotal -= $debitCredit;
                                 }
                             }
                         @endphp
+
+                        <tr class="text-gray-800">
+                            <td class="border border-gray-300 px-2 py-0.5 text-center" colspan="1">BL</td>
+                            <td class="border border-gray-300 px-2 py-0.5 text-center" colspan="1"></td>
+                            <td class="border border-gray-300 bg-orange-200 px-1 py-0.5 text-left" colspan="2">Grand
+                                Total.</td>
+                            <td class="border border-gray-300 px-2 py-0.5 text-center font-bold" colspan="2">
+                                ৳{{ number_format(abs($grandTotal), 2) }}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
