@@ -6,9 +6,9 @@ use App\Models\Brand;
 use App\Models\Customer;
 use App\Models\CustomerTrx;
 use App\Models\Memo;
+use App\Models\Setting;
 use App\Models\Size;
 use App\Models\Stock;
-use App\Models\Setting;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -55,9 +55,9 @@ class MemoController extends Controller
         ];
 
         if ($setting->memo_status == 1) {
-            return view('memo.default', compact('data' , 'memo'));
+            return view('memo.default', compact('data', 'memo'));
         } else {
-            return view('memo.memo', compact('data' , 'memo'));
+            return view('memo.memo', compact('data', 'memo'));
         }
     }
 
