@@ -11,7 +11,7 @@ class Setting extends Model
         'site_logo',
         'invoice',
         'vendor_stock',
-        'memo_status',
+        'auto_complete_memo',
         'description',
         'shop_name',
         'shop_address',

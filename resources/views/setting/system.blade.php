@@ -32,10 +32,10 @@
 
                 <!-- Memo Status Default-->
                 <div class="mt-4 flex items-center gap-3">
-                    <input type="checkbox" id="memo_status" name="memo_status" value="1"
-                        {{ $setting && $setting->memo_status ? 'checked' : '' }}
+                    <input type="checkbox" id="auto_complete_memo" name="auto_complete_memo" value="1"
+                        {{ $setting && $setting->auto_complete_memo ? 'checked' : '' }}
                         class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                    <label for="memo_status" class="text-md font-medium text-gray-700">Memo Status Default</label>
+                    <label for="auto_complete_memo" class="text-md font-medium text-gray-700">Memo Auto Complete</label>
                 </div>
 
                 <!-- Submit Button -->

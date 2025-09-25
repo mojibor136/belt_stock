@@ -54,7 +54,7 @@ class MemoController extends Controller
             })->toArray(),
         ];
 
-        if ($setting->memo_status == 1) {
+        if ($setting && $setting->invoice == 1) {
             return view('memo.default', compact('data', 'memo'));
         } else {
             return view('memo.memo', compact('data', 'memo'));
@@ -154,6 +154,12 @@ class MemoController extends Controller
             $memo->update(['grand_total' => $grandTotal]);
             DB::commit();
 
+            $setting = Setting::first();
+
+            if ($setting && $setting->auto_complete_memo) {
+                $this->memostatus($memo->id);
+            }
+
             return redirect()->route('memo.show', $memo->id)->with('success', 'মেমো সফলভাবে তৈরি হয়েছে।');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -200,6 +206,20 @@ class MemoController extends Controller
         $memo = $query->latest()->get();
 
         return view('memo.complete', compact('memo'));
+    }
+
+    private function memostatus($id)
+    {
+        $memo = Memo::findOrFail($id);
+        $amount = $memo->grand_total;
+        $invoice_type = $memo->memo_no;
+        $customer_id = $memo->customer_id;
+        $created_at = $memo->created_at->format('d/m/Y');
+        if ($memo->memo_status == 'pending') {
+            return $this->storeTransactionFromMemo($memo, $customer_id, $invoice_type, $amount, $created_at, 'invoice');
+        } else {
+            return back();
+        }
     }
 
     public function status($id)
