@@ -9,7 +9,7 @@
                         Phone: <span class="font-medium">{{ $customer->phone }}</span>
                     </span>
                     <p class="font-medium text-md text-gray-700">Address: {{ $customer->address }}</p>
-                    <p class="font-medium text-md text-gray-700">Subject: Sales Items</p>
+                    <p class="font-medium text-md text-gray-700">Subject: <strong>Sales Items</strong></p>
                 </div>
 
                 <div class="flex flex-col items-center gap-2">

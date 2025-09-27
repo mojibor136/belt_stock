@@ -23,7 +23,7 @@
                         Phone: <span class="font-medium">{{ $customer->phone }}</span>
                     </span>
                     <p class="font-medium text-md text-gray-700">Address: {{ $customer->address }}</p>
-                    <p class="font-medium text-md text-gray-700">Subject: Memo</p>
+                    <p class="font-medium text-md text-gray-700">Subject: <strong>Memo</strong></p>
                 </div>
 
                 <div class="flex flex-col items-center gap-2">
@@ -134,15 +134,42 @@
                                     <td class="px-4 py-3 text-center text-gray-700">{{ $m->created_at->format('d/m/Y') }}
                                     </td>
                                     <td class="px-4 py-3 text-center space-x-2">
-                                        <span
-                                            class="inline-flex items-center justify-center h-8 px-3 rounded text-white capitalize text-sm font-medium
-                                    {{ $m->memo_status == 'pending' ? 'bg-yellow-500' : 'bg-green-600' }}">
-                                            {{ ucfirst($m->memo_status) }}
-                                        </span>
+                                        @if ($m->memo_status == 'pending')
+                                            <form class="inline-block" action="{{ route('memo.destroy', $m->id) }}"
+                                                method="POST"
+                                                onsubmit="return confirm('আপনি কি নিশ্চিত যে এই মেমো মুছে ফেলতে চান?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="inline-flex items-center justify-center w-14 h-8 px-4 bg-red-600 hover:bg-red-700 text-white rounded shadow"
+                                                    title="Delete">
+                                                    <i class="ri-delete-bin-6-line text-md"></i>
+                                                </button>
+                                            </form>
+                                        @else
+                                            <a href="{{ route('memo.items', $m->id) }}"
+                                                class="inline-flex items-center justify-center w-14 h-8 bg-orange-600 hover:bg-orange-700 text-white rounded shadow"
+                                                title="View">
+                                                <span>Items</span>
+                                            </a>
+                                        @endif
 
-                                        <span onclick="window.location='{{ route('memo.show', $m->id) }}'"
-                                            class="inline-flex items-center justify-center h-8 px-3 rounded text-white capitalize text-sm font-medium bg-red-600 cursor-pointer hover:bg-red-700">
-                                            View
+                                        <a href="{{ route('memo.show', [$m->id, 'N']) }}"
+                                            class="inline-flex items-center justify-center w-10 h-8 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded shadow"
+                                            title="View">
+                                            <i class="ri-eye-line text-md"></i>
+                                        </a>
+
+                                        <a href="{{ route('memo.show', [$m->id, 'print']) }}"
+                                            class="inline-flex items-center justify-center w-10 h-8 px-4 bg-red-500 hover:bg-red-600 text-white rounded shadow"
+                                            title="View">
+                                            <i class="ri-printer-line text-md"></i>
+                                        </a>
+
+                                        <span
+                                            class="inline-flex items-center justify-center w-20 h-8 px-3 rounded text-white capitalize text-sm font-medium
+                                            {{ $m->memo_status == 'pending' ? 'bg-yellow-500' : 'bg-green-600' }}">
+                                            {{ ucfirst($m->memo_status) }}
                                         </span>
                                     </td>
                                 </tr>

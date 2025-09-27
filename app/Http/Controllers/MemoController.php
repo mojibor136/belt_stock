@@ -26,11 +26,16 @@ class MemoController extends Controller
         return view('memo.index', compact('brands', 'customers'));
     }
 
-    public function show($id)
+    public function show($id , $action)
     {
         $setting = Setting::first();
 
         $memo = Memo::with(['customer', 'items.sizes'])->findOrFail($id);
+
+        if($action === 'print'){
+            session()->flash('autoPrint', true);
+        }
+
         $data = [
             'customer_name' => $memo->customer->name,
             'customer_address' => $memo->customer->address,
@@ -160,7 +165,7 @@ class MemoController extends Controller
                 $this->memostatus($memo->id);
             }
 
-            return redirect()->route('memo.show', $memo->id)->with('success', 'মেমো সফলভাবে তৈরি হয়েছে।');
+            return redirect()->route('memo.show', ['id' => $memo->id , 'action' => 'N'])->with('success', 'মেমো সফলভাবে তৈরি হয়েছে।');
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -378,5 +383,14 @@ class MemoController extends Controller
         $customers = Customer::all();
 
         return view('memo.edit', compact('memo', 'brands', 'customers'));
+    }
+
+    public function items($id)
+    {
+        $memo = Memo::with(['customer', 'items.brand', 'items.group', 'items.sizes'])->findOrFail($id);
+
+        $customer = Customer::find($memo->customer_id);
+
+        return view('memo.memoItems', compact('memo', 'customer'));
     }
 }

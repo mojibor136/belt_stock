@@ -123,11 +123,13 @@
                                     </span>
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-left whitespace-nowrap">&#2547; {{ bd_format($m->grand_total) }}.00</td>
+                            <td class="px-4 py-3 text-left whitespace-nowrap">&#2547; {{ bd_format($m->grand_total) }}.00
+                            </td>
                             <td class="px-4 py-3 text-left whitespace-nowrap">
                                 &#2547; {{ bd_format($total) }} .00
                             </td>
-                            <td class="px-4 py-3 text-center text-gray-600 whitespace-nowrap">{{ $m->created_at->format('d/m/Y') }}</td>
+                            <td class="px-4 py-3 text-center text-gray-600 whitespace-nowrap">
+                                {{ $m->created_at->format('d/m/Y') }}</td>
                             <td class="px-4 py-3 text-center whitespace-nowrap">
                                 <span onclick="window.location='{{ route('memo.status', $m->id) }}'"
                                     class="inline-flex items-center justify-center h-8 px-3 rounded text-white capitalize text-sm font-medium cursor-pointer
@@ -135,15 +137,17 @@
                                     {{ ucfirst($m->memo_status) }}
                                 </span>
 
-                                <span onclick="window.location='{{ route('memo.edit', $m->id) }}'"
-                                    class="inline-flex items-center justify-center h-8 px-3 rounded text-white capitalize text-sm font-medium bg-blue-600 cursor-pointer hover:bg-blue-700">
-                                    Edit
-                                </span>
+                                <a href="{{ route('memo.edit', $m->id) }}"
+                                    class="inline-flex items-center justify-center w-10 h-8 px-4 bg-indigo-500 hover:bg-indigo-600 text-white rounded shadow"
+                                    title="View">
+                                    <i class="ri-edit-2-line text-md"></i>
+                                </a>
 
-                                <span onclick="window.location='{{ route('memo.show', $m->id) }}'"
-                                    class="inline-flex items-center justify-center h-8 px-3 rounded text-white capitalize text-sm font-medium bg-gray-600 cursor-pointer hover:bg-gray-700">
-                                    View
-                                </span>
+                                <a href="{{ route('memo.show', [$m->id, 'N']) }}"
+                                    class="inline-flex items-center justify-center w-10 h-8 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded shadow"
+                                    title="View">
+                                    <i class="ri-eye-line text-md"></i>
+                                </a>
 
                                 <form class="inline-block" action="{{ route('memo.destroy', $m->id) }}" method="POST"
                                     onsubmit="return confirm('আপনি কি নিশ্চিত যে এই মেমো মুছে ফেলতে চান?');">

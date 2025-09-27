@@ -137,10 +137,23 @@
                                     {{ ucfirst($m->memo_status) }}
                                 </span>
 
-                                <span onclick="window.location='{{ route('memo.show', $m->id) }}'"
-                                    class="inline-flex items-center justify-center h-8 px-3 rounded text-white capitalize text-sm font-medium bg-red-600 cursor-pointer hover:bg-red-700">
-                                    View
-                                </span>
+                                <a href="{{ route('memo.items', $m->id) }}"
+                                    class="inline-flex items-center justify-center w-14 h-8 bg-orange-600 hover:bg-orange-700 text-white rounded shadow"
+                                    title="View">
+                                    <span>Items</span>
+                                </a>
+
+                                <a href="{{ route('memo.show', [$m->id, 'N']) }}"
+                                    class="inline-flex items-center justify-center w-10 h-8 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded shadow"
+                                    title="View">
+                                    <i class="ri-eye-line text-md"></i>
+                                </a>
+
+                                <a href="{{ route('memo.show', [$m->id, 'print']) }}"
+                                    class="inline-flex items-center justify-center w-10 h-8 px-4 bg-red-500 hover:bg-red-600 text-white rounded shadow"
+                                    title="View">
+                                    <i class="ri-printer-line text-md"></i>
+                                </a>
                             </td>
                         </tr>
                     @empty

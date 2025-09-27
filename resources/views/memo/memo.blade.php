@@ -162,7 +162,7 @@
                             @php
                                 $grandTotal += $item['item_total'] ?? 0;
                                 $usePieceRate = $item['rate'] == 0 && isset($item['piece_rate']);
-                                $rateToShow = $usePieceRate ? $item['piece_rate'] . ' PS' : $item['rate'];
+                                $rateToShow = $usePieceRate ? $item['piece_rate'] . ' ' : $item['rate'];
                                 $sizeChunks = array_chunk($item['sizes'], 5);
                             @endphp
 
@@ -288,4 +288,11 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            @if (session('autoPrint'))
+                window.print();
+            @endif
+        });
+    </script>
 @endsection
