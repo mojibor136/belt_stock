@@ -87,7 +87,8 @@
                                             <td class="px-4 py-3 text-center text-gray-600">
                                                 {{ $memo->created_at->format('d/m/Y') }}</td>
                                             <td class="px-4 py-3 text-center space-x-2">
-                                                <span onclick="window.location='{{ route('memo.show', $size->id) }}'"
+                                                <span
+                                                    onclick="window.location='{{ route('memo.items.return', $size->id) }}'"
                                                     class="px-3 py-2 rounded text-white capitalize text-sm font-medium bg-red-600 cursor-pointer hover:bg-red-700">
                                                     Return
                                                 </span>

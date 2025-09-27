@@ -26,13 +26,13 @@ class MemoController extends Controller
         return view('memo.index', compact('brands', 'customers'));
     }
 
-    public function show($id , $action)
+    public function show($id, $action)
     {
         $setting = Setting::first();
 
         $memo = Memo::with(['customer', 'items.sizes'])->findOrFail($id);
 
-        if($action === 'print'){
+        if ($action === 'print') {
             session()->flash('autoPrint', true);
         }
 
@@ -96,9 +96,11 @@ class MemoController extends Controller
                 'items.*.sizes.*.quantity.required' => 'সাইজের পরিমাণ দিতে হবে।',
                 'items.*.sizes.*.quantity.min' => 'পরিমাণ ন্যূনতম ১ হতে হবে।',
             ]);
+
             if ($validator->fails()) {
                 return redirect()->back()->with('error', $validator->errors()->first())->withInput();
             }
+
             DB::beginTransaction();
             $data = $request->all();
             $grandTotal = 0;
@@ -165,7 +167,7 @@ class MemoController extends Controller
                 $this->memostatus($memo->id);
             }
 
-            return redirect()->route('memo.show', ['id' => $memo->id , 'action' => 'N'])->with('success', 'মেমো সফলভাবে তৈরি হয়েছে।');
+            return redirect()->route('memo.show', ['id' => $memo->id, 'action' => 'N'])->with('success', 'মেমো সফলভাবে তৈরি হয়েছে।');
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -244,13 +246,17 @@ class MemoController extends Controller
     private function storeTransactionFromMemo($memo, $customer_id, $invoice_type, $amount, $created_at, string $type)
     {
         DB::beginTransaction();
+
         try {
+
             $customer = Customer::findOrFail($customer_id);
             if (! in_array($customer->status, ['debit', 'credit'])) {
                 $customer->status = 'debit';
             }
+
             $customerAmount = (float) $customer->amount;
             $requestAmount = (float) $amount;
+
             if ($type === 'invoice') {
                 if ($customer->status === 'debit') {
                     $customer->amount = $customerAmount + $requestAmount;
@@ -272,14 +278,23 @@ class MemoController extends Controller
                     $customer->amount = $customerAmount + $requestAmount;
                 }
             }
+
             if ($customer->amount < 0) {
                 $customer->amount = abs($customer->amount);
             }
             if ($customer->amount == 0) {
                 $customer->status = 'debit';
             }
+
             $customer->save();
-            $trxData = ['customer_id' => $customer_id, 'invoice_type' => $invoice_type, 'debit_credit' => $customer->amount, 'status' => $customer->status];
+
+            $trxData = [
+                'customer_id' => $customer_id,
+                'invoice_type' => $invoice_type,
+                'debit_credit' => $customer->amount,
+                'status' => $customer->status,
+            ];
+
             if ($type === 'invoice') {
                 $trxData['invoice'] = $amount;
                 $trxData['invoice_status'] = 'Invoice';
@@ -287,17 +302,57 @@ class MemoController extends Controller
                 $trxData['payment'] = $amount;
                 $trxData['invoice_status'] = 'Payment';
             }
+
             $trx = CustomerTrx::create($trxData);
             $trx->created_at = Carbon::createFromFormat('d/m/Y', $created_at)->startOfDay();
             $trx->save();
+
+            foreach ($memo->items as $item) {
+                foreach ($item->sizes as $memoSize) {
+                    $size = Size::where('size', $memoSize->size)
+                        ->where('brand_id', $item->brand_id)
+                        ->where('group_id', $item->group_id)
+                        ->first();
+
+                    if (! $size) {
+                        throw new \Exception("Size not found in database: {$memoSize->size}, Brand: {$item->brand_id}, Group: {$item->group_id}");
+                    }
+
+                    $stock = Stock::where('brand_id', $item->brand_id)
+                        ->where('group_id', $item->group_id)
+                        ->where('size_id', $size->id)
+                        ->first();
+
+                    if (! $stock) {
+                        throw new \Exception("Stock not found for Brand: {$item->brand_id}, Group: {$item->group_id}, Size: {$memoSize->size}");
+                    }
+
+                    if ($stock->quantity < $memoSize->quantity) {
+                        throw new \Exception("Stock insufficient for Brand: {$item->brand_id}, Group: {$item->group_id}, Size: {$memoSize->size}");
+                    }
+
+                    $stock->quantity -= $memoSize->quantity;
+                    $stock->save();
+                }
+            }
+
             $memo->memo_status = 'complete';
             $memo->save();
+
             DB::commit();
 
-            return redirect()->route('customer.transaction')->with('success', 'লেনদেন সফলভাবে যুক্ত হয়েছে এবং ব্যালেন্স আপডেট হয়েছে।');
+            return redirect()->route('customer.transaction')
+                ->with('success', 'লেনদেন সফলভাবে যুক্ত হয়েছে এবং ব্যালেন্স আপডেট হয়েছে।');
+
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Transaction store failed', ['error' => $e->getMessage(), 'line' => $e->getLine(), 'file' => $e->getFile(), 'trace' => $e->getTraceAsString()]);
+
+            Log::error('Transaction store failed', [
+                'error' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+                'trace' => $e->getTraceAsString(),
+            ]);
 
             return back()->with('error', 'কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।');
         }
@@ -335,11 +390,23 @@ class MemoController extends Controller
             if (! $size) {
                 return response()->json(['error' => 'Size not found in this group'], 404);
             }
-            $quantity = Stock::where('brand_id', $brandId)->where('group_id', $groupId)->where('size_id', $size->id)->sum('quantity');
+            $quantity = Stock::where('brand_id', $brandId)
+                ->where('group_id', $groupId)
+                ->where('size_id', $size->id)
+                ->sum('quantity');
 
-            return response()->json(['brand' => $brand->brand, 'group' => $group->group, 'size' => $size->size, 'available_quantity' => $quantity]);
+            return response()->json([
+                'brand' => $brand->brand,
+                'group' => $group->group,
+                'size' => $size->size,
+                'available_quantity' => $quantity,
+            ]);
         } catch (\Exception $e) {
-            Log::error('Check Quantity Error: '.$e->getMessage(), ['brand_id' => $brandId, 'group_id' => $groupId, 'size' => $sizeValue]);
+            Log::error('Check Quantity Error: '.$e->getMessage(), [
+                'brand_id' => $brandId,
+                'group_id' => $groupId,
+                'size' => $sizeValue,
+            ]);
 
             return response()->json(['error' => 'Something went wrong while checking quantity.'], 500);
         }
