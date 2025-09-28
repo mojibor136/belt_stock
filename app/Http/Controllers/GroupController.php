@@ -14,8 +14,7 @@ class GroupController extends Controller
         $brands = Brand::all();
 
         $query = Group::with(['brand', 'sizes.stocks'])
-            ->withCount('sizes')
-            ->orderBy('created_at', 'desc');
+            ->withCount('sizes');
 
         if ($request->filled('search')) {
             $query->where('group', 'like', '%'.$request->search.'%');
@@ -25,12 +24,16 @@ class GroupController extends Controller
             $query->where('brand_id', $request->brand);
         }
 
-        $groups = $query->get()->map(function ($group) {
+        $groups = $query->orderBy('created_at', 'desc')->get();
+
+        $groups->transform(function ($group) {
             $group->total_inchi = 0;
+            $group->total_stock = 0;
             $group->total_value = 0;
 
             foreach ($group->sizes as $size) {
                 $quantity = $size->stocks->sum('quantity');
+                $group->total_stock += $quantity;
 
                 if ($size->rate_type === 'inch') {
                     $group->total_inchi += $size->size * $quantity;
@@ -42,7 +45,24 @@ class GroupController extends Controller
             return $group;
         });
 
-        return view('group.index', compact('groups', 'brands'));
+        $groups = $groups->sortByDesc(function ($group) {
+            return $group->total_stock;
+        })->values();
+
+        $currentPage = request()->get('page', 1);
+        $perPage = 100;
+        $paginatedGroups = new \Illuminate\Pagination\LengthAwarePaginator(
+            $groups->forPage($currentPage, $perPage),
+            $groups->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        return view('group.index', [
+            'groups' => $paginatedGroups,
+            'brands' => $brands,
+        ]);
     }
 
     public function getGroupRate($group_id)

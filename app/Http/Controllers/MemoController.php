@@ -10,6 +10,7 @@ use App\Models\Setting;
 use App\Models\Size;
 use App\Models\Stock;
 use Carbon\Carbon;
+use App\Models\StockHistory;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -125,6 +126,7 @@ class MemoController extends Controller
                     'updated_at' => now(),
                 ]);
             }
+
             foreach ($data['items'] as $itemIndex => $item) {
                 $itemTotal = 0;
                 $inchRate = isset($item['inch_rate']) ? (float) $item['inch_rate'] : (isset($item['rate']) ? (float) $item['rate'] : 0);
@@ -333,6 +335,14 @@ class MemoController extends Controller
 
                     $stock->quantity -= $memoSize->quantity;
                     $stock->save();
+
+                    StockHistory::create([
+                        'brand' => $item->brand->brand,
+                        'group' => $item->group->group,
+                        'size' => $size->size,
+                        'quantity' => $memoSize->quantity,
+                        'type' => 'sales',
+                    ]);
                 }
             }
 

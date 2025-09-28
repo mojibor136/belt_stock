@@ -20,7 +20,10 @@ class BrandController extends Controller
             $query->whereDate('created_at', $request->date);
         }
 
-        $brands = $query->orderBy('created_at', 'desc')->get();
+        $brands = $query->orderByDesc('groups_count')
+            ->orderByDesc('sizes_count')
+            ->orderByDesc('created_at')
+            ->paginate(100);
 
         return view('brand.index', compact('brands'));
     }

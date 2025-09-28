@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use App\Models\Group;
 use App\Models\Size;
+use App\Models\StockHistory;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class SizeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Size::with(['brand', 'group'])->orderBy('id', 'desc');
+        $query = Size::with(['brand', 'group']);
 
         if ($request->filled('search')) {
             $query->where('size', 'like', '%'.$request->search.'%');
@@ -25,7 +27,27 @@ class SizeController extends Controller
             $query->where('group_id', $request->group);
         }
 
-        $sizes = $query->get();
+        $sizesCollection = $query->get()->map(function ($size) {
+            $size->sales = StockHistory::where('size', $size->size)
+                ->where('brand', $size->brand->brand)
+                ->where('group', $size->group->group)
+                ->where('type', 'sales')
+                ->sum('quantity');
+
+            return $size;
+        })->sortByDesc('sales'); 
+
+        $perPage = 100;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentItems = $sizesCollection->slice(($currentPage - 1) * $perPage, $perPage)->values();
+        $sizes = new LengthAwarePaginator(
+            $currentItems,
+            $sizesCollection->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
         $brands = Brand::all();
         $groups = Group::all();
 

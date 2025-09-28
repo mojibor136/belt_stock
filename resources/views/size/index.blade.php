@@ -81,6 +81,7 @@
                         <th class="px-4 py-3 text-center whitespace-nowrap">Stock</th>
                         <th class="px-4 py-3 text-center whitespace-nowrap">Inchi</th>
                         <th class="px-4 py-3 text-center whitespace-nowrap">Value</th>
+                        <th class="px-4 py-3 text-center whitespace-nowrap">Sold Out</th>
                         <th class="px-4 py-3 text-center whitespace-nowrap">Created At</th>
                         <th class="px-4 py-3 text-right pr-8 whitespace-nowrap">Actions</th>
                     </tr>
@@ -121,7 +122,20 @@
                             <td class="px-4 py-3 text-center whitespace-nowrap">
                                 {{ number_format($size->size * $size->cost_rate * $size->stocks->sum('quantity'), 2) }}
                             </td>
-                            <td class="px-4 py-3 text-center whitespace-nowrap">{{ $size->created_at->format('d M, Y') }}</td>
+                            <td class="px-4 py-3 text-center whitespace-nowrap">
+                                @php
+                                    $soldQty = $size->salesHistories->sum('quantity');
+                                @endphp
+
+                                @if ($soldQty > 0)
+                                    {{ $soldQty }}
+                                @else
+                                    <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-semibold">Sold
+                                        Out</span>
+                                @endif
+                            </td>
+                            <td class="px-4 py-3 text-center whitespace-nowrap">{{ $size->created_at->format('d M, Y') }}
+                            </td>
                             <td class="px-4 py-3 text-right whitespace-nowrap">
                                 <div class="flex justify-end items-center gap-1">
                                     <a href="{{ route('sizes.edit', $size->id) }}"
@@ -158,5 +172,30 @@
                 </tbody>
             </table>
         </div>
+        @if ($sizes->hasPages())
+            <div class="mt-4 flex justify-end">
+                @if ($sizes->onFirstPage())
+                    <span class="px-4 py-2 mr-2 rounded-md bg-gray-100 text-gray-500 cursor-not-allowed">
+                        Previous
+                    </span>
+                @else
+                    <a href="{{ $sizes->previousPageUrl() }}"
+                        class="px-4 py-2 mr-2 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">
+                        Previous
+                    </a>
+                @endif
+
+                @if ($sizes->hasMorePages())
+                    <a href="{{ $sizes->nextPageUrl() }}"
+                        class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">
+                        Next
+                    </a>
+                @else
+                    <span class="px-4 py-2 rounded-md bg-gray-100 text-gray-500 cursor-not-allowed">
+                        Next
+                    </span>
+                @endif
+            </div>
+        @endif
     </div>
 @endsection

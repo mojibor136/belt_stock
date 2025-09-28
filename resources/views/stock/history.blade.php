@@ -78,7 +78,7 @@
                         <th class="px-4 py-3 text-left">Size</th>
                         <th class="px-4 py-3 text-left">Brand</th>
                         <th class="px-4 py-3 text-center">Quantity</th>
-                        <th class="px-4 py-3 text-center">Type</th>
+                        <th class="px-4 py-3 text-center">History/Type</th>
                         <th class="px-4 py-3 text-center">History Date</th>
                     </tr>
                 </thead>
@@ -91,27 +91,31 @@
                             <td class="px-4 py-3 capitalize">{{ $history->brand }}</td>
                             <td class="px-4 py-3 text-center">{{ $history->quantity }}</td>
                             <td class="px-4 py-3 text-center">
-                                @if ($history->type === 'add')
-                                    <span
-                                        class="inline-flex justify-center items-center min-w-[60px] px-2 py-1 text-xs font-bold bg-green-100 text-green-700 rounded">
-                                        IN
-                                    </span>
-                                @elseif($history->type === 'edit')
-                                    <span
-                                        class="inline-flex justify-center items-center min-w-[60px] px-2 py-1 text-xs font-bold bg-yellow-100 text-yellow-700 rounded">
-                                        EDIT
-                                    </span>
-                                @elseif($history->type === 'delete')
-                                    <span
-                                        class="inline-flex justify-center items-center min-w-[60px] px-2 py-1 text-xs font-bold bg-red-100 text-red-700 rounded">
-                                        DELETE
-                                    </span>
-                                @else
-                                    <span
-                                        class="inline-flex justify-center items-center min-w-[60px] px-2 py-1 text-xs font-bold bg-red-200 text-red-700 rounded">
-                                        OUT
-                                    </span>
-                                @endif
+                                @php
+                                    $type = strtolower($history->type);
+                                    $styles = [
+                                        'add' => ['label' => 'Added', 'class' => 'bg-green-100 text-green-700'],
+                                        'edit' => ['label' => 'Edited', 'class' => 'bg-yellow-100 text-yellow-700'],
+                                        'sales' => ['label' => 'Sold Out', 'class' => 'bg-indigo-100 text-indigo-900'],
+                                        'purchase' => ['label' => 'Purchased', 'class' => 'bg-blue-100 text-blue-700'],
+                                        'transfer' => [
+                                            'label' => 'Transferred',
+                                            'class' => 'bg-purple-100 text-purple-700',
+                                        ],
+                                        'return' => ['label' => 'Returned', 'class' => 'bg-pink-100 text-pink-700'],
+                                        'delete' => ['label' => 'Deleted', 'class' => 'bg-red-100 text-red-700'],
+                                        'adjust' => ['label' => 'Adjusted', 'class' => 'bg-orange-100 text-orange-700'],
+                                    ];
+                                    $styleData = $styles[$type] ?? [
+                                        'label' => ucfirst($type),
+                                        'class' => 'bg-gray-200 text-gray-700',
+                                    ];
+                                @endphp
+
+                                <button
+                                    class="capitalize inline-flex justify-center items-center w-20 h-8 rounded font-semibold text-xs {{ $styleData['class'] }}">
+                                    {{ $styleData['label'] }}
+                                </button>
                             </td>
                             <td class="px-4 py-3 text-center">
                                 {{ \Carbon\Carbon::parse($history->created_at)->format('d M, Y') }}</td>

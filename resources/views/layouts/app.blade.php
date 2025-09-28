@@ -247,6 +247,48 @@
                             </ul>
                         </li>
 
+                        <!-- Purchase Products -->
+                        <li class="group">
+                            <a href="#"
+                                class="mb-1 flex items-center pl-4 py-2.5 text-gray-300 hover:text-white hover:bg-[#3b3f5c] rounded submenu-toggle"
+                                data-menu-key="purchase">
+                                <i class="ri-shopping-bag-3-line mr-1"></i>
+                                <span class="text-[15px]">Purchase Products</span>
+                                <i class="ri-arrow-down-s-line ml-auto mr-4"></i>
+                            </a>
+                            <ul class="submenu pl-2 bg-[#2a2f45]">
+                                <li>
+                                    <a href="{{ route('purchase.index') }}"
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded
+                                        {{ request()->routeIs('purchase.index') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
+                                        <i class="ri-list-check mr-2"></i>All Purchase Items
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="{{ route('purchase.create') }}"
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded {{ request()->routeIs('purchase.create') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
+                                        <i class="ri-add-box-line mr-2"></i>Add New Purchase
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="{{ route('purchase.pending') }}"
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded {{ request()->routeIs('purchase.pending') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
+                                        <i class="ri-time-line mr-2"></i>Pending Purchases
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="{{ route('purchase.confirm') }}"
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded {{ request()->routeIs('purchase.confirm') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
+                                        <i class="ri-check-double-line mr-2"></i>Confirmed Purchases
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+
                         <!-- Memo Management -->
                         <li class="group">
                             <a href="#"
@@ -298,10 +340,7 @@
                             <ul class="submenu pl-2 bg-[#2a2f45]">
                                 <li>
                                     <a href="{{ route('customer.index') }}"
-                                        class="flex items-center py-2 pl-6 text-[15px] rounded
-           {{ request()->routeIs('customer.index')
-               ? 'bg-[#3b3f5c] text-white'
-               : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
+                                        class="flex items-center py-2 pl-6 text-[15px] rounded {{ request()->routeIs('customer.index') ? 'bg-[#3b3f5c] text-white' : 'text-gray-300 hover:text-white hover:bg-[#3b3f5c]' }}">
                                         <i class="ri-user-smile-line mr-2"></i>All Customers
                                     </a>
                                 </li>
@@ -431,7 +470,8 @@
         </div>
 
         <!-- Main Content -->
-        <div class="scrollhidden flex-1 md:ml-[210px] lg:ml-[240px] md:px-4 px-2 md:pt-4 overflow-y-auto print:p-0 print:m-0">
+        <div
+            class="scrollhidden flex-1 md:ml-[210px] lg:ml-[240px] md:px-4 px-2 md:pt-4 overflow-y-auto print:p-0 print:m-0">
             @yield('content')
         </div>
     </div>

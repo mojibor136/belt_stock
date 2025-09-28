@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Exception;
 
 class Size extends Model
 {
@@ -29,6 +28,14 @@ class Size extends Model
     public function stocks()
     {
         return $this->hasMany(Stock::class);
+    }
+
+    public function salesHistories()
+    {
+        return $this->hasMany(StockHistory::class, 'size', 'size')
+            ->where('brand', $this->brand->brand ?? '')
+            ->where('group', $this->group->group ?? '')
+            ->where('type', 'sales');
     }
 
     protected static function booted()
