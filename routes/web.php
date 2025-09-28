@@ -58,6 +58,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/sales/items', 'index')->name('sales.index');
     });
 
+    Route::controller(PurchaseController::class)->group(function () {
+        Route::get('/purchase/items', 'index')->name('purchase.index');
+        Route::post('/purchase/store', 'store')->name('purchase.store');
+        Route::get('/purchase/items/pending', 'pending')->name('purchase.pending');
+        Route::get('/purchase/items/confirm', 'confirm')->name('purchase.confirm');
+    });
+
     Route::controller(MemoController::class)->group(function () {
         Route::get('/memo/create', 'index')->name('memo.create');
         Route::post('/memo/store', 'store')->name('memo.store');
