@@ -125,10 +125,31 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+                @if ($transactions->hasPages())
+                    <div class="mt-4 flex justify-end">
+                        @if ($transactions->onFirstPage())
+                            <span class="px-4 py-2 mr-2 rounded-md bg-gray-100 text-gray-500 cursor-not-allowed">
+                                Previous
+                            </span>
+                        @else
+                            <a href="{{ $transactions->previousPageUrl() }}"
+                                class="px-4 py-2 mr-2 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">
+                                Previous
+                            </a>
+                        @endif
 
-            <div class="mt-4">
-                {{ $transactions->links() }}
+                        @if ($transactions->hasMorePages())
+                            <a href="{{ $transactions->nextPageUrl() }}"
+                                class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">
+                                Next
+                            </a>
+                        @else
+                            <span class="px-4 py-2 rounded-md bg-gray-100 text-gray-500 cursor-not-allowed">
+                                Next
+                            </span>
+                        @endif
+                    </div>
+                @endif
             </div>
         </div>
     </div>

@@ -14,7 +14,7 @@ class StockController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Stock::with(['brand', 'group', 'size'])->orderBy('id', 'desc');
+        $query = Stock::with(['brand', 'group', 'size']);
 
         if ($request->filled('brand')) {
             $query->where('brand_id', $request->brand);
@@ -29,7 +29,10 @@ class StockController extends Controller
             $query->where('quantity', 'like', '%'.$request->search.'%');
         }
 
-        $stocks = $query->get();
+        $stocks = $query->orderByDesc('quantity')
+            ->orderByDesc('updated_at')
+            ->paginate(100);
+
         $brands = Brand::all();
         $groups = Group::all();
         $sizes = Size::all();
@@ -169,7 +172,7 @@ class StockController extends Controller
             $query->where('quantity', 'like', '%'.$request->search.'%');
         }
 
-        $histories = $query->get();
+        $histories = $query->paginate(100);
         $brands = Brand::all();
         $groups = Group::all();
         $sizes = Size::all();
@@ -183,7 +186,7 @@ class StockController extends Controller
             ->whereColumn('quantity', '<=', 'alert')
             ->where('quantity', '>', 0)
             ->orderBy('id', 'desc')
-            ->get();
+            ->paginate(100);
 
         $brands = Brand::all();
         $groups = Group::all();
@@ -197,7 +200,7 @@ class StockController extends Controller
         $stocks = Stock::with(['brand', 'group', 'size'])
             ->where('quantity', '=', 0)
             ->orderBy('id', 'desc')
-            ->get();
+            ->paginate(100);
 
         $brands = Brand::all();
         $groups = Group::all();

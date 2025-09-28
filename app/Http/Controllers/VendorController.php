@@ -28,7 +28,7 @@ class VendorController extends Controller
             $query->where('status', $request->status);
         }
 
-        $vendors = $query->orderBy('id', 'desc')->get();
+        $vendors = $query->orderBy('id', 'desc')->paginate(100);
 
         return view('vendor.index', compact('vendors'));
     }

@@ -36,7 +36,7 @@ class SalesController extends Controller
             }
         }
 
-        $memos = $query->latest()->get();
+        $memos = $query->latest()->paginate(100);
 
         return view('sales.index', compact('memos'));
     }

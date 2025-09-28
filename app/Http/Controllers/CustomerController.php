@@ -30,7 +30,7 @@ class CustomerController extends Controller
             $query->where('status', $request->status);
         }
 
-        $customers = $query->orderBy('id', 'desc')->get();
+        $customers = $query->orderBy('id', 'desc')->paginate(100);
 
         return view('customer.index', compact('customers'));
     }
@@ -178,7 +178,7 @@ class CustomerController extends Controller
             }
         }
 
-        $memos = $query->latest()->get();
+        $memos = $query->latest()->paginate(100);
 
         return view('customer.customerSales', compact('customer', 'memos'));
     }
@@ -201,7 +201,7 @@ class CustomerController extends Controller
                 Log::error('Pending memo invalid date', ['input' => $request->created_at, 'error' => $e->getMessage()]);
             }
         }
-        $memo = $query->latest()->get();
+        $memo = $query->latest()->paginate(100);
 
         return view('customer.customerMemo', compact('memo', 'customer'));
     }

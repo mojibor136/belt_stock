@@ -9,8 +9,8 @@ use App\Models\Memo;
 use App\Models\Setting;
 use App\Models\Size;
 use App\Models\Stock;
-use Carbon\Carbon;
 use App\Models\StockHistory;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -192,7 +192,7 @@ class MemoController extends Controller
                 Log::error('Pending memo invalid date', ['input' => $request->created_at, 'error' => $e->getMessage()]);
             }
         }
-        $memo = $query->latest()->get();
+        $memo = $query->latest()->paginate(100);
 
         return view('memo.pending', compact('memo'));
     }
@@ -212,7 +212,7 @@ class MemoController extends Controller
                 Log::error('Complete memo invalid date', ['input' => $request->created_at, 'error' => $e->getMessage()]);
             }
         }
-        $memo = $query->latest()->get();
+        $memo = $query->latest()->paginate(100);
 
         return view('memo.complete', compact('memo'));
     }

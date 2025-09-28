@@ -166,6 +166,31 @@
                 </tbody>
             </table>
         </div>
+        @if ($memo->hasPages())
+            <div class="mt-4 flex justify-end">
+                @if ($memo->onFirstPage())
+                    <span class="px-4 py-2 mr-2 rounded-md bg-gray-100 text-gray-500 cursor-not-allowed">
+                        Previous
+                    </span>
+                @else
+                    <a href="{{ $memo->previousPageUrl() }}"
+                        class="px-4 py-2 mr-2 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">
+                        Previous
+                    </a>
+                @endif
+
+                @if ($memo->hasMorePages())
+                    <a href="{{ $memo->nextPageUrl() }}"
+                        class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">
+                        Next
+                    </a>
+                @else
+                    <span class="px-4 py-2 rounded-md bg-gray-100 text-gray-500 cursor-not-allowed">
+                        Next
+                    </span>
+                @endif
+            </div>
+        @endif
     </div>
 @endsection
 @push('scripts')
