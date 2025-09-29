@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class BrandController extends Controller
 {
@@ -16,8 +19,9 @@ class BrandController extends Controller
             $query->where('brand', 'like', '%'.$request->search.'%');
         }
 
-        if ($request->filled('date')) {
-            $query->whereDate('created_at', $request->date);
+        if ($request->filled('created_at')) {
+            $created_at = Carbon::createFromFormat('d/m/Y', $request->created_at)->format('Y-m-d');
+            $query->whereDate('created_at', $created_at);
         }
 
         $brands = $query->orderByDesc('groups_count')

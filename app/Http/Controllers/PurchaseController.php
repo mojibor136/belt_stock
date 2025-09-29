@@ -14,12 +14,35 @@ use Illuminate\Http\Request;
 
 class PurchaseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $purchases = PurchaseItem::with(['vendor', 'group', 'brand'])
-            ->orderByRaw("CASE WHEN status = 'pending' THEN 0 ELSE 1 END")
-            ->orderByDesc('updated_at')
-            ->paginate(100);
+        $query = PurchaseItem::with(['vendor', 'group', 'brand']);
+
+        if ($request->filled('brand')) {
+            $query->where('brand_id', $request->brand);
+        }
+
+        if ($request->filled('group')) {
+            $query->where('group_id', $request->group);
+        }
+
+        if ($request->filled('size')) {
+            $query->where('size', $request->size);
+        }
+
+        if ($request->filled('created_at')) {
+            try {
+                $created_at = Carbon::createFromFormat('d/m/Y', $request->created_at)->format('Y-m-d');
+                $query->whereDate('created_at', $created_at);
+            } catch (\Exception $e) {
+                return back()->with('error', 'তারিখ সঠিক ফরম্যাটে দিন (dd/mm/yyyy)।');
+            }
+        }
+
+        $query->orderByRaw("CASE WHEN status = 'pending' THEN 0 ELSE 1 END")
+            ->orderByDesc('updated_at');
+
+        $purchases = $query->paginate(100)->appends($request->query());
 
         return view('purchase.index', compact('purchases'));
     }
@@ -109,22 +132,68 @@ class PurchaseController extends Controller
         }
     }
 
-    public function pending()
+    public function pending(Request $request)
     {
-        $purchases = PurchaseItem::with(['vendor', 'group', 'brand'])
-            ->where('status', 'pending')
-            ->latest()
-            ->paginate(100);
+        $query = PurchaseItem::with(['vendor', 'group', 'brand'])->where('status', 'pending');
+
+        if ($request->filled('brand')) {
+            $query->where('brand_id', $request->brand);
+        }
+
+        if ($request->filled('group')) {
+            $query->where('group_id', $request->group);
+        }
+
+        if ($request->filled('size')) {
+            $query->where('size', $request->size);
+        }
+
+        if ($request->filled('created_at')) {
+            try {
+                $created_at = Carbon::createFromFormat('d/m/Y', $request->created_at)->format('Y-m-d');
+                $query->whereDate('created_at', $created_at);
+            } catch (\Exception $e) {
+                return back()->with('error', 'তারিখ সঠিক ফরম্যাটে দিন (dd/mm/yyyy)।');
+            }
+        }
+
+        $query->orderByRaw("CASE WHEN status = 'pending' THEN 0 ELSE 1 END")
+            ->orderByDesc('updated_at');
+
+        $purchases = $query->paginate(100)->appends($request->query());
 
         return view('purchase.pending', compact('purchases'));
     }
 
-    public function confirm()
+    public function confirm(Request $request)
     {
-        $purchases = PurchaseItem::with(['vendor', 'group', 'brand'])
-            ->where('status', 'confirm')
-            ->latest()
-            ->paginate(100);
+        $query = PurchaseItem::with(['vendor', 'group', 'brand'])->where('status', 'confirm');
+
+        if ($request->filled('brand')) {
+            $query->where('brand_id', $request->brand);
+        }
+
+        if ($request->filled('group')) {
+            $query->where('group_id', $request->group);
+        }
+
+        if ($request->filled('size')) {
+            $query->where('size', $request->size);
+        }
+
+        if ($request->filled('created_at')) {
+            try {
+                $created_at = Carbon::createFromFormat('d/m/Y', $request->created_at)->format('Y-m-d');
+                $query->whereDate('created_at', $created_at);
+            } catch (\Exception $e) {
+                return back()->with('error', 'তারিখ সঠিক ফরম্যাটে দিন (dd/mm/yyyy)।');
+            }
+        }
+
+        $query->orderByRaw("CASE WHEN status = 'confirm' THEN 0 ELSE 1 END")
+            ->orderByDesc('updated_at');
+
+        $purchases = $query->paginate(100)->appends($request->query());
 
         return view('purchase.confirm', compact('purchases'));
     }
@@ -143,8 +212,7 @@ class PurchaseController extends Controller
             $purchase->status = 'confirm';
             $purchase->save();
 
-            return redirect()
-                ->route('purchase.pending')
+            return back()
                 ->with('success', 'Purchase status updated to confirm.');
         } catch (\Exception $e) {
             return redirect()

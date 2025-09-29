@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Exception;
+use Illuminate\Database\Eloquent\Model;
 
 class Vendor extends Model
 {
@@ -19,6 +19,11 @@ class Vendor extends Model
     public function transactions()
     {
         return $this->hasMany(VendorTrx::class, 'vendor_id', 'id');
+    }
+
+    public function purchases()
+    {
+        return $this->hasMany(PurchaseItem::class, 'vendor_id', 'id');
     }
 
     protected static function booted()

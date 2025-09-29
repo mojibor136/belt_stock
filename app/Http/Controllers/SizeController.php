@@ -157,7 +157,6 @@ class SizeController extends Controller
         try {
             $size = Size::findOrFail($request->id);
 
-            // Duplicate check
             $exists = Size::where('brand_id', $request->brand)
                 ->where('group_id', $request->group)
                 ->where('size', $request->size)
@@ -169,7 +168,6 @@ class SizeController extends Controller
                     ->with('error', 'এই ব্র্যান্ড, গ্রুপ, এবং সাইজের কম্বিনেশন ইতিমধ্যেই আছে!');
             }
 
-            // Update
             $size->update([
                 'brand_id' => $request->brand,
                 'group_id' => $request->group,

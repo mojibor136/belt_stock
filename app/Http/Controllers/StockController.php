@@ -25,19 +25,21 @@ class StockController extends Controller
         if ($request->filled('size')) {
             $query->where('size_id', $request->size);
         }
-        if ($request->filled('search')) {
-            $query->where('quantity', 'like', '%'.$request->search.'%');
+
+        if ($request->filled('created_at')) {
+            try {
+                $created_at = Carbon::createFromFormat('d/m/Y', $request->created_at)->format('Y-m-d');
+                $query->whereDate('created_at', $created_at);
+            } catch (\Exception $e) {
+                return back()->with('error', 'তারিখ সঠিক ফরম্যাটে দিন (dd/mm/yyyy)।');
+            }
         }
 
         $stocks = $query->orderByDesc('quantity')
             ->orderByDesc('updated_at')
             ->paginate(100);
 
-        $brands = Brand::all();
-        $groups = Group::all();
-        $sizes = Size::all();
-
-        return view('stock.index', compact('stocks', 'brands', 'groups', 'sizes'));
+        return view('stock.index', compact('stocks'));
     }
 
     public function create()
@@ -168,16 +170,19 @@ class StockController extends Controller
         if ($request->filled('size')) {
             $query->where('size', $request->size);
         }
-        if ($request->filled('search')) {
-            $query->where('quantity', 'like', '%'.$request->search.'%');
+
+        if ($request->filled('created_at')) {
+            try {
+                $created_at = Carbon::createFromFormat('d/m/Y', $request->created_at)->format('Y-m-d');
+                $query->whereDate('created_at', $created_at);
+            } catch (\Exception $e) {
+                return back()->with('error', 'তারিখ সঠিক ফরম্যাটে দিন (dd/mm/yyyy)।');
+            }
         }
 
         $histories = $query->paginate(100);
-        $brands = Brand::all();
-        $groups = Group::all();
-        $sizes = Size::all();
 
-        return view('stock.history', compact('histories', 'brands', 'groups', 'sizes'));
+        return view('stock.history', compact('histories'));
     }
 
     public function warnings()
@@ -188,11 +193,7 @@ class StockController extends Controller
             ->orderBy('id', 'desc')
             ->paginate(100);
 
-        $brands = Brand::all();
-        $groups = Group::all();
-        $sizes = Size::all();
-
-        return view('stock.warnings', compact('stocks', 'brands', 'groups', 'sizes'));
+        return view('stock.warnings', compact('stocks'));
     }
 
     public function exhausted()
@@ -202,11 +203,7 @@ class StockController extends Controller
             ->orderBy('id', 'desc')
             ->paginate(100);
 
-        $brands = Brand::all();
-        $groups = Group::all();
-        $sizes = Size::all();
-
-        return view('stock.exhausted', compact('stocks', 'brands', 'groups', 'sizes'));
+        return view('stock.exhausted', compact('stocks'));
     }
 
     public function destroy($id)

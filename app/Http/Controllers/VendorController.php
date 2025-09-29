@@ -33,6 +33,36 @@ class VendorController extends Controller
         return view('vendor.index', compact('vendors'));
     }
 
+    public function purchase($name, $id, Request $request)
+    {
+        $vendor = Vendor::findOrFail($id);
+
+        $purchases = $vendor->purchases()
+            ->when($request->brand, function ($q) use ($request) {
+                $q->where('brand_id', $request->brand);
+            })
+            ->when($request->group, function ($q) use ($request) {
+                $q->where('group_id', $request->group);
+            })
+            ->when($request->size, function ($q) use ($request) {
+                $q->where('size', $request->size);
+            })
+            ->when($request->created_at, function ($q) use ($request) {
+                if ($request->filled('created_at')) {
+                    try {
+                        $created_at = Carbon::createFromFormat('d/m/Y', $request->created_at)->format('Y-m-d');
+                        $q->whereDate('created_at', $created_at);
+                    } catch (\Exception $e) {
+                        Log::error('Complete memo invalid date', ['input' => $request->created_at, 'error' => $e->getMessage()]);
+                    }
+                }
+            })
+            ->paginate(100)
+            ->appends($request->query());
+
+        return view('vendor.purchase', compact('vendor', 'purchases'));
+    }
+
     public function create()
     {
         return view('vendor.create');

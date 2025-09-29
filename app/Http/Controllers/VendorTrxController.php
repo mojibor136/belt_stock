@@ -205,12 +205,12 @@ class VendorTrxController extends Controller
             $query->where('status', $request->status);
         }
 
-        if ($request->filled('date')) {
+        if ($request->filled('created_at')) {
             try {
-                $date = Carbon::createFromFormat('Y-m-d', $request->date)->startOfDay();
-                $query->whereDate('created_at', $date);
-            } catch (Exception $e) {
-                return back()->with('error', 'তারিখ সঠিক ফরম্যাটে দিন (YYYY-MM-DD)।');
+                $created_at = Carbon::createFromFormat('d/m/Y', $request->created_at)->format('Y-m-d');
+                $query->whereDate('created_at', $created_at);
+            } catch (\Exception $e) {
+                return back()->with('error', 'তারিখ সঠিক ফরম্যাটে দিন (dd/mm/yyyy)।');
             }
         }
 
@@ -225,7 +225,7 @@ class VendorTrxController extends Controller
 
         $query = VendorTrx::where('vendor_id', $vendor->id);
 
-        if ($search = request('search')) {
+        if ($search = $request->search) {
             $query->where(function ($q) use ($search) {
                 $q->where('invoice_type', 'like', "%{$search}%")
                     ->orWhere('payment', 'like', "%{$search}%")
@@ -233,16 +233,18 @@ class VendorTrxController extends Controller
             });
         }
 
-        if ($request->filled('date')) {
+        if ($request->filled('created_at')) {
             try {
-                $date = Carbon::createFromFormat('Y-m-d', $request->date)->startOfDay();
-                $query->whereDate('created_at', $date);
-            } catch (Exception $e) {
-                return back()->with('error', 'তারিখ সঠিক ফরম্যাটে দিন (YYYY-MM-DD)।');
+                $created_at = Carbon::createFromFormat('d/m/Y', $request->created_at)->format('Y-m-d');
+                $query->whereDate('created_at', $created_at);
+            } catch (\Exception $e) {
+                return back()->with('error', 'তারিখ সঠিক ফরম্যাটে দিন (dd/mm/yyyy)।');
             }
         }
 
-        $transactions = $query->orderBy('id', 'desc')->paginate(100);
+        $transactions = $query->orderBy('id', 'desc')
+            ->paginate(100)
+            ->appends($request->query());
 
         return view('vendor.vendorTransaction', compact('vendor', 'transactions'));
     }

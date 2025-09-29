@@ -36,7 +36,7 @@
                 <div class="flex flex-col items-center md:items-end gap-2 text-gray-700">
                     <p class="font-medium text-md">Email: {{ $customer->email }}</p>
                     <p class="font-medium text-md text-gray-700">Transport: {{ $customer->transport }}</p>
-                    <p class="font-medium text-MD">Customer ID: #1023</p>
+                    <p class="font-medium text-MD">Customer ID: #{{ $customer->id }}</p>
                 </div>
             </div>
         </div>

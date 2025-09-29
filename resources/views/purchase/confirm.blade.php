@@ -3,6 +3,20 @@
 
 @section('content')
     @include('components.toast')
+    <style>
+        #created_at,
+        .flatpickr-input {
+            background-color: white !important;
+        }
+
+        #created_at:focus,
+        .flatpickr-input:focus {
+            background-color: white !important;
+            border-color: #2563eb !important;
+            outline: none !important;
+            box-shadow: 0 0 0 1px #2563eb !important;
+        }
+    </style>
 
     <div class="w-full mb-4">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b rounded-md mb-4">
@@ -18,6 +32,66 @@
                 </a>
             </div>
         </div>
+
+        <form action="{{ route('purchase.confirm') }}" method="GET"
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2 sm:gap-4">
+            <div class="flex flex-col sm:flex-row w-full sm:w-2/3 gap-2">
+
+                <div class="relative w-full sm:w-1/2">
+                    <select name="brand"
+                        class="w-full px-4 h-10 text-gray-700 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-600 focus:outline-none text-sm transition-all duration-150">
+                        <option value="">Select Brand</option>
+                        @foreach ($brands as $brand)
+                            <option value="{{ $brand->id }}" {{ request('brand') == $brand->id ? 'selected' : '' }}>
+                                {{ $brand->brand }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="relative w-full sm:w-1/2">
+                    <select name="group"
+                        class="w-full px-4 h-10 text-gray-700 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-600 focus:outline-none text-sm transition-all duration-150">
+                        <option value="">Select Group</option>
+                        @foreach ($groups as $group)
+                            <option value="{{ $group->id }}" {{ request('group') == $group->id ? 'selected' : '' }}>
+                                {{ $group->group }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="relative w-full sm:w-1/2">
+                    <select name="size"
+                        class="w-full px-4 h-10 text-gray-700 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-600 focus:outline-none text-sm transition-all duration-150">
+                        <option value="">Select Sizes</option>
+                        @foreach ($sizes as $size)
+                            <option value="{{ $size->size }}" {{ request('size') == $size->size ? 'selected' : '' }}>
+                                {{ $size->size }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="relative w-full sm:w-1/2">
+                    <input type="text" id="created_at" name="created_at" value="{{ request('created_at') }}"
+                        placeholder="dd/mm/yyyy"
+                        class="w-full px-4 h-10 text-gray-700 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-600 focus:outline-none text-sm transition-all duration-150" />
+                </div>
+            </div>
+
+            <div class="flex gap-2 mt-2 sm:mt-0">
+                <button type="submit"
+                    class="flex justify-center items-center px-4 py-2 h-10 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all duration-150">
+                    <i class="ri-search-line mr-1"></i> Search
+                </button>
+
+                <a href="{{ route('purchase.confirm') }}"
+                    class="flex justify-center items-center px-4 py-2 h-10 md:w-auto w-full rounded-md bg-red-600 hover:bg-red-700 text-white font-medium transition-all duration-150">
+                    Reset
+                </a>
+            </div>
+        </form>
 
         <div class="overflow-x-auto bg-white rounded shadow">
             <table class="min-w-full table-auto">
@@ -90,3 +164,13 @@
         @endif
     </div>
 @endsection
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            flatpickr("#created_at", {
+                dateFormat: "d/m/Y",
+                defaultDate: null
+            });
+        });
+    </script>
+@endpush

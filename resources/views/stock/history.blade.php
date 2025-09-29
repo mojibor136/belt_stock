@@ -1,6 +1,21 @@
 @extends('layouts.app')
 @section('title', 'History Management')
 @section('content')
+    @include('components.toast')
+    <style>
+        #created_at,
+        .flatpickr-input {
+            background-color: white !important;
+        }
+
+        #created_at:focus,
+        .flatpickr-input:focus {
+            background-color: white !important;
+            border-color: #2563eb !important;
+            outline: none !important;
+            box-shadow: 0 0 0 1px #2563eb !important;
+        }
+    </style>
     <div class="w-full mb-4">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b rounded-md mb-4">
             <div class="flex flex-col gap-2 w-full md:w-2/3">
@@ -12,12 +27,6 @@
         <form method="GET"
             class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2 sm:gap-4">
             <div class="flex flex-col sm:flex-row w-full sm:w-2/3 gap-2">
-                <div class="relative w-full sm:w-1/2">
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search quantity..."
-                        class="w-full pl-10 pr-4 h-10 text-gray-700 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-600 focus:outline-none text-sm transition-all duration-150" />
-                    <i
-                        class="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-base"></i>
-                </div>
 
                 <div class="relative w-full sm:w-1/2">
                     <select name="brand"
@@ -53,6 +62,12 @@
                             </option>
                         @endforeach
                     </select>
+                </div>
+
+                <div class="relative w-full sm:w-1/2">
+                    <input type="text" id="created_at" name="created_at" value="{{ request('created_at') }}"
+                        placeholder="dd/mm/yyyy"
+                        class="w-full px-4 h-10 text-gray-700 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-600 focus:outline-none text-sm transition-all duration-150" />
                 </div>
             </div>
 
@@ -155,3 +170,13 @@
         @endif
     </div>
 @endsection
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            flatpickr("#created_at", {
+                dateFormat: "d/m/Y",
+                defaultDate: null
+            });
+        });
+    </script>
+@endpush

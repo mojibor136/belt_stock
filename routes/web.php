@@ -90,6 +90,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/vendor/create', 'create')->name('vendor.create');
         Route::post('/vendor/store', 'store')->name('vendor.store');
         Route::get('/vendor/edit/{id}', 'edit')->name('vendor.edit');
+        Route::get('/vendor/purchase/{name}/{id}', 'purchase')->name('vendor.purchase');
         Route::post('/vendor/update', 'update')->name('vendor.update');
         Route::get('/vendor/analysis/{name}/{id}', 'vendorAnalysis')->name('vendor.analysis');
         Route::delete('/vendor/destroy/{id}', 'destroy')->name('vendor.destroy');

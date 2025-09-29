@@ -48,7 +48,7 @@
                 </div>
 
                 <div class="relative w-full sm:w-1/2">
-                    <input type="date" id="created_at" name="date" value="{{ request('date') }}"
+                    <input type="text" id="created_at" name="created_at" value="{{ request('created_at') }}"
                         placeholder="dd/mm/yyyy"
                         class="w-full px-4 h-10 text-gray-700 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-600 focus:outline-none text-sm transition-all duration-150" />
                 </div>

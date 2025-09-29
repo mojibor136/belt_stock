@@ -61,7 +61,7 @@
                         <th class="px-4 py-3 text-left">Phone</th>
                         <th class="px-4 py-3 text-center">Amount</th>
                         <th class="px-4 py-3 text-center">Credit / Debit</th>
-                        <th class="px-4 py-3 text-right pr-8">Actions</th>
+                        <th class="px-4 py-3 text-right pr-8">Status/Actions</th>
                     </tr>
                 </thead>
                 <tbody class="text-sm text-gray-700 divide-y divide-gray-200">
@@ -111,6 +111,11 @@
                             </td>
                             <td class="px-4 py-3 text-right">
                                 <div class="flex justify-end items-center gap-1">
+                                    <div onclick="window.location.href='{{ route('vendor.purchase', ['name' => Str::slug($vendor->name), 'id' => $vendor->id]) }}'"
+                                        class="bg-blue-600 text-white rounded px-4 flex justify-center items-center gap-0.5 h-8 cursor-pointer">
+                                        <i class="ri-shopping-cart-2-line"></i>
+                                        <span>Purchase</span>
+                                    </div>
                                     <div onclick="window.location.href='{{ route('vendor.analysis', ['name' => Str::slug($vendor->name), 'id' => $vendor->id]) }}'"
                                         class="bg-indigo-600 text-white rounded px-4 flex justify-center items-center gap-0.5 h-8 cursor-pointer">
                                         <i class="ri-computer-line"></i>
